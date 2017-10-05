@@ -31,7 +31,7 @@ param_list = {
     'SeasonType': {'type': 'Enum', 'choices': ['Pre Season', 'Regular Season', 'Playoffs', 'All Star']},
     'PerMode': {'type': 'Enum',
                 'choices': ['PerGame', 'Per100Possessions', 'PerPossession', 'Per100Plays', 'PerPlay', 'PerMinute',
-                            'Per36', 'Per40', 'Per48']},
+                            'Per36', 'Per40', 'Per48', 'Totals']},
     'PlayerOrTeam': {'type': 'Enum', 'choices': ['Player', 'Team']},
     'PtMeasureType': {'type': 'Enum',
                       'choices': ['Drives', 'Defense', 'CatchShoot', 'Passing', 'Possessions', 'PullUpShot',
@@ -53,26 +53,25 @@ def file_check(file_path):
     return os.path.isfile(file_path)
 
 
+def check_params(params):
+    for key, value in params.items():
+        if key in param_list:
+            p = param_list[key]
+            if p['type'] == 'Enum' and value not in p['choices']:
+                suggestions = process.extract(value, p['choices'], limit=3)
+                raise ValueError(
+                    str(value) + " is not a valid value for " + str(key) + ". Did you mean: " + str(suggestions))
+            if p['type'] == 'Date' and value != '':
+                parse(value)
+
+
 class EndPoint:
     base_url = ''
     default_params = {}
-    params = {}
     season_year_param = 'Season'
 
-    def __init__(self, passed_params):
-        self.params = self.set_params(passed_params)
-        self.check_params()
-
-    def check_params(self):
-        for key, value in self.params.items():
-            if key in param_list:
-                p = param_list[key]
-                if p['type'] == 'Enum' and value not in p['choices']:
-                    suggestions = process.extract(value, p['choices'], limit=3)
-                    raise ValueError(
-                        str(value) + " is not a valid value for " + str(key) + ". Did you mean: " + str(suggestions))
-                if p['type'] == 'Date' and value != '':
-                    parse(value)
+    def __init__(self):
+        None
 
     def set_params(self, passed_params):
         params = self.default_params
@@ -85,13 +84,18 @@ class EndPoint:
                     str(key) + " is not a valid parameter for this endpoint. Did you mean: " + str(suggestions))
         return params
 
-    def get_data(self):
-        param_string = str(self.params).encode('utf-8')
+    def get_data(self, passed_params, override_file=False):
+        params = self.set_params(passed_params)
+        check_params(params)
+
+        param_string = str(params).encode('utf-8')
         param_hash = hashlib.sha1(param_string).hexdigest()
         endpoint_name = self.base_url.split('/')[-1]
+
         file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
-        if not file_check(file_path):
-            r = requests.post(self.base_url, data=self.params, headers=request_headers)
+
+        if (not file_check(file_path)) or override_file:
+            r = requests.post(self.base_url, data=params, headers=request_headers)
             print(str(r.status_code) + ': ' + str(r.url))
             data = r.json()['resultSets'][0]
             headers = data['headers']
@@ -101,14 +105,19 @@ class EndPoint:
             df.to_csv(file_path)
             return df
         else:
+            print(file_path)
             return pd.read_csv(file_path)
 
-    def get_data_for_year_range(self, year_range):
+    def get_data_for_year_range(self, year_range, other_params):
         df = pd.DataFrame()
         for year in year_range:
             year_string = get_year_string(year)
-            self.params[self.season_year_param] = year_string
-            df = df.append(self.get_data())
+
+            other_params[self.season_year_param] = year_string
+
+            year_df = self.get_data(other_params)
+            year_df['YEAR'] = year_string
+            df = df.append(year_df)
         return df
 
 
@@ -223,30 +232,30 @@ class TrackingStats(EndPoint):
     }
 
 
-class SynergyPlayerStats(EndPoint):
-    base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player'
-    default_params = {'category': 'PRRollman',
-                      'limit': '500',
-                      'names': 'offensive',
-                      'q': '2511761',
-                      'season': '2016',
-                      'seasonType': 'Reg'}
-    synergy_request_headers = {
-        'Host': 'stats-prod.nba.com',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0',
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'http://stats.nba.com/players/roll-man/',
-        'Origin': 'http://stats.nba.com'
-    }
-
-    def get_data(self):
-        r = Request('POST', self.base_url, params=self.params, headers=self.synergy_request_headers)
-        data = r.json()['results']
-        headers = data[0].keys()
-        rows = [0] * len(data)
-        for i in range(len(data)):
-            rows[i] = data[i].values()
-        data_dict = [dict(zip(headers, row)) for row in rows]
-        return pd.DataFrame(data_dict)
+# class SynrgyPlayerStats(EndPoint):
+#     base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player'
+#     default_params = {'category': 'PRRollman',
+#                       'limit': '500',
+#                       'names': 'offensive',
+#                       'q': '2511761',
+#                       'season': '2016',
+#                       'seasonType': 'Reg'}
+#     synergy_request_headers = {
+#         'Host': 'stats-prod.nba.com',
+#         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0',
+#         'Accept': 'application/json, text/plain, */*',
+#         'Accept-Language': 'en-US,en;q=0.5',
+#         'Accept-Encoding': 'gzip, deflate, br',
+#         'Referer': 'http://stats.nba.com/players/roll-man/',
+#         'Origin': 'http://stats.nba.com'
+#     }
+#
+#     def get_data(self):
+#         r = Request('POST', self.base_url, params=self.params, headers=self.synergy_request_headers)
+#         data = r.json()['results']
+#         headers = data[0].keys()
+#         rows = [0] * len(data)
+#         for i in range(len(data)):
+#             rows[i] = data[i].values()
+#         data_dict = [dict(zip(headers, row)) for row in rows]
+#         return pd.DataFrame(data_dict)
