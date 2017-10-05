@@ -1,8 +1,14 @@
 import requests
 from requests import Request
 import pandas as pd
+import hashlib
+import os
 from dateutil.parser import parse
 from fuzzywuzzy import process
+
+
+data_dir = '/home/patrick/Data/nba/'
+
 
 request_headers = {
     'Host': 'stats.nba.com',
@@ -37,10 +43,21 @@ def get_year_string(year):
     return str(year) + "-" + str(year + 1)[2:4]
 
 
+def file_check(file_path):
+    split_path = file_path.split('/')
+    current_path = ''
+    for p in range(0, len(split_path) - 1):
+        current_path += split_path[p] + '/'
+        if not os.path.exists(current_path):
+            os.makedirs(current_path)
+    return os.path.isfile(file_path)
+
+
 class EndPoint:
     base_url = ''
     default_params = {}
     params = {}
+    season_year_param = 'Season'
 
     def __init__(self, passed_params):
         self.params = self.set_params(passed_params)
@@ -69,13 +86,30 @@ class EndPoint:
         return params
 
     def get_data(self):
-        r = requests.post(self.base_url, data=self.params, headers=request_headers)
-        print(str(r.status_code) + ': ' + str(r.url))
-        data = r.json()['resultSets'][0]
-        headers = data['headers']
-        rows = data['rowSet']
-        data_dict = [dict(zip(headers, row)) for row in rows]
-        return pd.DataFrame(data_dict)
+        param_string = str(self.params).encode('utf-8')
+        param_hash = hashlib.sha1(param_string).hexdigest()
+        endpoint_name = self.base_url.split('/')[-1]
+        file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
+        if not file_check(file_path):
+            r = requests.post(self.base_url, data=self.params, headers=request_headers)
+            print(str(r.status_code) + ': ' + str(r.url))
+            data = r.json()['resultSets'][0]
+            headers = data['headers']
+            rows = data['rowSet']
+            data_dict = [dict(zip(headers, row)) for row in rows]
+            df = pd.DataFrame(data_dict)
+            df.to_csv(file_path)
+            return df
+        else:
+            return pd.read_csv(file_path)
+
+    def get_data_for_year_range(self, year_range):
+        df = pd.DataFrame()
+        for year in year_range:
+            year_string = get_year_string(year)
+            self.params[self.season_year_param] = year_string
+            df = df.append(self.get_data())
+        return df
 
 
 class GeneralPlayerStats(EndPoint):
@@ -190,7 +224,7 @@ class TrackingStats(EndPoint):
 
 
 class SynergyPlayerStats(EndPoint):
-    base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/?'
+    base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player'
     default_params = {'category': 'PRRollman',
                       'limit': '500',
                       'names': 'offensive',
@@ -209,31 +243,10 @@ class SynergyPlayerStats(EndPoint):
 
     def get_data(self):
         r = Request('POST', self.base_url, params=self.params, headers=self.synergy_request_headers)
-        pretty_print_POST(r.prepare())
         data = r.json()['results']
-        # headers = data[0].keys()
-        # rows = [0] * len(data)
-        # for i in range(len(data)):
-        #     rows[i] = data[i].values()
-        # data_dict = [dict(zip(headers, row)) for row in rows]
-        # return pd.DataFrame(data_dict)
-
-
-def pretty_print_POST(req):
-    """
-    At this point it is completely built and ready
-    to be fired; it is "prepared".
-
-    However pay attention at the formatting used in
-    this function because it is programmed to be pretty
-    printed and may differ from the actual request.
-    """
-    print('{}\n{}\n{}\n\n{}'.format(
-        '-----------START-----------',
-        req.method + ' ' + req.url,
-        '\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
-        req.body,
-    ))
-
-
-SynergyPlayerStats({}).get_data()
+        headers = data[0].keys()
+        rows = [0] * len(data)
+        for i in range(len(data)):
+            rows[i] = data[i].values()
+        data_dict = [dict(zip(headers, row)) for row in rows]
+        return pd.DataFrame(data_dict)
