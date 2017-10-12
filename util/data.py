@@ -232,6 +232,43 @@ class TrackingStats(EndPoint):
     }
 
 
+class PlayerBios(EndPoint):
+    base_url = 'http://stats.nba.com/stats/leaguedashplayerbiostats'
+    default_params = {
+        'College': '',
+        'Conference': '',
+        'Country': '',
+        'DateFrom': '',
+        'DateTo': '',
+        'Division': '',
+        'DraftPick': '',
+        'DraftYear': '',
+        'GameScope': '',
+        'GameSegment': '',
+        'Height': '',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'PerMode': 'PerGame',
+        'Period': '0',
+        'PlayerExperience': '',
+        'PlayerPosition': '',
+        'Season': '2016-17',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'ShotClockRange': '',
+        'StarterBench': '',
+        'TeamID': '0',
+        'VsConference': '',
+        'VsDivision': '',
+        'Weight': ''
+    }
+
+
 # class SynrgyPlayerStats(EndPoint):
 #     base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player'
 #     default_params = {'category': 'PRRollman',
