@@ -1,14 +1,16 @@
 import requests
-from requests import Request
 import pandas as pd
 import hashlib
 import os
+import platform
 from dateutil.parser import parse
 from fuzzywuzzy import process
 
 
-data_dir = '/home/patrick/Data/nba/'
-
+if "Windows" in platform.platform():
+    data_dir = 'C:\\data\\nba\\'
+else:
+    data_dir = '/home/patrick/Data/nba/'
 
 request_headers = {
     'Host': 'stats.nba.com',
@@ -32,7 +34,7 @@ param_list = {
     'PerMode': {'type': 'Enum',
                 'choices': ['PerGame', 'Per100Possessions', 'PerPossession', 'Per100Plays', 'PerPlay', 'PerMinute',
                             'Per36', 'Per40', 'Per48', 'Totals']},
-    'PlayerOrTeam': {'type': 'Enum', 'choices': ['Player', 'Team']},
+    'PlayerOrTeam': {'type': 'Enum', 'choices': ['Player', 'Team', 'P', 'T']},
     'PtMeasureType': {'type': 'Enum',
                       'choices': ['Drives', 'Defense', 'CatchShoot', 'Passing', 'Possessions', 'PullUpShot',
                                   'Rebounding', 'Efficiency', 'SpeedDistance', 'ElbowTouch', 'PostTouch', 'PaintTouch']}
@@ -63,6 +65,13 @@ def check_params(params):
                     str(value) + " is not a valid value for " + str(key) + ". Did you mean: " + str(suggestions))
             if p['type'] == 'Date' and value != '':
                 parse(value)
+
+
+def print_full_url(base, params):
+    s = base + '?'
+    for param in params:
+        s += param + '=' + params[param] + '&'
+    print(s)
 
 
 class EndPoint:
@@ -232,6 +241,42 @@ class TrackingStats(EndPoint):
     }
 
 
+class HustleStats(EndPoint):
+    base_url = 'https://stats.nba.com/stats/leaguehustlestatsplayer'
+    default_params = {
+        'College': '',
+        'Conference': '',
+        'Country': '',
+        'DateFrom': '',
+        'DateTo': '',
+        'Division': '',
+        'DraftPick': '',
+        'DraftYear': '',
+        'GameScope': '',
+        'Height': '',
+        'LastNGames': '0',
+        '&LeagueID': '00',
+        'Location': '',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'PaceAdjust': 'N',
+        'PerMode': 'PerGame',
+        'PlayerExperience': '',
+        'PlayerPosition': '',
+        'PlusMinus': 'N',
+        'Rank': 'N',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'TeamID': '0',
+        'VsConference': '',
+        'VsDivision': '',
+        'Weight': ''
+    }
+
+
 class PlayerBios(EndPoint):
     base_url = 'http://stats.nba.com/stats/leaguedashplayerbiostats'
     default_params = {
@@ -269,30 +314,64 @@ class PlayerBios(EndPoint):
     }
 
 
-# class SynrgyPlayerStats(EndPoint):
-#     base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player'
-#     default_params = {'category': 'PRRollman',
-#                       'limit': '500',
-#                       'names': 'offensive',
-#                       'q': '2511761',
-#                       'season': '2016',
-#                       'seasonType': 'Reg'}
-#     synergy_request_headers = {
-#         'Host': 'stats-prod.nba.com',
-#         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0',
-#         'Accept': 'application/json, text/plain, */*',
-#         'Accept-Language': 'en-US,en;q=0.5',
-#         'Accept-Encoding': 'gzip, deflate, br',
-#         'Referer': 'http://stats.nba.com/players/roll-man/',
-#         'Origin': 'http://stats.nba.com'
-#     }
-#
-#     def get_data(self):
-#         r = Request('POST', self.base_url, params=self.params, headers=self.synergy_request_headers)
-#         data = r.json()['results']
-#         headers = data[0].keys()
-#         rows = [0] * len(data)
-#         for i in range(len(data)):
-#             rows[i] = data[i].values()
-#         data_dict = [dict(zip(headers, row)) for row in rows]
-#         return pd.DataFrame(data_dict)
+class GameLogs(EndPoint):
+    base_url = 'http://stats.nba.com/stats/leaguegamelog'
+    default_params = {
+        'Counter': '1000',
+        'DateFrom': '',
+        'DateTo': '',
+        'Direction': 'DESC',
+        'LeagueID': '00',
+        'PlayerOrTeam': 'P',
+        'Season': '2017-18',
+        'SeasonType': 'Regular Season',
+        'Sorter': 'DATE'
+    }
+
+
+class SynergyPlayerStats(EndPoint):
+    base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/'
+    default_params = {'category': 'PRRollman',
+                      'limit': '500',
+                      'names': 'offensive',
+                      'q': '2511761',
+                      'season': '2016',
+                      'seasonType': 'Reg'}
+    synergy_request_headers = {
+        'Host': 'dev.stats.nba.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Referer': 'http://stats.nba.com/players/roll-man/',
+        'Origin': 'http://stats.nba.com',
+        'DNT': '1',
+        'Connection': 'keep-alive'
+    }
+
+    def get_data(self, passed_params, override_file=False):
+        params = self.set_params(passed_params)
+        check_params(params)
+
+        param_string = str(params).encode('utf-8')
+        param_hash = hashlib.sha1(param_string).hexdigest()
+        endpoint_name = self.base_url.split('/')[-1]
+
+        file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
+
+        if (not file_check(file_path)) or override_file:
+            r = requests.get(self.base_url, data=params, headers=request_headers, allow_redirects=True)
+            print_full_url(self.base_url, params)
+            print(r.headers)
+            data = r.json()['results']
+            headers = data[0].keys()
+            rows = [0] * len(data)
+            for i in range(len(data)):
+                rows[i] = data[i].values()
+            data_dict = [dict(zip(headers, row)) for row in rows]
+            df = pd.DataFrame(data_dict)
+            df.to_csv(file_path)
+            return df
+        else:
+            print(file_path)
+            return pd.read_csv(file_path)
