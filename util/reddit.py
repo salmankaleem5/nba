@@ -1,3 +1,6 @@
+import sys
+
+
 def print_reddit_table(df, columns):
     for ix, col in enumerate(columns):
         try:
@@ -15,4 +18,4 @@ def print_reddit_table(df, columns):
                 sys.stdout.write(str(row[col]) + (' | ' if jx is not len(columns) - 1 else ''))
             except UnicodeEncodeError:
                 sys.stdout.write(' ' + (' | ' if jx is not len(columns) - 1 else ''))
-    print('')
+        print('')

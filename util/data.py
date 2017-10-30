@@ -6,7 +6,6 @@ import platform
 from dateutil.parser import parse
 from fuzzywuzzy import process
 
-
 if "Windows" in platform.platform():
     data_dir = 'C:\\data\\nba\\'
 else:
@@ -71,13 +70,14 @@ def print_full_url(base, params):
     s = base + '?'
     for param in params:
         s += param + '=' + params[param] + '&'
-    print(s)
+    return s
 
 
 class EndPoint:
     base_url = ''
     default_params = {}
     season_year_param = 'Season'
+    index = 0
 
     def __init__(self):
         None
@@ -105,8 +105,8 @@ class EndPoint:
 
         if (not file_check(file_path)) or override_file:
             r = requests.post(self.base_url, data=params, headers=request_headers)
-            print(str(r.status_code) + ': ' + str(r.url))
-            data = r.json()['resultSets'][0]
+            print(str(r.status_code) + ': ' + str(self.base_url))
+            data = r.json()['resultSets'][self.index]
             headers = data['headers']
             rows = data['rowSet']
             data_dict = [dict(zip(headers, row)) for row in rows]
@@ -327,6 +327,68 @@ class GameLogs(EndPoint):
         'SeasonType': 'Regular Season',
         'Sorter': 'DATE'
     }
+
+
+class OnOffSummary(EndPoint):
+    base_url = 'http://stats.nba.com/stats/teamplayeronoffsummary'
+    default_params = {
+        'DateFrom': '',
+        'DateTo': '',
+        'GameSegment': '',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'MeasureType': 'Base',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PaceAdjust': 'N',
+        'PerMode': 'Totals',
+        'Period': '0',
+        'PlusMinus': 'N',
+        'Rank': 'N',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'TeamID': '0',
+        'VsConference': '',
+        'VsDivision': '',
+    }
+
+    def get_data(self, passed_params, override_file=False):
+        params = self.set_params(passed_params)
+        check_params(params)
+
+        param_string = str(params).encode('utf-8')
+        param_hash = hashlib.sha1(param_string).hexdigest()
+        endpoint_name = self.base_url.split('/')[-1]
+
+        file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
+
+        if (not file_check(file_path)) or override_file:
+            r = requests.post(self.base_url, data=params, headers=request_headers)
+            print(str(r.status_code) + ': ' + str(self.base_url))
+            data = r.json()['resultSets'][1]
+            headers = ['GROUP_SET_ON', 'TEAM_ID', 'TEAM_ABBREVIATION', 'TEAM_NAME', 'VS_PLAYER_ID', 'VS_PLAYER_NAME',
+                       'COURT_STATUS_ON', 'GP_ON', 'MIN_ON', 'PLUS_MINUS_ON', 'OFF_RATING_ON', 'DEF_RATING_ON',
+                       'NET_RATING_ON']
+            rows = data['rowSet']
+            data_dict = [dict(zip(headers, row)) for row in rows]
+            on_df = pd.DataFrame(data_dict)
+            data = r.json()['resultSets'][2]
+            headers = ['GROUP_SET_OFF', 'TEAM_ID', 'TEAM_ABBREVIATION', 'TEAM_NAME', 'VS_PLAYER_ID', 'VS_PLAYER_NAME',
+                       'COURT_STATUS_OFF', 'GP_OFF', 'MIN_OFF', 'PLUS_MINUS_OFF', 'OFF_RATING_OFF', 'DEF_RATING_OFF',
+                       'NET_RATING_OFF']
+            rows = data['rowSet']
+            data_dict = [dict(zip(headers, row)) for row in rows]
+            off_df = pd.DataFrame(data_dict)
+            df = pd.merge(on_df, off_df,
+                          on=['TEAM_ID', 'TEAM_ABBREVIATION', 'TEAM_NAME', 'VS_PLAYER_ID', 'VS_PLAYER_NAME'])
+            df.to_csv(file_path)
+            return df
+        else:
+            print(file_path)
+            return pd.read_csv(file_path)
 
 
 class SynergyPlayerStats(EndPoint):
