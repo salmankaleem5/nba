@@ -36,7 +36,9 @@ param_list = {
     'PlayerOrTeam': {'type': 'Enum', 'choices': ['Player', 'Team', 'P', 'T']},
     'PtMeasureType': {'type': 'Enum',
                       'choices': ['Drives', 'Defense', 'CatchShoot', 'Passing', 'Possessions', 'PullUpShot',
-                                  'Rebounding', 'Efficiency', 'SpeedDistance', 'ElbowTouch', 'PostTouch', 'PaintTouch']}
+                                  'Rebounding', 'Efficiency', 'SpeedDistance', 'ElbowTouch', 'PostTouch',
+                                  'PaintTouch']},
+    'DistanceRange': {'type': 'Enum', 'choices': ['By Zone', '5ft Range', '8ft Range']}
 }
 
 
@@ -66,7 +68,7 @@ def check_params(params):
                 parse(value)
 
 
-def print_full_url(base, params):
+def get_full_url(base, params):
     s = base + '?'
     for param in params:
         s += param + '=' + params[param] + '&'
@@ -329,6 +331,86 @@ class GameLogs(EndPoint):
     }
 
 
+class TeamShootingStats(EndPoint):
+    base_url = 'http://stats.nba.com/stats/leaguedashteamshotlocations'
+    default_params = {
+        'Conference': '',
+        'DateFrom': '',
+        'DateTo': '',
+        'Division': '',
+        'DistanceRange': 'By Zone',
+        'GameScope': '',
+        'GameSegment': '',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'MeasureType': 'Base',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'PaceAdjust': 'N',
+        'PerMode': 'Totals',
+        'Period': '0',
+        'PlayerExperience': '',
+        'PlayerPosition': '',
+        'PlusMinus': 'N',
+        'Rank': 'N',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'ShotClockRange': '',
+        'StarterBench': '',
+        'TeamID': '0',
+        'VsConference': '',
+        'VsDivision': '',
+    }
+    index = 1
+
+    def get_data(self, passed_params, override_file=False):
+        params = self.set_params(passed_params)
+        check_params(params)
+
+        param_string = str(params).encode('utf-8')
+        param_hash = hashlib.sha1(param_string).hexdigest()
+        endpoint_name = self.base_url.split('/')[-1]
+
+        file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
+
+        if (not file_check(file_path)) or override_file:
+            r = requests.post(self.base_url, data=params, headers=request_headers)
+            print(str(r.status_code) + ': ' + str(self.base_url))
+            data = r.json()['resultSets']
+
+            headers = ['TEAM_ID', 'TEAM_NAME']
+            shot_zones = data['headers'][0]['columnNames']
+            for sz in shot_zones:
+                headers.append(sz + '_FGM')
+                headers.append(sz + '_FGA')
+                headers.append(sz + '_FG_PCT')
+
+            rows = data['rowSet']
+            data_dict = [dict(zip(headers, row)) for row in rows]
+            df = pd.DataFrame(data_dict)
+            df.to_csv(file_path)
+            return df
+        else:
+            print(file_path)
+            return pd.read_csv(file_path)
+
+    def get_zones(self, zone_type):
+        if zone_type == 'By Zone':
+            return ['Restricted Area', 'In The Paint (Non-RA)', 'Mid-Range', 'Left Corner 3', 'Right Corner 3',
+                    'Above the Break 3', 'Backcourt']
+        elif zone_type == '5ft Range':
+            return ['Less Than 5ft', '5-9 ft', '10-14 ft', '15-19 ft', '20-24 ft', '25-29 ft', '30-34 ft', '35-39 ft',
+                    '40+ ft']
+        elif zone_type == '8ft Range':
+            return ['Less Than 8ft', '8-16 ft', '16-24ft', '24+ ft', 'Back Court Shot']
+        else:
+            check_params({'DistanceRange': zone_type})
+
+
 class OnOffSummary(EndPoint):
     base_url = 'http://stats.nba.com/stats/teamplayeronoffsummary'
     default_params = {
@@ -423,7 +505,7 @@ class SynergyPlayerStats(EndPoint):
 
         if (not file_check(file_path)) or override_file:
             r = requests.get(self.base_url, data=params, headers=request_headers, allow_redirects=True)
-            print_full_url(self.base_url, params)
+            get_full_url(self.base_url, params)
             print(r.headers)
             data = r.json()['results']
             headers = data[0].keys()
