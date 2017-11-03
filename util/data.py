@@ -106,15 +106,18 @@ class EndPoint:
         file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
 
         if (not file_check(file_path)) or override_file:
+            print(get_full_url(self.base_url, params))
             r = requests.post(self.base_url, data=params, headers=request_headers)
-            print(str(r.status_code) + ': ' + str(self.base_url))
-            data = r.json()['resultSets'][self.index]
-            headers = data['headers']
-            rows = data['rowSet']
-            data_dict = [dict(zip(headers, row)) for row in rows]
-            df = pd.DataFrame(data_dict)
-            df.to_csv(file_path)
-            return df
+            if r.status_code == 200:
+                data = r.json()['resultSets'][self.index]
+                headers = data['headers']
+                rows = data['rowSet']
+                data_dict = [dict(zip(headers, row)) for row in rows]
+                df = pd.DataFrame(data_dict)
+                df.to_csv(file_path)
+                return df
+            else:
+                raise ConnectionError(str(r.status_code) + ': ' + str(r.reason))
         else:
             print(file_path)
             return pd.read_csv(file_path)
