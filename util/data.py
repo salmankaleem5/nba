@@ -8,6 +8,8 @@ from fuzzywuzzy import process
 
 if "Windows" in platform.platform():
     data_dir = 'C:\\data\\nba\\'
+elif "Darwin" in platform.platform():
+    data_dir = '/Users/patrick/data/nba'
 else:
     data_dir = '/home/patrick/Data/nba/'
 
@@ -326,6 +328,34 @@ class GameLogs(EndPoint):
         'Season': '2017-18',
         'SeasonType': 'Regular Season',
         'Sorter': 'DATE'
+    }
+
+
+class PlayerAdvancedGameLogs(EndPoint):
+    base_url = 'http://stats.nba.com/stats/playergamelogs'
+    default_params = {
+        'DateFrom': '',
+        'DateTo': '',
+        'GameSegment': '',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'MeasureType': 'Base',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'PaceAdjust': 'N',
+        'PerMode': 'Totals',
+        'Period': '0',
+        'PlusMinus': 'N',
+        'Rank': 'N',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'ShotClockRange': '',
+        'VsConference': '',
+        'VsDivision': '',
     }
 
 
