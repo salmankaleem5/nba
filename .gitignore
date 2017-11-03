@@ -48,3 +48,6 @@ Temporary Items
 .idea/workspace.xml
 .idea/nba.iml
 .idea/misc.xml
+.idea/misc.xml
+.idea/nba.iml
+*.pyc
