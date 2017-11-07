@@ -9,9 +9,9 @@ from fuzzywuzzy import process
 if "Windows" in platform.platform():
     data_dir = 'C:\\data\\nba\\'
 elif "Darwin" in platform.platform():
-    data_dir = '/Users/patrick/data/nba'
+    data_dir = '/Users/patrick/data/nba/'
 else:
-    data_dir = '/home/patrick/Data/nba/'
+    data_dir = '/home/patrick/data/nba/'
 
 request_headers = {
     'Host': 'stats.nba.com',
@@ -96,18 +96,19 @@ class EndPoint:
         return params
 
     def get_data(self, passed_params, override_file=False):
+        # Check that parameters passed are valid, and set values passed
+        check_params(passed_params)
         params = self.set_params(passed_params)
-        check_params(params)
 
+        # Create parameter hash string, get end point name from url, and create file path
         param_string = str(params).encode('utf-8')
         param_hash = hashlib.sha1(param_string).hexdigest()
         endpoint_name = self.base_url.split('/')[-1]
-
         file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
 
         if (not file_check(file_path)) or override_file:
+            print(print_full_url(self.base_url, params))
             r = requests.post(self.base_url, data=params, headers=request_headers)
-            print(str(r.status_code) + ': ' + str(self.base_url))
             data = r.json()['resultSets'][self.index]
             headers = data['headers']
             rows = data['rowSet']
@@ -356,6 +357,93 @@ class PlayerAdvancedGameLogs(EndPoint):
         'ShotClockRange': '',
         'VsConference': '',
         'VsDivision': '',
+    }
+
+
+class TeamAdvancedGameLogs(EndPoint):
+    base_url = 'http://stats.nba.com/stats/teamgamelogs'
+    default_params = {
+        'DateFrom': '',
+        'DateTo': '',
+        'GameSegment': '',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'MeasureType': 'Base',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'PaceAdjust': 'N',
+        'PerMode': 'Totals',
+        'Period': '0',
+        'PlusMinus': 'N',
+        'Rank': 'N',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'ShotClockRange': '',
+        'VsConference': '',
+        'VsDivision': '',
+    }
+
+
+class ShotChartDetail(EndPoint):
+    base_url = 'http://stats.nba.com/stats/shotchartdetail'
+    default_params = {
+        'AheadBehind': '',
+        'CFID': '',
+        'CFPARAMS': '',
+        'ClutchTime': '',
+        'Conference': '',
+        'ContextFilter': '',
+        'ContextMeasure': 'FGA',
+        'DateFrom': '',
+        'DateTo': '',
+        'Division': '',
+        'EndPeriod': '10',
+        'EndRange': '28800',
+        'GROUP_ID': '',
+        'GameEventID': '',
+        'GameID': '',
+        'GameSegment': '',
+        'GroupID': '',
+        'GroupMode': '',
+        'GroupQuantity': '5',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'Month': '0',
+        'OnOff': '',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'Period': '0',
+        'PlayerID': '0',
+        'PlayerID1': '',
+        'PlayerID2': '',
+        'PlayerID3': '',
+        'PlayerID4': '',
+        'PlayerID5': '',
+        'PlayerPosition': '',
+        'RangeType': '0',
+        'RookieYear': '',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'ShotClockRange': '',
+        'StartPeriod': '1',
+        'StartRange': '0',
+        'StarterBench': '',
+        'TeamID': '0',
+        'VsConference': '',
+        'VsDivision': '',
+        'VsPlayerID1': '',
+        'VsPlayerID2': '',
+        'VsPlayerID3': '',
+        'VsPlayerID4': '',
+        'VsPlayerID5': '',
+        'VsTeamID': ''
     }
 
 
