@@ -68,11 +68,19 @@ def check_params(params):
                 parse(value)
 
 
-def print_full_url(base, params):
+def construct_full_url(base, params):
     s = base + '?'
     for param in params:
         s += param + '=' + params[param] + '&'
     return s
+
+
+def json_to_pandas(json, index):
+    data = json['resultSets'][index]
+    headers = data['headers']
+    rows = data['rowSet']
+    data_dict = [dict(zip(headers, row)) for row in rows]
+    return pd.DataFrame(data_dict)
 
 
 class EndPoint:
@@ -95,25 +103,22 @@ class EndPoint:
                     str(key) + " is not a valid parameter for this endpoint. Did you mean: " + str(suggestions))
         return params
 
+    def determine_filepath(self, params):
+        param_string = ''
+        for p in sorted(params):
+            param_string += ',' + p + '=' + params[p]
+        param_hash = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
+        return data_dir + self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
+
     def get_data(self, passed_params, override_file=False):
-        # Check that parameters passed are valid, and set values passed
         check_params(passed_params)
         params = self.set_params(passed_params)
-
-        # Create parameter hash string, get end point name from url, and create file path
-        param_string = str(params).encode('utf-8')
-        param_hash = hashlib.sha1(param_string).hexdigest()
-        endpoint_name = self.base_url.split('/')[-1]
-        file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
+        file_path = self.determine_filepath(params)
 
         if (not file_check(file_path)) or override_file:
-            print(print_full_url(self.base_url, params))
+            print(construct_full_url(self.base_url, params))
             r = requests.post(self.base_url, data=params, headers=request_headers)
-            data = r.json()['resultSets'][self.index]
-            headers = data['headers']
-            rows = data['rowSet']
-            data_dict = [dict(zip(headers, row)) for row in rows]
-            df = pd.DataFrame(data_dict)
+            df = json_to_pandas(r.json(), self.index)
             df.to_csv(file_path)
             return df
         else:
@@ -541,7 +546,7 @@ class SynergyPlayerStats(EndPoint):
 
         if (not file_check(file_path)) or override_file:
             r = requests.get(self.base_url, data=params, headers=request_headers, allow_redirects=True)
-            print_full_url(self.base_url, params)
+            construct_full_url(self.base_url, params)
             print(r.headers)
             data = r.json()['results']
             headers = data[0].keys()
