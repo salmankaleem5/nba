@@ -50,5 +50,5 @@ ax.plot(bins)
 
 plt.show()
 
-# fig = ff.create_distplot(hist_data, team_labels, bin_size=1)
-# py.plot(fig, filename='Height Dist')
+fig = ff.create_distplot(hist_data, team_labels, bin_size=1)
+py.plot(fig, filename='Height Dist')
