@@ -103,7 +103,7 @@ class EndPoint:
                     str(key) + " is not a valid parameter for this endpoint. Did you mean: " + str(suggestions))
         return params
 
-    def determine_filepath(self, params):
+    def determine_file_path(self, params):
         param_string = ''
         for p in sorted(params):
             param_string += ',' + p + '=' + params[p]
@@ -113,11 +113,13 @@ class EndPoint:
     def get_data(self, passed_params, override_file=False):
         check_params(passed_params)
         params = self.set_params(passed_params)
-        file_path = self.determine_filepath(params)
+        file_path = self.determine_file_path(params)
 
         if (not file_check(file_path)) or override_file:
             print(construct_full_url(self.base_url, params))
             r = requests.post(self.base_url, data=params, headers=request_headers)
+            if r.status_code != 200:
+                raise ConnectionError(str(r.status_code) + ': ' + str(r.reason))
             df = json_to_pandas(r.json(), self.index)
             df.to_csv(file_path)
             return df
