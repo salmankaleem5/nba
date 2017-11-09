@@ -9,9 +9,9 @@ from fuzzywuzzy import process
 if "Windows" in platform.platform():
     data_dir = 'C:\\data\\nba\\'
 elif "Darwin" in platform.platform():
-    data_dir = '/Users/patrick/data/nba'
+    data_dir = '/Users/patrick/data/nba/'
 else:
-    data_dir = '/home/patrick/Data/nba/'
+    data_dir = '/home/patrick/data/nba/'
 
 request_headers = {
     'Host': 'stats.nba.com',
@@ -68,11 +68,19 @@ def check_params(params):
                 parse(value)
 
 
-def print_full_url(base, params):
+def construct_full_url(base, params):
     s = base + '?'
     for param in params:
         s += param + '=' + params[param] + '&'
     return s
+
+
+def json_to_pandas(json, index):
+    data = json['resultSets'][index]
+    headers = data['headers']
+    rows = data['rowSet']
+    data_dict = [dict(zip(headers, row)) for row in rows]
+    return pd.DataFrame(data_dict)
 
 
 class EndPoint:
@@ -95,24 +103,24 @@ class EndPoint:
                     str(key) + " is not a valid parameter for this endpoint. Did you mean: " + str(suggestions))
         return params
 
+    def determine_file_path(self, params):
+        param_string = ''
+        for p in sorted(params):
+            param_string += ',' + p + '=' + params[p]
+        param_hash = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
+        return data_dir + self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
+
     def get_data(self, passed_params, override_file=False):
+        check_params(passed_params)
         params = self.set_params(passed_params)
-        check_params(params)
-
-        param_string = str(params).encode('utf-8')
-        param_hash = hashlib.sha1(param_string).hexdigest()
-        endpoint_name = self.base_url.split('/')[-1]
-
-        file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
+        file_path = self.determine_file_path(params)
 
         if (not file_check(file_path)) or override_file:
+            print(construct_full_url(self.base_url, params))
             r = requests.post(self.base_url, data=params, headers=request_headers)
-            print(str(r.status_code) + ': ' + str(self.base_url))
-            data = r.json()['resultSets'][self.index]
-            headers = data['headers']
-            rows = data['rowSet']
-            data_dict = [dict(zip(headers, row)) for row in rows]
-            df = pd.DataFrame(data_dict)
+            if r.status_code != 200:
+                raise ConnectionError(str(r.status_code) + ': ' + str(r.reason))
+            df = json_to_pandas(r.json(), self.index)
             df.to_csv(file_path)
             return df
         else:
@@ -359,6 +367,93 @@ class PlayerAdvancedGameLogs(EndPoint):
     }
 
 
+class TeamAdvancedGameLogs(EndPoint):
+    base_url = 'http://stats.nba.com/stats/teamgamelogs'
+    default_params = {
+        'DateFrom': '',
+        'DateTo': '',
+        'GameSegment': '',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'MeasureType': 'Base',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'PaceAdjust': 'N',
+        'PerMode': 'Totals',
+        'Period': '0',
+        'PlusMinus': 'N',
+        'Rank': 'N',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'ShotClockRange': '',
+        'VsConference': '',
+        'VsDivision': '',
+    }
+
+
+class ShotChartDetail(EndPoint):
+    base_url = 'http://stats.nba.com/stats/shotchartdetail'
+    default_params = {
+        'AheadBehind': '',
+        'CFID': '',
+        'CFPARAMS': '',
+        'ClutchTime': '',
+        'Conference': '',
+        'ContextFilter': '',
+        'ContextMeasure': 'FGA',
+        'DateFrom': '',
+        'DateTo': '',
+        'Division': '',
+        'EndPeriod': '10',
+        'EndRange': '28800',
+        'GROUP_ID': '',
+        'GameEventID': '',
+        'GameID': '',
+        'GameSegment': '',
+        'GroupID': '',
+        'GroupMode': '',
+        'GroupQuantity': '5',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'Month': '0',
+        'OnOff': '',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'Period': '0',
+        'PlayerID': '0',
+        'PlayerID1': '',
+        'PlayerID2': '',
+        'PlayerID3': '',
+        'PlayerID4': '',
+        'PlayerID5': '',
+        'PlayerPosition': '',
+        'RangeType': '0',
+        'RookieYear': '',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'ShotClockRange': '',
+        'StartPeriod': '1',
+        'StartRange': '0',
+        'StarterBench': '',
+        'TeamID': '0',
+        'VsConference': '',
+        'VsDivision': '',
+        'VsPlayerID1': '',
+        'VsPlayerID2': '',
+        'VsPlayerID3': '',
+        'VsPlayerID4': '',
+        'VsPlayerID5': '',
+        'VsTeamID': ''
+    }
+
+
 class OnOffSummary(EndPoint):
     base_url = 'http://stats.nba.com/stats/teamplayeronoffsummary'
     default_params = {
@@ -453,7 +548,7 @@ class SynergyPlayerStats(EndPoint):
 
         if (not file_check(file_path)) or override_file:
             r = requests.get(self.base_url, data=params, headers=request_headers, allow_redirects=True)
-            print_full_url(self.base_url, params)
+            construct_full_url(self.base_url, params)
             print(r.headers)
             data = r.json()['results']
             headers = data[0].keys()
