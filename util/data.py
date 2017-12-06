@@ -71,7 +71,7 @@ def check_params(params):
 def construct_full_url(base, params):
     s = base + '?'
     for param in params:
-        s += param + '=' + params[param] + '&'
+        s += str(param) + '=' + str(params[param]).replace(' ', '+') + '&'
     return s
 
 
@@ -106,7 +106,7 @@ class EndPoint:
     def determine_file_path(self, params):
         param_string = ''
         for p in sorted(params):
-            param_string += ',' + p + '=' + params[p]
+            param_string += ',' + str(p) + '=' + str(params[p])
         param_hash = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
         return data_dir + self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
 
@@ -452,6 +452,31 @@ class ShotChartDetail(EndPoint):
         'VsPlayerID5': '',
         'VsTeamID': ''
     }
+
+
+class PlayByPlay(EndPoint):
+    base_url = 'http://stats.nba.com/stats/playbyplayv2'
+    default_params = {
+        'EndPeriod': '10',
+        'EndRange': '55800',
+        'GameID': '0021700216',
+        'RangeType': '2',
+        'Season': '2017-18',
+        'SeasonType': 'Regular Season',
+        'StartPeriod': '1',
+        'StartRange': '0'
+    }
+
+    def determine_file_path(self, params):
+        return data_dir + 'playbyplayv2/' + params['Season'] + '/' + params['GameID'] + '.csv'
+
+    def update_pbp_data(self, season='2017-18', season_type='Regular Season'):
+        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type})
+        games = log.GAME_ID.unique()
+        for g in games:
+            if len(str(g)) < 10:
+                g = '00' + str(g)
+            self.get_data({'GameID': g, 'Season': season, 'SeasonType': season_type})
 
 
 class OnOffSummary(EndPoint):
