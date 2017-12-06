@@ -73,7 +73,7 @@ def check_params(params):
 def construct_full_url(base, params):
     s = base + '?'
     for param in params:
-        s += str(param) + '=' + str(params[param]) + '&'
+        s += str(param) + '=' + str(params[param]).replace(' ', '+') + '&'
     return s
 
 
@@ -468,6 +468,9 @@ class PlayByPlay(EndPoint):
         'StartPeriod': '1',
         'StartRange': '0'
     }
+
+    def determine_file_path(self, params):
+        return data_dir + 'playbyplayv2/' + params['Season'] + '/' + params['GameID'] + '.csv'
 
     def update_pbp_data(self, season='2017-18', season_type='Regular Season'):
         log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type})
