@@ -506,14 +506,10 @@ class OnOffSummary(EndPoint):
     }
 
     def get_data(self, passed_params, override_file=False):
+        check_params(passed_params)
         params = self.set_params(passed_params)
-        check_params(params)
 
-        param_string = str(params).encode('utf-8')
-        param_hash = hashlib.sha1(param_string).hexdigest()
-        endpoint_name = self.base_url.split('/')[-1]
-
-        file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
+        file_path = self.determine_file_path(params)
 
         if (not file_check(file_path)) or override_file:
             r = requests.post(self.base_url, data=params, headers=request_headers)
@@ -555,33 +551,23 @@ class SynergyPlayerStats(EndPoint):
         'Accept': 'application/json, text/plain, */*',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'http://stats.nba.com/players/roll-man/',
+        'Referer': 'http://stats.nba.com',
         'Origin': 'http://stats.nba.com',
         'DNT': '1',
         'Connection': 'keep-alive'
     }
 
     def get_data(self, passed_params, override_file=False):
+        check_params(passed_params)
         params = self.set_params(passed_params)
-        check_params(params)
-
-        param_string = str(params).encode('utf-8')
-        param_hash = hashlib.sha1(param_string).hexdigest()
-        endpoint_name = self.base_url.split('/')[-1]
-
-        file_path = data_dir + endpoint_name + '/' + str(param_hash) + '.csv'
+        file_path = self.determine_file_path(params)
 
         if (not file_check(file_path)) or override_file:
-            r = requests.get(self.base_url, data=params, headers=request_headers, allow_redirects=True)
-            construct_full_url(self.base_url, params)
-            print(r.headers)
-            data = r.json()['results']
-            headers = data[0].keys()
-            rows = [0] * len(data)
-            for i in range(len(data)):
-                rows[i] = data[i].values()
-            data_dict = [dict(zip(headers, row)) for row in rows]
-            df = pd.DataFrame(data_dict)
+            print(construct_full_url(self.base_url, params))
+            r = requests.post(self.base_url, data=params, headers=synergy_request_headers)
+            if r.status_code != 200:
+                raise ConnectionError(str(r.status_code) + ': ' + str(r.reason))
+            df = json_to_pandas(r.json(), self.index)
             df.to_csv(file_path)
             return df
         else:
