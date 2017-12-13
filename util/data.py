@@ -473,7 +473,7 @@ class PlayByPlay(EndPoint):
         return data_dir + 'playbyplayv2/' + params['Season'] + '/' + params['GameID'] + '.csv'
 
     def update_pbp_data(self, season='2017-18', season_type='Regular Season'):
-        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type})
+        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
         games = log.GAME_ID.unique()
         for g in games:
             if len(str(g)) < 10:
@@ -572,7 +572,7 @@ def merge_shot_pbp(season, season_type='Regular Season'):
     shot_endpoint = ShotChartDetail()
 
     pbp_df = pd.DataFrame()
-    log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=False)
+    log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
     games = log.GAME_ID.unique()
     for g in games:
         if len(str(g)) < 10:
@@ -580,7 +580,8 @@ def merge_shot_pbp(season, season_type='Regular Season'):
         pbp_df = pbp_df.append(
             play_by_play_endpoint.get_data({'GameID': g, 'Season': season, 'SeasonType': season_type}))
 
-    shots_df = shot_endpoint.get_data({'Season': season, 'SeasonType': season_type}, override_file=False)
+    pbp_df['GAME_ID'] = '00' + pbp_df['GAME_ID'].astype(str)
+    shots_df = shot_endpoint.get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
     merge_df = pd.merge(pbp_df, shots_df, left_on=['EVENTNUM', 'GAME_ID', 'PERIOD'],
                         right_on=['GAME_EVENT_ID', 'GAME_ID', 'PERIOD'])
 
