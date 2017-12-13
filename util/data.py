@@ -3,8 +3,10 @@ import pandas as pd
 import hashlib
 import os
 import platform
+import datetime
 from dateutil.parser import parse
 from fuzzywuzzy import process
+from bs4 import BeautifulSoup
 
 if "Windows" in platform.platform():
     data_dir = 'C:\\data\\nba\\'
@@ -471,7 +473,7 @@ class PlayByPlay(EndPoint):
         return data_dir + 'playbyplayv2/' + params['Season'] + '/' + params['GameID'] + '.csv'
 
     def update_pbp_data(self, season='2017-18', season_type='Regular Season'):
-        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type})
+        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
         games = log.GAME_ID.unique()
         for g in games:
             if len(str(g)) < 10:
@@ -535,6 +537,58 @@ class OnOffSummary(EndPoint):
         else:
             print(file_path)
             return pd.read_csv(file_path)
+
+
+def get_rpm():
+    file_path = data_dir + 'RPM/' + str(datetime.date.today()) + '.csv'
+
+    if not file_check(file_path):
+        rpm_url = 'http://www.espn.com/nba/statistics/rpm/_/page/{page}/sort/RPM'
+        headers = []
+        data = []
+        for p in range(1, 12):
+            r = requests.post(rpm_url.format(page=p))
+            html = r.content
+            soup = BeautifulSoup(html)
+            if p == 1:
+                headers = [th.getText() for th in soup.find_all('tr')[0].find_all('td')]
+            rows = soup.find_all('tr')[1:]
+            data.extend([[td.getText() for td in rows[i].find_all('td')] for i in range(len(rows))])
+
+        df = pd.DataFrame(data, columns=headers)
+        df.NAME = df.NAME.apply(lambda x: x.split(',')[0])
+        df.to_csv(file_path)
+        return df
+    else:
+        return pd.read_csv(file_path)
+
+
+def merge_shot_pbp(season, season_type='Regular Season'):
+    play_by_play_endpoint = PlayByPlay()
+    shot_endpoint = ShotChartDetail()
+
+    pbp_df = pd.DataFrame()
+    log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
+    games = log.GAME_ID.unique()
+    for g in games:
+        if len(str(g)) < 10:
+            g = '00' + str(g)
+        pbp_df = pbp_df.append(
+            play_by_play_endpoint.get_data({'GameID': g, 'Season': season, 'SeasonType': season_type}))
+
+    pbp_df['GAME_ID'] = '00' + pbp_df['GAME_ID'].astype(str)
+    shots_df = shot_endpoint.get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
+    merge_df = pd.merge(pbp_df, shots_df, left_on=['EVENTNUM', 'GAME_ID', 'PERIOD'],
+                        right_on=['GAME_EVENT_ID', 'GAME_ID', 'PERIOD'])
+
+    file_path = data_dir + 'merged_shot_pbp/' + season + '.csv'
+    file_check(file_path)
+    merge_df.to_csv(file_path)
+
+
+def get_merged_shot_pbp_data(season):
+    file_path = data_dir + 'merged_shot_pbp/' + season + '.csv'
+    return pd.read_csv(file_path)
 
 
 class SynergyPlayerStats(EndPoint):

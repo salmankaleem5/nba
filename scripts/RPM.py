@@ -24,16 +24,17 @@ for p in range(1, 12):
 df = pd.DataFrame(data, columns=headers)
 df.RPM = df.RPM.astype(float)
 
-# df.to_csv(data_dir + 'RPM.csv')
+df.to_csv(data_dir + 'RPM.csv')
 
-# traces = []
-# for t in df.TEAM.unique():
-#     team_df = df[df.TEAM == t]
-#     traces.append(go.Scatter(
-#         x=team_df.TEAM,
-#         y=team_df.RPM,
-#         mode='markers'
-#     ))
-#
-# traces.sort(key=lambda x: -x.y.mean())
-# py.plot(traces, filename='RPM')
+traces = []
+for t in df.TEAM.unique():
+    team_df = df[df.TEAM == t]
+    traces.append(go.Scatter(
+        x=team_df.TEAM,
+        y=team_df.RPM,
+        text=team_df.NAME,
+        mode='markers'
+    ))
+
+traces.sort(key=lambda x: -x.y.mean())
+py.plot(traces, filename='RPM')
