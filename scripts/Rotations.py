@@ -75,6 +75,8 @@ def get_lineups_for_team(team_df):
     for p in range(1, 5):
         period_df = team_df[team_df['PERIOD'] == p]
         initial_lineup = get_initial_lineup(period_df)
+        if p == 3:
+            print(initial_lineup)
         lineups.append(initial_lineup)
 
         current_players = initial_lineup['players']
@@ -183,7 +185,7 @@ def get_score_data_for_games(games, team_abbreviation):
     for m in range(1, 49):
         off_data.append({'player': 'offense', 'minute': m, 'value': 0, 'pindex': -2})
         def_data.append({'player': 'defense', 'minute': m, 'value': 0, 'pindex': -3})
-        net_data.append({'player': 'net', 'minute': m, 'value': 0, 'pindex': -1})
+        net_data.append({'player': 'net', 'minute': m, 'value': 0, 'score': 0, 'pindex': -1})
 
     for game in games:
         pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game}, override_file=False)
@@ -213,7 +215,7 @@ def get_score_data_for_games(games, team_abbreviation):
                 new_team_score = minute_df.iloc[-1]['TEAM_SCORE']
                 new_opp_score = minute_df.iloc[-1]['OPP_SCORE']
 
-                if new_team_score > m * 10:
+                if new_team_score > ((m + 1) * 10):
                     break
 
                 if m == 47:
@@ -228,6 +230,7 @@ def get_score_data_for_games(games, team_abbreviation):
                 off_data[m]['value'] += team_points
                 def_data[m]['value'] += opp_points
                 net_data[m]['value'] += team_points - opp_points
+                net_data[m]['score'] = new_team_score - new_opp_score
 
                 previous_team_score = new_team_score
                 previous_opp_score = new_opp_score
@@ -248,7 +251,7 @@ def get_viz_data_for_team(team_abbreviation):
 
     season_player_stints_df = pd.DataFrame()
     games = log.GAME_ID.tolist()
-    games = ['0021700410']
+    # games = ['0021700427', '0021700410', '0021700389', '0021700325', '0021700309', '0021700284', '0021700275', '0021700262', '0021700248']
     for game in games:
         game = str(game)
         if len(game) < 10:
@@ -262,7 +265,7 @@ def get_viz_data_for_team(team_abbreviation):
 
     rotation_data = transform_stints_for_viz(season_player_stints_df)
 
-    players = general_ep.get_data({'Season': season, 'MeasureType': 'Base', 'PerMode': 'Totals', 'LastNGames': '1'})
+    players = general_ep.get_data({'Season': season, 'MeasureType': 'Base', 'PerMode': 'Totals'})
     players = players[players['TEAM_ABBREVIATION'] == team_abbreviation].sort_values(by='MIN', ascending=False)
     players = players['PLAYER_NAME'].tolist()
 
