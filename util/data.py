@@ -40,7 +40,11 @@ param_list = {
     'PlayerOrTeam': {'type': 'Enum', 'choices': ['Player', 'Team', 'P', 'T']},
     'PtMeasureType': {'type': 'Enum',
                       'choices': ['Drives', 'Defense', 'CatchShoot', 'Passing', 'Possessions', 'PullUpShot',
-                                  'Rebounding', 'Efficiency', 'SpeedDistance', 'ElbowTouch', 'PostTouch', 'PaintTouch']}
+                                  'Rebounding', 'Efficiency', 'SpeedDistance', 'ElbowTouch', 'PostTouch',
+                                  'PaintTouch']},
+    'CloseDefDistRange': {'type': 'Enum',
+                          'choices': ['0-2 Feet - Very Tight', '2-4 Feet - Tight', '4-6 Feet - Open',
+                                      '6+ Feet - Wide Open']}
 }
 
 
@@ -251,6 +255,51 @@ class TrackingStats(EndPoint):
         'VsDivision ': '',
         'Weight': ''
     }
+
+
+class ShotTracking(EndPoint):
+    base_url = 'http://stats.nba.com/stats/leaguedashteamptshot'
+    default_params = {'CloseDefDistRange': '0-2 Feet-Very Tight',
+                      'College': '',
+                      'Conference': '',
+                      'Country': '',
+                      'DateFrom': '',
+                      'DateTo': '',
+                      'Division': '',
+                      'DraftPick': '',
+                      'DraftYear': '',
+                      'DribbleRange': '',
+                      'GameScope': '',
+                      'GameSegment': '',
+                      'GeneralRange': '',
+                      'Height': '',
+                      'LastNGames': '0',
+                      'LeagueID': '00',
+                      'Location': '',
+                      'MeasureType': 'Base',
+                      'Month': '0',
+                      'OpponentTeamID': '0',
+                      'Outcome': '',
+                      'PORound': '0',
+                      'PaceAdjust': 'N',
+                      'PerMode': 'PerGame',
+                      'Period': '0',
+                      'PlayerExperience': '',
+                      'PlayerPosition': '',
+                      'PlusMinus': 'N',
+                      'Rank': 'N',
+                      'Season': '2016-17',
+                      'SeasonSegment': '',
+                      'SeasonType': 'Regular Season',
+                      'ShotClockRange': '',
+                      'ShotDistRange': '',
+                      'StarterBench': '',
+                      'TeamID': '0',
+                      'TouchTimeRange': '',
+                      'VsConference': '',
+                      'VsDivision': '',
+                      'Weight': ''
+                      }
 
 
 class HustleStats(EndPoint):
