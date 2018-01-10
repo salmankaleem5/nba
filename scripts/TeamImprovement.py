@@ -1,4 +1,4 @@
-from util.data import GeneralTeamStats
+from util.nba_stats import GeneralTeamStats
 from util.reddit import print_reddit_table
 import pandas as pd
 

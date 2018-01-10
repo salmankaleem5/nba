@@ -1,18 +1,12 @@
-from util.data import PlayByPlay, TeamAdvancedGameLogs, GeneralPlayerStats, data_dir, file_check
+from util.nba_stats import PlayByPlay, TeamAdvancedGameLogs
+from util.data import file_check
 import sys
 import pandas as pd
 
+from util.format import convert_time
+
 season = '2017-18'
 file_path = '/home/patrick/Code/Patrick-Fenerty.github.io/data.csv'
-
-
-# Convert PCTIMESTRING of the format MM:SS along with the quarter to absolute seconds into the game
-# Returns pandas column
-def convert_time(time, quarter):
-    quarter.map(int)
-    mins = time.map(lambda x: x.split(':')[0]).map(int)
-    seconds = time.map(lambda x: x.split(':')[1]).map(int)
-    return ((quarter - 1) * 12 * 60) + ((12 * 60) - (mins * 60) - seconds)
 
 
 # From the pbp_df and a team abbreviation, determines if the team is home or visitor
@@ -56,6 +50,7 @@ def get_initial_lineup(df):
     others = df.PLAYER1_NAME.unique()
     others = [str(i) for i in others]
     others = list(filter(lambda x: x != 'nan', others))
+    others = list(filter(lambda x: x != 'None', others))
     others = list(filter(lambda x: x not in subbed_in, others))
     for p in others:
         if p not in players:
@@ -75,8 +70,6 @@ def get_lineups_for_team(team_df):
     for p in range(1, 5):
         period_df = team_df[team_df['PERIOD'] == p]
         initial_lineup = get_initial_lineup(period_df)
-        if p == 3:
-            print(initial_lineup)
         lineups.append(initial_lineup)
 
         current_players = initial_lineup['players']
@@ -243,15 +236,14 @@ def get_score_data_for_games(games, team_abbreviation):
 
 
 def get_viz_data_for_team(team_abbreviation):
-    log = TeamAdvancedGameLogs().get_data({'Season': season}, override_file=True)
+    log = TeamAdvancedGameLogs().get_data({'Season': season, 'DateFrom': '12/29/2017'}, override_file=True)
     log = log[log['TEAM_ABBREVIATION'] == team_abbreviation]
 
     pbp_ep = PlayByPlay()
-    general_ep = GeneralPlayerStats()
 
     season_player_stints_df = pd.DataFrame()
     games = log.GAME_ID.tolist()
-    # games = ['0021700427', '0021700410', '0021700389', '0021700325', '0021700309', '0021700284', '0021700275', '0021700262', '0021700248']
+    # games = ['0021700511']
     for game in games:
         game = str(game)
         if len(game) < 10:
@@ -265,12 +257,9 @@ def get_viz_data_for_team(team_abbreviation):
 
     rotation_data = transform_stints_for_viz(season_player_stints_df)
 
-    players = general_ep.get_data({'Season': season, 'MeasureType': 'Base', 'PerMode': 'Totals'})
-    players = players[players['TEAM_ABBREVIATION'] == team_abbreviation].sort_values(by='MIN', ascending=False)
-    players = players['PLAYER_NAME'].tolist()
-
-    # players = ["DeMarcus Cousins", "Anthony Davis", "Rajon Rondo", "Jrue Holiday", "E'Twaun Moore", "Jameer Nelson",
-    #            "Darius Miller", "Dante Cunningham", "Omer Asik"]
+    players = season_player_stints_df['player'].unique()
+    players = sorted(players,
+                     key=lambda x: -season_player_stints_df[season_player_stints_df['player'] == x]['time'].sum())
 
     index = 1
     rotation_data['pindex'] = 0

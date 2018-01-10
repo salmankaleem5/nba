@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import requests
 
-from util.data import data_dir
+from util.nba_stats import data_dir
 
 import plotly.plotly as py
 import plotly.graph_objs as go

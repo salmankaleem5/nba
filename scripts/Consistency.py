@@ -1,4 +1,5 @@
-from util.data import PlayerAdvancedGameLogs, GeneralPlayerStats, get_year_string
+from util.nba_stats import PlayerAdvancedGameLogs, GeneralPlayerStats
+from util.format import get_year_string
 from util.reddit import print_reddit_table
 import pandas as pd
 import plotly.plotly as py
@@ -55,6 +56,7 @@ def get_trace_for_year(season, num_games_filter=50, num_players_filter=10, min_p
             )
         )
     # traces.sort(key=lambda x: (x.y.quantile(0.75) - x.y.quantile(0.25)))
+    traces.sort(key=lambda x: (x.y.std() / x.y.mean()))
     return traces
 
 
@@ -98,12 +100,14 @@ def build_consistency_df_from_traces(traces):
     return pd.DataFrame(consistency_data)
 
 
-t = get_traces_for_multiple_years(range(1996, 2018))
+num_players = 20
+# t = get_traces_for_multiple_years(range(1996, 2018))
+t = get_trace_for_year('2017-18', num_games_filter=20, num_players_filter=num_players)
 df = build_consistency_df_from_traces(t)
 print_reddit_table(df, df.columns)
-a = t[-11:]
+a = t[int(-((num_players/2) + 1)):]
 a = a[::-1]
-b = t[0:10]
+b = t[0:int(num_players/2)]
 b = b[::-1]
 c = a+b
 plot_traces(c)

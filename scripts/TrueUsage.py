@@ -1,4 +1,5 @@
-from util.data import GeneralPlayerStats, TrackingStats, get_year_string
+from util.nba_stats import GeneralPlayerStats, TrackingStats
+from util.format import get_year_string
 from util.reddit import print_reddit_table
 import pandas as pd
 
