@@ -2,37 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9578fcd4-9403-4631-b9a5-05328979a216" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/oneTimeScripts/RAAssistedScoring.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/oneTimeScripts/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/scripts/Assist+/Assist+.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/scripts/Assist+/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/util/espn.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/util/format.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/util/nba_stats.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/util/util.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/nba.iml" afterPath="$PROJECT_DIR$/.idea/nba.iml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/scripts/Assist+.py" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/scripts/3&amp;D.py" afterPath="$PROJECT_DIR$/scripts/3&amp;D.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/Assist+.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scripts/AssistValue.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scripts/Consistency.py" afterPath="$PROJECT_DIR$/scripts/Consistency.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/DefensiveRatings.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scripts/HeightDist.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scripts/Jrue.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scripts/OffensiveRebounding.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scripts/PythagoreanExpectation.py" afterPath="$PROJECT_DIR$/scripts/PythagoreanExpectation.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/RPM.py" afterPath="$PROJECT_DIR$/scripts/RPM.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/RollingAverage.py" afterPath="$PROJECT_DIR$/scripts/RollingAverage.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/Rotations.py" afterPath="$PROJECT_DIR$/scripts/Rotations.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/TeamImprovement.py" afterPath="$PROJECT_DIR$/scripts/TeamImprovement.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/TrueUsage.py" afterPath="$PROJECT_DIR$/scripts/TrueUsage.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/onoffdiff.py" afterPath="$PROJECT_DIR$/scripts/OnOffDiff.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/oreb.csv" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scripts/test.py" afterPath="$PROJECT_DIR$/scripts/test.py" />
-      <change beforePath="$PROJECT_DIR$/scripts/ts_pct_accuracy.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/util/data.py" afterPath="$PROJECT_DIR$/util/data.py" />
-      <change beforePath="$PROJECT_DIR$/util/reddit.py" afterPath="$PROJECT_DIR$/util/reddit.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/Assist+/Assist+.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/scripts/Assist+/__init__.py" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -50,7 +23,7 @@
         <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="663">
-              <caret line="223" column="28" lean-forward="true" selection-start-line="223" selection-start-column="28" selection-end-line="223" selection-end-column="28" />
+              <caret line="223" column="28" lean-forward="false" selection-start-line="223" selection-start-column="28" selection-end-line="223" selection-end-column="28" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -58,26 +31,56 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/util/util.py">
+      <file leaf-file-name="Assist+.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scripts/Assist+.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="787">
-              <caret line="54" column="37" lean-forward="true" selection-start-line="54" selection-start-column="37" selection-end-line="54" selection-end-column="37" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <element signature="e#0#19#0" expanded="true" />
+                <element signature="e#0#78#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Assist+.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scripts/Assist+/Assist+.py">
+      <file leaf-file-name="data.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/util/data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1440">
-              <caret line="96" column="20" lean-forward="false" selection-start-line="96" selection-start-column="20" selection-end-line="96" selection-end-column="20" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <element signature="e#0#60#0" expanded="true" />
+                <element signature="e#0#9#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Rotations.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/Rotations.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" column="14" lean-forward="false" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="espn.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/util/espn.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="2" column="29" lean-forward="false" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="format.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/util/format.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -129,10 +132,8 @@
         <option value="$PROJECT_DIR$/scripts/test.py" />
         <option value="$PROJECT_DIR$/scripts/ShotProfile.py" />
         <option value="$PROJECT_DIR$/scripts/PythagoreanExpectation.py" />
-        <option value="$PROJECT_DIR$/scripts/Rotations.py" />
         <option value="$PROJECT_DIR$/util/end_points.py" />
         <option value="$PROJECT_DIR$/util/espn.py" />
-        <option value="$PROJECT_DIR$/util/data.py" />
         <option value="$PROJECT_DIR$/util/format.py" />
         <option value="$PROJECT_DIR$/util/reddit.py" />
         <option value="$PROJECT_DIR$/util/nba_stats.py" />
@@ -140,6 +141,8 @@
         <option value="$PROJECT_DIR$/oneTimeScripts/RAAssistedScoring.py" />
         <option value="$PROJECT_DIR$/util/util.py" />
         <option value="$PROJECT_DIR$/scripts/Assist+.py" />
+        <option value="$PROJECT_DIR$/util/data.py" />
+        <option value="$PROJECT_DIR$/scripts/Rotations.py" />
         <option value="$PROJECT_DIR$/scripts/Assist+/Assist+.py" />
       </list>
     </option>
@@ -188,12 +191,6 @@
             <path>
               <item name="nba" type="b2602c69:ProjectViewProjectNode" />
               <item name="nba" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
-              <item name="Assist+" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="nba" type="b2602c69:ProjectViewProjectNode" />
-              <item name="nba" type="462c0819:PsiDirectoryNode" />
               <item name="util" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -209,6 +206,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
       <recent name="$PROJECT_DIR$/scripts/Assist+" />
       <recent name="$PROJECT_DIR$/Assist+" />
       <recent name="$PROJECT_DIR$/oneTimeScripts" />
@@ -239,7 +237,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="nba" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/Assist+/Assist+.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/Assist+.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -543,12 +541,32 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="111" />
+      <option name="time" value="115" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>t.isnull()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>t</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>t.isnan()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>t == 'nan'</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>corr['DREB_PCT']</expression-string>
         <language-id>Python</language-id>
@@ -809,14 +827,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Rotations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="8" column="67" lean-forward="false" selection-start-line="8" selection-start-column="67" selection-end-line="8" selection-end-column="67" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/AssistValue.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-555">
@@ -830,42 +840,6 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/espn.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="29" lean-forward="false" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#42#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/format.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/reddit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="4" lean-forward="false" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -900,29 +874,71 @@
     <entry file="file://$PROJECT_DIR$/util/util.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="787">
-          <caret line="54" column="37" lean-forward="true" selection-start-line="54" selection-start-column="37" selection-end-line="54" selection-end-column="37" />
+          <caret line="54" column="37" lean-forward="false" selection-start-line="54" selection-start-column="37" selection-end-line="54" selection-end-column="37" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/util/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/Rotations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="14" lean-forward="false" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/espn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="2" column="29" lean-forward="false" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/format.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/reddit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="663">
-          <caret line="223" column="28" lean-forward="true" selection-start-line="223" selection-start-column="28" selection-end-line="223" selection-end-column="28" />
+          <caret line="223" column="28" lean-forward="false" selection-start-line="223" selection-start-column="28" selection-end-line="223" selection-end-column="28" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Assist+/Assist+.py">
+    <entry file="file://$PROJECT_DIR$/scripts/Assist+.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1440">
-          <caret line="96" column="20" lean-forward="false" selection-start-line="96" selection-start-column="20" selection-end-line="96" selection-end-column="20" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#60#0" expanded="true" />
+            <element signature="e#0#78#0" expanded="true" />
           </folding>
         </state>
       </provider>
