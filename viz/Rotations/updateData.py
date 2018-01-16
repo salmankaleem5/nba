@@ -6,7 +6,7 @@ import pandas as pd
 from util.format import convert_time
 
 season = '2017-18'
-file_path = '/home/patrick/Code/Patrick-Fenerty.github.io/data.csv'
+file_path = './data.csv'
 
 
 # From the pbp_df and a team abbreviation, determines if the team is home or visitor
