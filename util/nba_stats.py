@@ -231,6 +231,32 @@ class TrackingStats(EndPoint):
     }
 
 
+class PlayerPassDashboard(EndPoint):
+    base_url = 'http://stats.nba.com/stats/playerdashptpass'
+    default_params = {
+        'DateFrom': '',
+        'DateTo': '',
+        'GameSegment': '',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'PerMode': 'Totals',
+        'Period': '0',
+        'PlayerID': '',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'TeamID': '',
+        'VsConference': '',
+        'VsDivision': '',
+    }
+    index = 0
+
+
 class HustleStats(EndPoint):
     base_url = 'https://stats.nba.com/stats/leaguehustlestatsplayer'
     default_params = {

@@ -8,7 +8,7 @@ import plotly.graph_objs as go
 
 stat_to_graph = 'PTS'
 
-data_override = False
+data_override = True
 normalize_for_possessions = False
 
 logs = PlayerAdvancedGameLogs()
@@ -55,8 +55,8 @@ def get_trace_for_year(season, num_games_filter=50, num_players_filter=10, min_p
                 )
             )
         )
-    # traces.sort(key=lambda x: (x.y.quantile(0.75) - x.y.quantile(0.25)))
-    traces.sort(key=lambda x: (x.y.std() / x.y.mean()))
+    traces.sort(key=lambda x: (x.y.quantile(0.75) - x.y.quantile(0.25)))
+    # traces.sort(key=lambda x: (x.y.std() / x.y.mean()))
     return traces
 
 
@@ -105,9 +105,9 @@ num_players = 20
 t = get_trace_for_year('2017-18', num_games_filter=20, num_players_filter=num_players)
 df = build_consistency_df_from_traces(t)
 print_reddit_table(df, df.columns)
-a = t[int(-((num_players/2) + 1)):]
-a = a[::-1]
-b = t[0:int(num_players/2)]
-b = b[::-1]
-c = a+b
-plot_traces(c)
+# a = t[int(-((num_players/2) + 1)):]
+# a = a[::-1]
+# b = t[0:int(num_players/2)]
+# b = b[::-1]
+# c = a+b
+plot_traces(t)

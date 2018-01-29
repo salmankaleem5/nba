@@ -31,7 +31,7 @@
 <div id="dataset-picker">
 </div>
 <script type="text/javascript">
-      var margin = { top: 100, right: 60, bottom: 100, left: 150 },
+      var margin = { top: 10, right: 60, bottom: 100, left: 150 },
           width = 960 - margin.left - margin.right,
           height = 480 - margin.top - margin.bottom,
           gridSize = Math.floor(width / 47),
@@ -39,12 +39,12 @@
           buckets = 9,
           //colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"],
           //colors = ["#ffffd9","#7fcdbb","#225ea8","#081d58"],
-          playerColors = colorbrewer.Greens[9],
+          playerColors = colorbrewer.Greys[9],
           offenseColors = colorbrewer.Reds[9],
           defenseColors = colorbrewer.Blues[9]
           netColors = colorbrewer.RdBu[11].reverse(),
           times = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48",],
-          days = ["Point Diff", "", "Jrue Holiday","DeMarcus Cousins","E'Twaun Moore","Anthony Davis","Darius Miller","Rajon Rondo","Dante Cunningham","Jameer Nelson","Ian Clark","Tony Allen","Omer Asik","Cheick Diallo","Jalen Jones","Charles Cooke"],
+          days = ["Anthony Davis","DeMarcus Cousins","Jrue Holiday","E'Twaun Moore","Darius Miller","Rajon Rondo","Dante Cunningham","Ian Clark","Jameer Nelson","DeAndre Liggins","Omer Asik"],
           datasets = ["data.csv"];
 
       var svg = d3.select("#chart").append("svg")
@@ -58,7 +58,7 @@
           .enter().append("text")
             .text(function (d) { return d; })
             .attr("x", 0)
-            .attr("y", function (d, i) { return (i * gridSize) - 29; })
+            .attr("y", function (d, i) { return (i * gridSize); })
             .style("text-anchor", "end")
             .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
             .attr("class", "dayLabel mono axis axis-workweek");
@@ -68,7 +68,7 @@
           .enter().append("text")
             .text(function(d) { return d; })
             .attr("x", function(d, i) { return (i * gridSize) + 3; })
-            .attr("y", 3)
+            .attr("y", 5)
             .style("text-anchor", "middle")
             .attr("transform", "translate(" + (gridSize - 13) * 2 + ", -6)")
             .attr("class", "timeLabel mono axis axis-worktime");
@@ -85,7 +85,7 @@
         },
         function(error, data) {
           var playerColorScale = d3.scale.quantile()
-              .domain([0, buckets - 1, d3.max(data, function (d) { return d.pindex > 0 ? d.value : 0; })])
+              .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
               .range(playerColors);
 
           var netColorScale = d3.scale.quantile()

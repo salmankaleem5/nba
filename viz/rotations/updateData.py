@@ -6,7 +6,8 @@ import pandas as pd
 from util.format import convert_time
 
 season = '2017-18'
-file_path = './data.csv'
+season_file_path = './multi_game/data.csv'
+single_game_file_path = './single_game/'
 
 
 # From the pbp_df and a team abbreviation, determines if the team is home or visitor
@@ -169,81 +170,49 @@ def transform_stints_for_viz(df):
     return pd.DataFrame(data)
 
 
-def get_score_data_for_games(games, team_abbreviation):
+def get_score_data_for_game(game):
     pbp_ep = PlayByPlay()
 
-    off_data = []
-    def_data = []
-    net_data = []
+    data = []
     for m in range(1, 49):
-        off_data.append({'player': 'offense', 'minute': m, 'value': 0, 'pindex': -2})
-        def_data.append({'player': 'defense', 'minute': m, 'value': 0, 'pindex': -3})
-        net_data.append({'player': 'net', 'minute': m, 'value': 0, 'score': 0, 'pindex': -1})
+        data.append({'minute': m, 'score_margin': 0})
 
-    for game in games:
-        pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game}, override_file=False)
-        pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
+    pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game}, override_file=False)
+    pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
 
-        pbp_df = pbp_df[pbp_df['SCOREMARGIN'].notnull()]
-        pbp_df = pbp_df[pbp_df['PLAYER1_ID'].notnull()]
+    pbp_df = pbp_df[pbp_df['SCOREMARGIN'].notnull()]
+    pbp_df = pbp_df[pbp_df['PLAYER1_ID'].notnull()]
 
-        team_is_home = is_home(pbp_df, team_abbreviation)
-        if team_is_home:
-            pbp_df['TEAM_SCORE'] = pbp_df['SCORE'].map(lambda x: x.split('-')[1]).map(int)
-            pbp_df['OPP_SCORE'] = pbp_df['SCORE'].map(lambda x: x.split('-')[0]).map(int)
+    previous_score_margin = 0
+    for m in range(0, 48):
+        minute_start = m * 60
+        minute_end = (m + 1) * 60
+        minute_df = pbp_df[pbp_df['TIME'] > minute_start]
+        minute_df = minute_df[minute_df['TIME'] <= minute_end]
+
+        if len(minute_df) > 0:
+            score_margin = minute_df.iloc[-1]['SCOREMARGIN']
+            if score_margin == 'TIE':
+                score_margin = 0
+            else:
+                score_margin = int(score_margin)
+
+            data[m]['score_margin'] = score_margin - previous_score_margin
+            previous_score_margin = score_margin
         else:
-            pbp_df['TEAM_SCORE'] = pbp_df['SCORE'].map(lambda x: x.split('-')[0]).map(int)
-            pbp_df['OPP_SCORE'] = pbp_df['SCORE'].map(lambda x: x.split('-')[1]).map(int)
+            data[m]['score_margin'] = 0
 
-        previous_team_score = 0
-        previous_opp_score = 0
-        for m in range(0, 48):
-            minute_start = m * 60
-            minute_end = (m + 1) * 60
-            minute_df = pbp_df[pbp_df['TIME'] >= minute_start]
-            minute_df = minute_df[minute_df['TIME'] < minute_end]
-
-            if len(minute_df) > 0:
-
-                new_team_score = minute_df.iloc[-1]['TEAM_SCORE']
-                new_opp_score = minute_df.iloc[-1]['OPP_SCORE']
-
-                if new_team_score > ((m + 1) * 10):
-                    break
-
-                if m == 47:
-                    None
-
-                team_points = new_team_score - previous_team_score
-                opp_points = new_opp_score - previous_opp_score
-
-                if team_points < 0 or opp_points < 0:
-                    None
-
-                off_data[m]['value'] += team_points
-                def_data[m]['value'] += opp_points
-                net_data[m]['value'] += team_points - opp_points
-                net_data[m]['score'] = new_team_score - new_opp_score
-
-                previous_team_score = new_team_score
-                previous_opp_score = new_opp_score
-
-    score_data = []
-    # score_data.extend(off_data)
-    # score_data.extend(def_data)
-    score_data.extend(net_data)
-    return score_data
+    return pd.DataFrame(data)
 
 
-def get_viz_data_for_team(team_abbreviation):
-    log = TeamAdvancedGameLogs().get_data({'Season': season, 'DateFrom': '12/29/2017'}, override_file=True)
+def get_viz_data_for_team_season(team_abbreviation):
+    log = TeamAdvancedGameLogs().get_data({'Season': season, 'LastNGames': '3'}, override_file=True)
     log = log[log['TEAM_ABBREVIATION'] == team_abbreviation]
 
     pbp_ep = PlayByPlay()
 
     season_player_stints_df = pd.DataFrame()
     games = log.GAME_ID.tolist()
-    # games = ['0021700511']
     for game in games:
         game = str(game)
         if len(game) < 10:
@@ -269,12 +238,45 @@ def get_viz_data_for_team(team_abbreviation):
         rotation_data.pindex[cond] = index
         index += 1
 
-    score_data = get_score_data_for_games(games, team_abbreviation)
-
-    rotation_data = rotation_data.append(pd.DataFrame(score_data))
-
-    file_check(file_path)
-    rotation_data.to_csv(file_path)
+    file_check(season_file_path)
+    rotation_data.to_csv(season_file_path)
 
 
-get_viz_data_for_team('NOP')
+def get_viz_data_for_game(game_id):
+    pbp_ep = PlayByPlay()
+
+    game_id = str(game_id)
+    if len(game_id) < 10:
+        game_id = '00' + str(game_id)
+
+    pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game_id})
+    pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
+
+    teams = pbp_df['PLAYER1_TEAM_ABBREVIATION'].unique()[1:]
+    file_index = 1
+    for t in teams:
+        index = 1
+        game_stints_df = get_game_player_stints_for_team(pbp_df, t)
+        team_rotation_data = transform_stints_for_viz(game_stints_df)
+
+        players = game_stints_df['player'].unique()
+        players = sorted(players,
+                         key=lambda x: -game_stints_df[game_stints_df['player'] == x]['time'].sum())
+
+        team_rotation_data['pindex'] = 0
+        for player in players:
+            sys.stdout.write("\"" + player + "\",")
+            cond = team_rotation_data.player == player
+            team_rotation_data.pindex[cond] = index
+            index += 1
+
+        file_check(season_file_path)
+        team_rotation_data.to_csv(single_game_file_path + 'team' + str(file_index) + '.csv')
+        file_index += 1
+
+    score_df = get_score_data_for_game(game_id)
+    score_df.to_csv(single_game_file_path + 'score.csv')
+
+
+get_viz_data_for_team_season('NOP')
+#get_viz_data_for_game('0021700692')
