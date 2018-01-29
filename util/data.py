@@ -543,6 +543,37 @@ class OnOffSummary(EndPoint):
             return pd.read_csv(file_path)
 
 
+class Lineups(EndPoint):
+    base_url = 'http://stats.nba.com/stats/teamdashlineups'
+    index = 1
+    default_params = {
+        'DateFrom': '',
+        'DateTo': '',
+        'GameID': '',
+        'GameSegment': '',
+        'GroupQuantity': '2',
+        'LastNGames': '0',
+        'LeagueID': '00',
+        'Location': '',
+        'MeasureType': 'Base',
+        'Month': '0',
+        'OpponentTeamID': '0',
+        'Outcome': '',
+        'PORound': '0',
+        'PaceAdjust': 'N',
+        'PerMode': 'Totals',
+        'Period': '0',
+        'PlusMinus': 'N',
+        'Rank': 'N',
+        'Season': '2017-18',
+        'SeasonSegment': '',
+        'SeasonType': 'Regular Season',
+        'TeamID': '0',
+        'VsConference': '',
+        'VsDivision': '',
+    }
+
+
 def get_rpm():
     file_path = data_dir + 'RPM/' + str(datetime.date.today()) + '.csv'
 
@@ -596,23 +627,25 @@ def get_merged_shot_pbp_data(season):
 
 
 class SynergyPlayerStats(EndPoint):
-    base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/'
-    default_params = {'category': 'PRRollman',
-                      'limit': '500',
-                      'names': 'offensive',
-                      'q': '2511761',
-                      'season': '2016',
-                      'seasonType': 'Reg'}
+    base_url = 'http://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/'
+    default_params = {
+        'category': 'Transition',
+        'limit': '500',
+        'names': 'offensive',
+        'season': '2017',
+        'seasonType': 'Reg'
+    }
     synergy_request_headers = {
-        'Host': 'dev.stats.nba.com',
+        'Host': 'stats-prod.nba.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0',
-        'Accept': 'application/json, text/plain, */*',
+        'Accept': '	text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'http://stats.nba.com/players/roll-man/',
+        'Referer': 'http://stats.nba.com/players/transition/',
         'Origin': 'http://stats.nba.com',
         'DNT': '1',
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
+        'Cookie': '_ga=GA1.2.1910425825.1503411323; s_fid=77702B4521AF9F5D-27C7181E5E3CC3A4; s_vi=[CS]v1|2CD36268050316EB-60001184600029D9[CE]; __gads=ID=390e9947dd413dc1:T=1504101584:S=ALNI_Mae1yHotZvFo066PX75ZYAUGvQlVA; ak_bmsc=0A46BD85C4DA255138EA432F4463E0746011999E754A0000CBE4545A39416220~pl9diLP//aegdiFp43+T+EC4t5iMdJ620D2YWQOquDF8q6uANfMphMTUYtVBQoypYzT1a4W2YaUEXfayqtTZYbuk+neEpfZdkyJSUZ+Vz9l1afJ2GxqavS7hXsQxSu3zcMMFORSRQBZ844tWTFtD9oUHT4dNh+13G7sPJ+z2YhfxYV5Sjgzay0xfaVBwF4HDFR4Kopsw98vl+JtLl5QYge8LUNztsfMTKuCirXYeqvuUU=; bm_sv=F4A1C516368702F9445E3D6DFCFAAFFB~uuPbRkNCjh0TQ4RZzWDl4e+ck/x3JBNiKdppvz2leypGU+aeymSaZI/w913gK2tgApChNC+7TZYw4LCl/WYiXM405186rUj7z1pIO+1QV/YXneqETnNbJwlzOqa0qcewzbF3uu+QQ/24X4k0ScQzXg==; s_cc=true; s_sq=%5B%5BB%5D%5D'
     }
 
     def get_data(self, passed_params, override_file=False):
@@ -627,8 +660,7 @@ class SynergyPlayerStats(EndPoint):
 
         if (not file_check(file_path)) or override_file:
             r = requests.get(self.base_url, data=params, headers=request_headers, allow_redirects=True)
-            construct_full_url(self.base_url, params)
-            print(r.headers)
+            print(construct_full_url(self.base_url, params))
             data = r.json()['results']
             headers = data[0].keys()
             rows = [0] * len(data)
