@@ -1,4 +1,4 @@
-from util.data import get_rpm, GeneralPlayerStats, data_dir
+from util.nba_stats import get_rpm, GeneralPlayerStats, data_dir
 from util.reddit import print_reddit_table
 import pandas as pd
 

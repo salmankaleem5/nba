@@ -1,11 +1,11 @@
-from util.data import GeneralTeamStats
+from util.nba_stats import GeneralTeamStats
 from util.reddit import print_reddit_table
 from math import pow
 import pandas as pd
 
 team_stats = GeneralTeamStats()
 
-advanced_df = team_stats.get_data({'Season': '2016-17', 'MeasureType': 'Advanced'})
+advanced_df = team_stats.get_data({'Season': '2017-18', 'MeasureType': 'Advanced'}, override_file=True)
 
 data = []
 for ix, t in advanced_df.iterrows():

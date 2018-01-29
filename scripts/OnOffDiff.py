@@ -1,4 +1,4 @@
-from util.data import OnOffSummary, GeneralTeamStats
+from util.nba_stats import OnOffSummary, GeneralTeamStats
 from util.reddit import print_reddit_table
 import pandas as pd
 
@@ -15,6 +15,7 @@ onOffDf['OFF_DIFF'] = onOffDf['OFF_RATING_ON'] - onOffDf['OFF_RATING_OFF']
 onOffDf['DEF_DIFF'] = onOffDf['DEF_RATING_OFF'] - onOffDf['DEF_RATING_ON']
 onOffDf['NET_DIFF'] = onOffDf['OFF_DIFF'] + onOffDf['DEF_DIFF']
 
+<<<<<<< HEAD:scripts/onoffdiff.py
 onOffDf = onOffDf[onOffDf.MIN_ON >= 300].sort_values(by='NET_DIFF', ascending=False)
 
 df = pd.DataFrame(columns=onOffDf.columns)
@@ -23,3 +24,9 @@ for t in onOffDf.TEAM_ABBREVIATION.unique():
 
 print_reddit_table(df,
                    ['VS_PLAYER_NAME', 'TEAM_ABBREVIATION', 'NET_DIFF'])
+=======
+onOffDf = onOffDf[onOffDf.MIN_ON >= 500].sort_values(by='OFF_DIFF', ascending=False)
+
+print_reddit_table(onOffDf,
+                   ['VS_PLAYER_NAME', 'TEAM_ABBREVIATION', 'OFF_DIFF', 'DEF_DIFF', 'NET_DIFF'])
+>>>>>>> origin/master:scripts/OnOffDiff.py
