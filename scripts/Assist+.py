@@ -1,12 +1,13 @@
-from util.nba_stats import GeneralPlayerStats, GeneralTeamStats, TrackingStats
-from util.util import merge_shot_pbp_for_season
-from util.format import get_year_string
+from util.data import get_merged_shot_pbp_data, GeneralPlayerStats, get_year_string, TrackingStats
+from util.reddit import print_reddit_table
 import pandas as pd
 
 general_player_ep = GeneralPlayerStats()
-general_team_ep = GeneralTeamStats()
 tracking_ep = TrackingStats()
-
+data_override = False
+season_range = (2017, 2017)
+games_filter = 20
+assist_filter = 4
 
 def get_stats_for_player_season(season, games_filter=20, assist_filter=4, override_file=False):
     shots_df = merge_shot_pbp_for_season(season, override_file=override_file)
@@ -184,6 +185,16 @@ def get_stats_for_team_season(season, override_file=False):
 
     assist_df = assist_df.sort_values(by='PTS_PER_PAST', ascending=False)
 
+    assist_df = assist_df.merge(tracking_stats_df, left_on='Player', right_on='PLAYER_NAME', how='inner')
+
+    assist_df['Pts_Per_Past'] = assist_df['Points_Created'] / assist_df['POTENTIAL_AST']
+    assist_df['Diff'] = assist_df['Pts_Per_Past'] - assist_df['Exp_Pts_Per_Past']
+
+    assist_df['Ast_pct'] = assist_df['Assists'] / assist_df['POTENTIAL_AST']
+
+    assist_df = assist_df.sort_values(by='Diff', ascending=False)
+
+    # print_reddit_table(df, ['Player', 'POTENTIAL_AST', 'Assists', 'Ast_pct', 'Corner 3', 'Above the Break 3', 'Restricted Area', 'Mid', 'Exp_Pts_Per_Past', 'Pts_Per_Past', 'Diff'])
     return assist_df
 
 

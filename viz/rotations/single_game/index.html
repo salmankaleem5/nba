@@ -31,7 +31,7 @@
 <div id="dataset-picker">
 </div>
 <script type="text/javascript">
-      var margin = { top: 10, right: 60, bottom: 100, left: 150 },
+      var margin = { top: 15, right: 60, bottom: 100, left: 150 },
           width = 960 - margin.left - margin.right,
           height = 480 - margin.top - margin.bottom,
           gridSize = Math.floor(width / 47),
@@ -62,7 +62,7 @@
           .enter().append("text")
             .text(function(d) { return d; })
             .attr("x", function(d, i) { return (i * gridSize) + 3; })
-            .attr("y", 153)
+            .attr("y", 168)
             .style("text-anchor", "middle")
             .attr("transform", "translate(" + (gridSize - 13) * 2 + ", -6)")
             .attr("class", "timeLabel mono axis axis-worktime");
@@ -106,7 +106,7 @@
       };
 
       var x = d3.scaleLinear()
-        .rangeRound([margin.left, width - margin.right]);
+        .rangeRound([margin.left, width + 110]);
 
       var y = d3.scaleLinear()
         .rangeRound([height - margin.top, margin.bottom]);
@@ -119,22 +119,16 @@
         d3.csv(csvFile,
           function(d) {
             return {
-              minute: d.minute,
-              score_margin: d.score_margin
+              minute: +d.minute,
+              score_margin: +d.score_margin
             };
           }, function(error, data){
-            x.domain(d3.extent(data, function(d) { return d.minute; }));
-            y.domain(d3.extent(data, function(d) { return d.score_margin; }));
-
-            svg.append("g")
-              .attr("transform", "translate(-150," + -100 + ")")
-              .call(d3.axisBottom(x))
-              .select(".domain")
-              .remove();
+            x.domain(d3.extent(data, function(d) { return +d.minute; }));
+            y.domain(d3.extent(data, function(d) { return +d.score_margin; }));
 
             svg.append("g")
               .call(d3.axisRight(y))
-              .attr("transform", "translate(725,-100)")
+              .attr("transform", "translate(725, -100)")
               .append("text")
               .attr("fill", "#000")
               .attr("transform", "rotate(-90)")
@@ -151,12 +145,11 @@
               .attr("stroke-linecap", "round")
               .attr("stroke-width", 3.5)
               .attr("d", line)
-              .attr("transform", "translate(" + -150 + "," + -180 + ")");;
+              .attr("transform", "translate(" + -150 + "," + -100 + ")");;
           })
       };
-
-      //lineChart("score.csv");
       heatmapChart("data.csv");
+      lineChart("score.csv");
 </script>
 </body>
 </html>

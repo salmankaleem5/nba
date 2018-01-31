@@ -23,18 +23,23 @@ for p in range(1, 12):
 
 df = pd.DataFrame(data, columns=headers)
 df.RPM = df.RPM.astype(float)
+df.MPG = df.MPG.astype(float)
+df.GP = df.GP.astype(int)
+df = df[df['MPG'] >= 15]
+df = df[df['GP'] >= 10]
 
 df.to_csv(data_dir + 'RPM.csv')
 
 traces = []
 for t in df.TEAM.unique():
-    team_df = df[df.TEAM == t]
-    traces.append(go.Scatter(
-        x=team_df.TEAM,
-        y=team_df.RPM,
-        text=team_df.NAME,
-        mode='markers'
-    ))
+    if t in ['NO', 'OKC', 'DEN', 'POR', 'UTAH', 'MIN']:
+        team_df = df[df.TEAM == t]
+        traces.append(go.Scatter(
+            x=team_df.TEAM,
+            y=team_df.RPM,
+            text=team_df.NAME,
+            mode='markers'
+        ))
 
 traces.sort(key=lambda x: -x.y.mean())
 py.plot(traces, filename='RPM')
