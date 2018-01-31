@@ -31,7 +31,7 @@
 <div id="dataset-picker">
 </div>
 <script type="text/javascript">
-      var margin = { top: 10, right: 60, bottom: 100, left: 150 },
+      var margin = { top: 15, right: 60, bottom: 100, left: 150 },
           width = 960 - margin.left - margin.right,
           height = 480 - margin.top - margin.bottom,
           gridSize = Math.floor(width / 47),
@@ -39,7 +39,7 @@
           buckets = 9,
           playerColors = colorbrewer.Greens[9],
           minutes = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48",],
-          players = ["DeMarcus Cousins","Anthony Davis","Jrue Holiday","E'Twaun Moore","Darius Miller","Jameer Nelson","Ian Clark","Rajon Rondo","Dante Cunningham", "", "Jerian Grant","Robin Lopez","Justin Holiday","Lauri Markkanen","Denzel Valentine","Zach LaVine","Nikola Mirotic","Bobby Portis","David Nwaba","Ryan Arcidiacono"];
+          players = ["Anthony Davis","Jrue Holiday","E'Twaun Moore","Dante Cunningham","Darius Miller","Rajon Rondo","Ian Clark","DeAndre Liggins","Jameer Nelson","Omer Asik","", "Blake Griffin","Lou Williams","DeAndre Jordan","Tyrone Wallace","Wesley Johnson","Milos Teodosic","Sindarius Thornwell","Montrezl Harrell","Sam Dekker"];
 
       var svg = d3.select("#chart").append("svg")
           .attr("width", width + margin.left + margin.right)
@@ -62,7 +62,7 @@
           .enter().append("text")
             .text(function(d) { return d; })
             .attr("x", function(d, i) { return (i * gridSize) + 3; })
-            .attr("y", 153)
+            .attr("y", 168)
             .style("text-anchor", "middle")
             .attr("transform", "translate(" + (gridSize - 13) * 2 + ", -6)")
             .attr("class", "timeLabel mono axis axis-worktime");
@@ -106,7 +106,7 @@
       };
 
       var x = d3.scaleLinear()
-        .rangeRound([margin.left, width - margin.right]);
+        .rangeRound([margin.left, width + 110]);
 
       var y = d3.scaleLinear()
         .rangeRound([height - margin.top, margin.bottom]);
@@ -119,22 +119,16 @@
         d3.csv(csvFile,
           function(d) {
             return {
-              minute: d.minute,
-              score_margin: d.score_margin
+              minute: +d.minute,
+              score_margin: +d.score_margin
             };
           }, function(error, data){
-            x.domain(d3.extent(data, function(d) { return d.minute; }));
-            y.domain(d3.extent(data, function(d) { return d.score_margin; }));
-
-            svg.append("g")
-              .attr("transform", "translate(-150," + -100 + ")")
-              .call(d3.axisBottom(x))
-              .select(".domain")
-              .remove();
+            x.domain(d3.extent(data, function(d) { return +d.minute; }));
+            y.domain(d3.extent(data, function(d) { return +d.score_margin; }));
 
             svg.append("g")
               .call(d3.axisRight(y))
-              .attr("transform", "translate(725,-100)")
+              .attr("transform", "translate(725, -100)")
               .append("text")
               .attr("fill", "#000")
               .attr("transform", "rotate(-90)")
@@ -151,12 +145,11 @@
               .attr("stroke-linecap", "round")
               .attr("stroke-width", 3.5)
               .attr("d", line)
-              .attr("transform", "translate(" + -150 + "," + -180 + ")");;
+              .attr("transform", "translate(" + -150 + "," + -100 + ")");;
           })
       };
-
-      lineChart("score.csv");
       heatmapChart("data.csv");
+      lineChart("score.csv");
 </script>
 </body>
 </html>

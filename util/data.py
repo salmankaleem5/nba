@@ -2,7 +2,7 @@ import os
 import platform
 
 if "Windows" in platform.platform():
-    pass
+    data_dir = 'C:/data/nba'
 elif "Darwin" in platform.platform():
     data_dir = '/Users/patrick/data/nba/'
 else:

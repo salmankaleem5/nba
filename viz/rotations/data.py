@@ -7,7 +7,6 @@ from util.format import convert_time
 
 season = '2017-18'
 season_file_path = './multi_game/data.csv'
-single_game_file_path = './single_game/'
 
 
 # From the pbp_df and a team abbreviation, determines if the team is home or visitor
@@ -197,10 +196,10 @@ def get_score_data_for_game(game):
             else:
                 score_margin = int(score_margin)
 
-            data[m]['score_margin'] = score_margin - previous_score_margin
+            data[m]['score_margin'] = score_margin
             previous_score_margin = score_margin
         else:
-            data[m]['score_margin'] = 0
+            data[m]['score_margin'] = previous_score_margin
 
     return pd.DataFrame(data)
 
@@ -242,41 +241,40 @@ def get_viz_data_for_team_season(team_abbreviation):
     rotation_data.to_csv(season_file_path)
 
 
-def get_viz_data_for_game(game_id):
+def get_rotation_data_for_game(game_id, year='2017-18', single_game_file_path='./single_game/'):
     pbp_ep = PlayByPlay()
 
     game_id = str(game_id)
     if len(game_id) < 10:
         game_id = '00' + str(game_id)
 
-    pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game_id})
+    pbp_df = pbp_ep.get_data({'Season': year, 'GameID': game_id})
     pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
 
     teams = pbp_df['PLAYER1_TEAM_ABBREVIATION'].unique()[1:]
-    file_index = 1
+    rotation_df = pd.DataFrame()
+    index = 1
     for t in teams:
-        index = 1
         game_stints_df = get_game_player_stints_for_team(pbp_df, t)
-        team_rotation_data = transform_stints_for_viz(game_stints_df)
+        team_rotation_df = transform_stints_for_viz(game_stints_df)
 
         players = game_stints_df['player'].unique()
         players = sorted(players,
                          key=lambda x: -game_stints_df[game_stints_df['player'] == x]['time'].sum())
 
-        team_rotation_data['pindex'] = 0
+        team_rotation_df['pindex'] = 0
         for player in players:
             sys.stdout.write("\"" + player + "\",")
-            cond = team_rotation_data.player == player
-            team_rotation_data.pindex[cond] = index
+            cond = team_rotation_df.player == player
+            team_rotation_df.pindex[cond] = index
             index += 1
 
-        file_check(season_file_path)
-        team_rotation_data.to_csv(single_game_file_path + 'team' + str(file_index) + '.csv')
-        file_index += 1
+        index += 1
+
+        rotation_df = rotation_df.append(team_rotation_df)
+
+    file_check(single_game_file_path)
+    rotation_df.to_csv(single_game_file_path + 'data.csv')
 
     score_df = get_score_data_for_game(game_id)
     score_df.to_csv(single_game_file_path + 'score.csv')
-
-
-get_viz_data_for_team_season('NOP')
-#get_viz_data_for_game('0021700692')
