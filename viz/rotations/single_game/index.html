@@ -39,7 +39,7 @@
           buckets = 9,
           playerColors = colorbrewer.Greens[9],
           minutes = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48",],
-          players = ["DeMarcus Cousins","Anthony Davis","Jrue Holiday","E'Twaun Moore","Darius Miller","Jameer Nelson","Ian Clark","Rajon Rondo","Dante Cunningham", "", "Jerian Grant","Robin Lopez","Justin Holiday","Lauri Markkanen","Denzel Valentine","Zach LaVine","Nikola Mirotic","Bobby Portis","David Nwaba","Ryan Arcidiacono"];
+          players = ["Anthony Davis","Jrue Holiday","E'Twaun Moore","Dante Cunningham","Darius Miller","Rajon Rondo","Ian Clark","DeAndre Liggins","Jameer Nelson","Omer Asik","", "Blake Griffin","Lou Williams","DeAndre Jordan","Tyrone Wallace","Wesley Johnson","Milos Teodosic","Sindarius Thornwell","Montrezl Harrell","Sam Dekker"];
 
       var svg = d3.select("#chart").append("svg")
           .attr("width", width + margin.left + margin.right)
@@ -155,7 +155,7 @@
           })
       };
 
-      lineChart("score.csv");
+      //lineChart("score.csv");
       heatmapChart("data.csv");
 </script>
 </body>

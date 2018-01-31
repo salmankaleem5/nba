@@ -278,5 +278,5 @@ def get_viz_data_for_game(game_id):
     score_df.to_csv(single_game_file_path + 'score.csv')
 
 
-get_viz_data_for_team_season('NOP')
-#get_viz_data_for_game('0021700692')
+# get_viz_data_for_team_season('NOP')
+get_viz_data_for_game('0021700733')
