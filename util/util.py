@@ -42,7 +42,8 @@ def merge_shot_pbp_for_game(season, game_id, season_type='Regular Season', overr
 
         pbp_df['GAME_ID'] = '00' + pbp_df['GAME_ID'].astype(str)
 
-        shots_df = shot_endpoint.get_data({'Season': season, 'SeasonType': season_type}, override_file=override_file)
+        shots_df = shot_endpoint.get_data({'Season': season, 'SeasonType': season_type, 'GameID': game_id},
+                                          override_file=override_file)
 
         merge_df = pd.merge(pbp_df, shots_df, left_on=['EVENTNUM', 'GAME_ID', 'PERIOD'],
                             right_on=['GAME_EVENT_ID', 'GAME_ID', 'PERIOD'], how='left')
