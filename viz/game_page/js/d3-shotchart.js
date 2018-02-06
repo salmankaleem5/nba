@@ -18,6 +18,7 @@
           selection.each(function(data){
               // Responsive container for the shotchart
               d3.select(this).style("max-width", width/16 + "em");
+              d3.select(this).style("margin", "auto");
               // Select the SVG if it exists
               if (!d3.select(this).selectAll("svg").empty()){
                   var svg = d3.select(this).selectAll("svg");
@@ -231,7 +232,7 @@
               .entries(data);
           // change to use a string split and force cast to int
           nestedData.forEach(function(a){
-              a.key = JSON.parse("[" + a.key + "]");
+              a.key = "[" + a.key + "]";
           });
 
           return nestedData;
@@ -299,10 +300,13 @@
                       .append("circle")
                       .classed("shot", true)
                       .classed("make", function(d){
-                            return d.shot_made_flag === 1; // used to set fill color to green if it's a made shot
+                            return d.shot_made_flag === 1 && d.player === d.shooter; // used to set fill color to green if it's a made shot
                       })
                       .classed("miss", function(d){
                             return d.shot_made_flag === 0; // used to set fill color to red if it's a miss
+                      })
+                      .classed("assist", function(d){
+                            return d.assist === d.player && d.player === d.assist;
                       })
                       .attr("cx", function(d) { return d.x + 25; })
                       .attr("cy", function(d) { return yScale$1(d.y) - 5; })
@@ -450,6 +454,12 @@
     shots.displayType = function(_) {
       if (!arguments.length) return activeDisplay;
       activeDisplay = _;
+      return shots;
+    };
+
+    shots.player = function(_) {
+      if (!arguments.length) return player;
+      player = _;
       return shots;
     };
 

@@ -182,26 +182,10 @@ def get_score_data_for_game(game):
     pbp_df = pbp_df[pbp_df['SCOREMARGIN'].notnull()]
     pbp_df = pbp_df[pbp_df['PLAYER1_ID'].notnull()]
 
-    previous_score_margin = 0
-    for m in range(0, 48):
-        minute_start = m * 60
-        minute_end = (m + 1) * 60
-        minute_df = pbp_df[pbp_df['TIME'] > minute_start]
-        minute_df = minute_df[minute_df['TIME'] <= minute_end]
+    pbp_df = pbp_df.rename(columns={'SCOREMARGIN': 'score_margin', 'TIME': 'minute'})
+    pbp_df = pbp_df[['score_margin', 'minute']]
 
-        if len(minute_df) > 0:
-            score_margin = minute_df.iloc[-1]['SCOREMARGIN']
-            if score_margin == 'TIE':
-                score_margin = 0
-            else:
-                score_margin = int(score_margin)
-
-            data[m]['score_margin'] = score_margin
-            previous_score_margin = score_margin
-        else:
-            data[m]['score_margin'] = previous_score_margin
-
-    return pd.DataFrame(data)
+    return pbp_df
 
 
 def get_viz_data_for_team_season(team_abbreviation):

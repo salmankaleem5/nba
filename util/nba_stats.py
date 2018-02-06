@@ -543,6 +543,12 @@ class OnOffSummary(EndPoint):
             return pd.read_csv(file_path)
 
 
+class Standings(EndPoint):
+    base_url = 'http://stats.nba.com/stats/leaguestandingsv3'
+    default_params = {'LeagueID': '00',
+                      'Season': '2017-18',
+                      'SeasonType': 'Regular Season'}
+
 class SynergyPlayerStats(EndPoint):
     base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/'
     default_params = {'category': 'PRRollman',

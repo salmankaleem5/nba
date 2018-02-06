@@ -1,13 +1,12 @@
-from util.util import merge_shot_pbp_for_season, merge_shot_pbp_for_game
+from util.util import merge_shot_pbp_for_game
 
 
-def get_shot_data_for_game(game_id, season='2017-18', file_path='data.json'):
-    if game_id == '':
-        shots_df = merge_shot_pbp_for_season(season=season, override_file=False)
-    else:
-        shots_df = merge_shot_pbp_for_game(season=season, game_id=game_id)
+def get_shot_data_for_game(game_id, season='2017-18', file_path='data.json', data_override=False):
+    shots_df = merge_shot_pbp_for_game(season=season, game_id=game_id, override_file=data_override)
 
-    player_df = shots_df.rename(columns={
+    shots_df = shots_df[shots_df['SHOT_ATTEMPTED_FLAG'].notnull()]
+
+    shots_df = shots_df.rename(columns={
         'LOC_X': 'x', 'LOC_Y': 'y',
         'ACTION_TYPE': 'action_type',
         'SHOT_DISTANCE': 'shot_distance',
@@ -19,9 +18,15 @@ def get_shot_data_for_game(game_id, season='2017-18', file_path='data.json'):
         'PCTIMESTRING': 'time'
     })
 
-    player_df = player_df[['x', 'y', 'action_type', 'shot_distance', 'shot_made_flag', 'assist', 'shooter', 'quarter', 'time']]
+    shots_df = shots_df[['x', 'y', 'action_type', 'shot_distance', 'shot_made_flag', 'assist', 'shooter', 'quarter', 'time']]
+    shots_df['player'] = shots_df['shooter']
 
-    player_df['x'] = round(player_df['x'] / 10)
-    player_df['y'] = round(player_df['y'] / 10)
+    assists_df = shots_df[shots_df['assist'].notnull()]
+    assists_df['player'] = assists_df['assist']
 
-    player_df.to_json(file_path, orient='records')
+    shots_df = shots_df.append(assists_df)
+
+    shots_df['x'] = shots_df['x'] / 10
+    shots_df['y'] = shots_df['y'] / 10
+
+    shots_df.to_json(file_path, orient='records')

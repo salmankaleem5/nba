@@ -1,5 +1,9 @@
 from util.nba_stats import PlayByPlay
-from util.util import merged_shot_pbp
+from util.util import merge_shot_pbp_for_season
 
-PlayByPlay().update_pbp_data('2017-18')
-merged_shot_pbp('2017-18')
+df = merge_shot_pbp_for_season('2017-18')
+
+print(df['LOC_X'].max())
+print(df['LOC_X'].min())
+print(df['LOC_Y'].max())
+print(df['LOC_Y'].min())

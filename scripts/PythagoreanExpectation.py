@@ -13,15 +13,16 @@ for ix, t in advanced_df.iterrows():
     data.append(
         {
             'Team': t.TEAM_NAME,
-            'Actual_Pct': t.W_PCT * 100,
-            'Actual_W': t.W,
-            'Expected_Pct': exp_pct * 100,
-            'Expected_W': exp_pct * t.GP
+            'Actual Win%': t.W_PCT * 100,
+            'Net Rating': t.OFF_RATING - t.DEF_RATING,
+            'Actual Wins': t.W,
+            'Expected Win%': exp_pct * 100,
+            'Expected Wins': exp_pct * t.GP
         }
     )
 
 df = pd.DataFrame(data)
-df['Diff_Pct'] = df['Actual_Pct'] - df['Expected_Pct']
-df['Diff_W'] = df['Actual_W'] - df['Expected_W']
-print_reddit_table(df.sort_values(by='Diff_W', ascending=False),
-                   ['Team', 'Actual_Pct', 'Expected_Pct', 'Diff_Pct', 'Diff_W'])
+df['% Diff'] = df['Actual Win%'] - df['Expected Win%']
+df['Wins Above Exp'] = df['Actual Wins'] - df['Expected Wins']
+print_reddit_table(df.sort_values(by='% Diff', ascending=False),
+                   ['Team', 'Net Rating', 'Actual Win%', 'Expected Win%', '% Diff', 'Wins Above Exp'])

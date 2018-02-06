@@ -3,374 +3,100 @@
 <html>
 
 <head>
-    <style>
-      rect.bordered {
-        stroke: #E6E6E6;
-        stroke-width:2px;
-      }
-
-      text.mono {
-        font-size: 9pt;
-        font-family: Consolas, courier;
-        fill: #aaa;
-      }
-
-      text.axis-workweek {
-        fill: #000;
-      }
-
-      text.axis-worktime {
-        fill: #000;
-      }
-
-    </style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js"></script>
-  	<script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
-
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-
-    <link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 
+    <script src="//d3js.org/d3.v4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+    <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+
   	<script src="./js/d3-shotchart.js" ></script>
   	<script src="./js/d3hexbin.js" ></script>
-  	<link href="./css/main.css" rel="stylesheet">
-
-    <script src="//d3js.org/d3.v4.js"></script>
     <script src="./js/colorbrewer.min.js"></script>
+    <script src="./js/rotations.js"></script>
+    <script src="./js/stats-table.js"></script>
+
+    <script src="./js/main.js"></script>
+    <link href="./css/main.css" rel="stylesheet">
 </head>
 
 <body>
 
-<div id="chart"></div>
+<div id='surrounder'>
+<div id='container'>
 
-<div id="shot-chart"></div>
+  <div id="chart"></div>
 
-<div>
-<select id='player-select'>
-</select>
+  <div id="shot-chart"></div>
+
+  <div>
+  <select id='player-select'>
+  </select>
+  </div>
+
+  <div style='padding-top: 20px;'>
+  <span style='font-weight: bold;'>Click Top Level Categories to Expand</span>
+  </div>
+
+  <div>
+  <table id='stats-table' class='table table-striped table-bordered' width='100%' cellspacing='0'>
+    <thead>
+      <tr>
+        <th id='player-header' colspan=3>Player</th>
+        <th id='scoring-header' colspan=6>Scoring</th>
+        <th id='passing-header' colspan=4>Passing</th>
+        <th id='possession-header' colspan=5>Possession</th>
+        <th id='rebounding-header' colspan=7>Rebounding</th>
+        <th id='perimeter-d-header' colspan=3>Perimeter D</th>
+        <th id='intererio-d-header' colspan=3>Interior D</th>
+        <th id='misc-header' colspan=1>Misc</th>
+      </tr>
+
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+  </table>
+  </div>
 </div>
-
-<div style='padding-top: 20px;'>
-<span style='font-weight: bold;'>Click Top Level Categories to Expand</span>
 </div>
-
-<div>
-<table id='stats-table' class='table table-striped table-bordered' width='100%' cellspacing='0'>
-  <thead>
-    <tr>
-      <th id='player-header' colspan=3>Player</th>
-      <th id='scoring-header' colspan=10>Scoring</th>
-      <th id='passing-header' colspan=4>Passing</th>
-      <th id='possession-header' colspan=5>Possession</th>
-      <th id='rebounding-header' colspan=7>Rebounding</th>
-      <th id='perimeter-d-header' colspan=3>Perimeter D</th>
-      <th id='intererio-d-header' colspan=3>Interior D</th>
-      <th id='misc-header' colspan=1>Misc</th>
-    </tr>
-
-    <tr>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-</table>
-</div>
-
-<script type="text/javascript">
-$(document).ready(function() {
-      var margin = { top: 15, right: 60, bottom: 0, left: 150 },
-          width = 960 - margin.left - margin.right,
-          height = 350 - margin.top - margin.bottom,
-          gridSize = Math.floor(width / 47),
-          legendElementWidth = gridSize*2,
-          buckets = 9,
-          playerColors = colorbrewer.Greens[9],
-          minutes = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48",],
-          players = ["Anthony Davis","Jrue Holiday","E'Twaun Moore","Dante Cunningham","Darius Miller","Rajon Rondo","Ian Clark","DeAndre Liggins","Jameer Nelson","Omer Asik","", "Blake Griffin","Lou Williams","DeAndre Jordan","Tyrone Wallace","Wesley Johnson","Milos Teodosic","Sindarius Thornwell","Montrezl Harrell","Sam Dekker"];
-
-      var svg = d3.select("#chart").append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      var dayLabels = svg.selectAll(".dayLabel")
-          .data(players)
-          .enter().append("text")
-            .text(function (d) { return d; })
-            .attr("x", 0)
-            .attr("y", function (d, i) { return (i * gridSize); })
-            .style("text-anchor", "end")
-            .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
-            .attr("class", "dayLabel mono axis axis-workweek");
-
-      var timeLabels = svg.selectAll(".timeLabel")
-          .data(minutes)
-          .enter().append("text")
-            .text(function(d) { return d; })
-            .attr("x", function(d, i) { return (i * gridSize) + 3; })
-            .attr("y", 168)
-            .style("text-anchor", "middle")
-            .attr("transform", "translate(" + (gridSize - 13) * 2 + ", -6)")
-            .attr("class", "timeLabel mono axis axis-worktime");
-
-      var heatmapChart = function(csvFile) {
-        d3.csv(csvFile,
-        function(d) {
-          return {
-            day: +d.player,
-            hour: +d.minute,
-            value: +d.value,
-            pindex: +d.pindex
-          };
-        },
-        function(error, data) {
-          var playerColorScale = d3.scaleQuantile()
-              .domain([0, 1])
-              .range(playerColors);
-
-          var cards = svg.selectAll(".hour")
-              .data(data, function(d) {return d.pindex+':'+d.hour;});
-
-          cards.append("title");
-
-          cards.enter().append("rect")
-              .attr("x", function(d) { return (d.hour - 1) * gridSize; })
-              .attr("y", function(d) { return (d.pindex - 1) * gridSize; })
-              .attr("rx", 4)
-              .attr("ry", 4)
-              .attr("class", "hour bordered")
-              .attr("width", gridSize)
-              .attr("height", gridSize)
-              .style("fill", function(d) { return playerColorScale(d.value)});
-
-          cards.select("title").text(function(d) { return d.value; });
-
-          cards.exit().remove();
-        });
-      };
-
-      var x = d3.scaleLinear()
-        .rangeRound([margin.left, width + 110]);
-
-      var y = d3.scaleLinear()
-        .rangeRound([height - margin.top, margin.bottom + 50]);
-
-      var line = d3.line()
-        .x(function(d) { return x(d.minute); })
-        .y(function(d) { return y(d.score_margin); });
-
-      var lineChart = function(csvFile) {
-        d3.csv(csvFile,
-          function(d) {
-            return {
-              minute: +d.minute,
-              score_margin: +d.score_margin
-            };
-          }, function(error, data){
-            x.domain(d3.extent(data, function(d) { return +d.minute; }));
-            y.domain(d3.extent(data, function(d) { return +d.score_margin; }));
-
-            svg.append("g")
-              .call(d3.axisRight(y))
-              .attr("transform", "translate(725, " + (margin.bottom + -50) + ")")
-              .append("text")
-              .attr("fill", "#000")
-              .attr("transform", "rotate(-90)")
-              .attr("y", 6)
-              .attr("dy", "0.71em")
-              .attr("text-anchor", "end")
-
-            svg.append("path")
-              .datum(data)
-              .attr("fill", "none")
-              .attr("style", "z-index")
-              .attr("stroke", "steelblue")
-              .attr("stroke-linejoin", "round")
-              .attr("stroke-linecap", "round")
-              .attr("stroke-width", 3.5)
-              .attr("d", line)
-              .attr("transform", "translate(" + -150 + "," + (margin.bottom - 50) + ")");;
-          })
-      };
-      heatmapChart("./data/data.csv");
-      lineChart("./data/score.csv");
-
-      $.getJSON("./data/shots.json", function(json) {
-          data = json;
-
-  				players = [];
-  				$.each(data, function(i, d){
-  					if ($.inArray(this.shooter, players) === -1){
-  						players.push(this.shooter);
-  					}
-  				});
-  				$.each(players, function(i, p){
-  					$('#player-select').append($('<option></option>').val(p).html(p));
-  				});
-
-
-          var courtSelection = d3.select("#shot-chart");
-          var court = d3.court().width(600);
-          courtSelection.call(court);
-
-  				$('#player-select').change(function(){
-  					player = $('#player-select option:selected').val();
-  					player_data = data.filter(function(d) {
-  						return d.shooter == player;
-  					});
-  					var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
-  					courtSelection.datum(player_data).call(shots);
-  				});
-
-          $('#player-select').val($('#player-select option:first').val()).change();
-      });
-
-      var arr = [];
-      var table = null;
-      $.getJSON("./data/stats.json", function(json) {
-        table = $("#stats-table").DataTable({
-          data: json,
-          order: [[1, "desc"]],
-          paging: false,
-          columns: [
-            {title: 'Name', data: 'player'},
-            {title: 'Team', data: 'TEAM_ABBREVIATION'},
-            {title: 'Min', data: 'MIN'},
-            {title: "Points", data: 'pts'},
-            {title: "True Attempts", data: 'tsa', visible: false, name: 'tsa'},
-            {title: "True Efficiency", data: 'eff', visible: false, name: 'eff'},
-            {title: 'And-1', data: 'and_one', visible: false, name: 'and-one'},
-            {title: '2pt Ft', data: '2pt_ft', visible: false, name: '2pt-ft'},
-            {title: '3pt Ft', data: '3pt_ft', visible: false, name: '3pt-ft'},
-            {title: '2pt Fgm', data: '2pt_fgm', visible: false, name: '2pt-fgm'},
-            {title: '2pt Fga', data: '2pt_fga', visible: false, name: '2pt-fga'},
-            {title: '3pt Fgm', data: '3pt_fgm', visible: false, name: '3pt-fgm'},
-            {title: '3pt Fga', data: '3pt_fga', visible: false, name: '3pt-fga'},
-            {title: 'Ast', data: 'AST'},
-            {title: 'Passes Made', data: 'PASSES_MADE', visible: false, name: 'passes'},
-            {title: 'Potential Ast', data: 'POTENTIAL_AST', visible: false, name: 'potential-ast'},
-            {title: 'Ast Pts', data: 'AST_POINTS_CREATED', visible: false, name: 'ast-pts'},
-            {title: 'Touches', data: 'FRONT_CT_TOUCHES'},
-            {title: 'Time of Poss', data: 'TIME_OF_POSS', visible: false, name: 'time-of-poss'},
-            {title: 'Elbow Touch', data: 'ELBOW_TOUCHES', visible: false, name: 'elbow'},
-            {title: 'Post Touch', data: 'POST_TOUCHES', visible: false, name: 'post'},
-            {title: 'Paint Touch', data: 'PAINT_TOUCHES', visible: false, name: 'paint'},
-            {title: 'Reb', data: 'REB'},
-            {title: 'Oreb', data: 'OREB', visible: false, name: 'oreb'},
-            {title: 'Oreb Chacne', data: 'OREB_CHANCES', visible: false, name: 'oreb-chance'},
-            {title: 'Oreb Chance Pct', data: 'OREB_CHANCE_PCT_ADJ', visible: false, name: 'oreb-pct'},
-            {title: 'Dreb', data: 'DREB', visible: false, name: 'dreb'},
-            {title: 'Dreb Chance', data: 'DREB_CHANCES', visible: false, name: 'dreb-chance'},
-            {title: 'Dreb Chance Pct', data: 'DREB_CHANCE_PCT_ADJ', visible: false, name: 'dreb-pct'},
-            {title: 'Stl', data: 'STL'},
-            {title: 'Deflections', data: 'DEFLECTIONS', visible: false, name: 'deflections'},
-            {title: 'Loose Balls Recovered', data: 'LOOSE_BALLS_RECOVERED', visible: false, name: 'loose-ball'},
-            {title: 'Blk', data: 'BLK'},
-            {title: 'Rim Fga Defended', data: 'DEF_RIM_FGA', visible: false, name: 'rim-fga'},
-            {title: 'Rim Fg% Defended', data: 'DEF_RIM_FG_PCT', visible: false, name: 'rim-fgpct'},
-            {title: 'Screen Ast', data: 'SCREEN_ASSISTS', visible:false, name: 'screen-ast'}
-          ]
-        });
-      });
-
-      $('#scoring-header').click(function() {
-        cols = ['tsa', 'eff', 'and-one', '2pt-ft', '3pt-ft', '2pt-fgm', '2pt-fga', '3pt-fgm', '3pt-fga'];
-        cols.forEach(function(col){
-          var col = table.column(col + ':name');
-          col.visible(!col.visible());
-        });
-      });
-
-      $('#passing-header').click(function() {
-        cols = ['potential-ast', 'ast-pts', 'passes'];
-        cols.forEach(function(col){
-          var col = table.column(col + ':name');
-          col.visible(!col.visible());
-        });
-      });
-
-      $('#rebounding-header').click(function() {
-        cols = ['oreb', 'oreb-chance', 'oreb-pct', 'dreb', 'dreb-chance', 'dreb-pct'];
-        cols.forEach(function(col){
-          var col = table.column(col + ':name');
-          col.visible(!col.visible());
-        });
-      });
-
-      $('#possession-header').click(function() {
-        cols = ['time-of-poss', 'elbow', 'post', 'paint'];
-        cols.forEach(function(col){
-          var col = table.column(col + ':name');
-          col.visible(!col.visible());
-        });
-      });
-
-      $('#perimeter-d-header').click(function() {
-        cols = ['deflections', 'loose-ball'];
-        cols.forEach(function(col){
-          var col = table.column(col + ':name');
-          col.visible(!col.visible());
-        });
-      });
-
-      $('#intererio-d-header').click(function() {
-        cols = ['rim-fga', 'rim-fgpct'];
-        cols.forEach(function(col){
-          var col = table.column(col + ':name');
-          col.visible(!col.visible());
-        });
-      });
-
-      $('#misc-header').click(function() {
-        cols = ['screen-ast'];
-        cols.forEach(function(col){
-          var col = table.column(col + ':name');
-          col.visible(!col.visible());
-        });
-      });
-});
-</script>
 </body>
 </html>

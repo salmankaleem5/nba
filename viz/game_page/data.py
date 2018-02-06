@@ -122,8 +122,8 @@ def get_stats_for_game(game_id, year, game_date, file_path, data_override=False)
 
 def get_data_for_game(game_id, game_date, year='2017-18'):
     # get_rotation_data_for_game(game_id, year=year, single_game_file_path=file_dir)
-    # get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json')
-    get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', False)
+    get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=False)
+    # get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=True)
 
 
-get_data_for_game('0021700733', '01/28/2018')
+get_data_for_game('0021700780', '02/03/2018')
