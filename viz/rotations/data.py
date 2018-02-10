@@ -21,28 +21,37 @@ def is_home(df, t):
 # From pbp_df and a team abbreviation, returns a df of all subs for that team
 def get_team_df(df, t):
     team_is_home = is_home(df, t)
+    df = df[df['PLAYER1_TEAM_ABBREVIATION'].notnull()]
     if team_is_home:
         return df[df['VISITORDESCRIPTION'].isnull()]
     else:
         return df[df['HOMEDESCRIPTION'].isnull()]
 
 
+# Get initial lineups for a Period.
+# First look for players who are subbed out before they are subbed in
+# If less than 5 players meet initial criteria looks for players who were listed in pbp but never subbed in or out
+# If still less than 5 players, throw value error and throw out the period
 def get_initial_lineup(df):
     subs_df = df[df.EVENTMSGTYPE == 8]
-    players = []
+    initial_players = []
     subbed_in = []
     end = 0
     for ix, sub in subs_df.iterrows():
         if end == 0:
             end = sub.TIME
+
         player_in = sub.PLAYER2_NAME
         player_out = sub.PLAYER1_NAME
+
         if player_out not in subbed_in:
-            players.append(player_out)
+            initial_players.append(player_out)
+
         subbed_in.append(player_in)
-        if len(players) == 5:
+
+        if len(initial_players) == 5:
             return {
-                'players': players,
+                'players': initial_players,
                 'start_time': (df.iloc[0]['PERIOD'] - 1) * 720,
                 'end_time': end
             }
@@ -50,14 +59,15 @@ def get_initial_lineup(df):
     others = df.PLAYER1_NAME.unique()
     others = [str(i) for i in others]
     others = list(filter(lambda x: x != 'nan', others))
-    others = list(filter(lambda x: x != 'None', others))
     others = list(filter(lambda x: x not in subbed_in, others))
+    others = list(filter(lambda x: x not in initial_players, others))
+
     for p in others:
-        if p not in players:
-            players.append(p)
-            if len(players) == 5:
+        if p not in initial_players:
+            initial_players.append(p)
+            if len(initial_players) == 5:
                 return {
-                    'players': players,
+                    'players': initial_players,
                     'start_time': (df.iloc[0]['PERIOD'] - 1) * 720,
                     'end_time': end
                 }
@@ -65,11 +75,21 @@ def get_initial_lineup(df):
     raise ValueError('Not enough players')
 
 
-def get_lineups_for_team(team_df):
+def get_game_lineups_for_team(team_df):
     lineups = []
-    for p in range(1, 5):
+
+    period_max = team_df['PERIOD'].max()
+    if period_max < 4:
+        raise ValueError('PERIOD MAX IS LOWER THAN 4')
+
+    for p in range(1, (period_max + 1)):
         period_df = team_df[team_df['PERIOD'] == p]
-        initial_lineup = get_initial_lineup(period_df)
+
+        try:
+            initial_lineup = get_initial_lineup(period_df)
+        except ValueError:
+            print(ValueError)
+            continue
         lineups.append(initial_lineup)
 
         current_players = initial_lineup['players']
@@ -94,27 +114,28 @@ def get_lineups_for_team(team_df):
         if i < len(lineups) - 1:
             lineups[i]['end_time'] = lineups[i + 1]['start_time']
         else:
-            lineups[i]['end_time'] = 2880
+            lineups[i]['end_time'] = 2880 if period_max == 4 else 2880 + ((period_max - 4) * 300)
 
     lineups = list(filter(lambda x: x['start_time'] != x['end_time'], lineups))
 
     return lineups
 
 
-def get_game_player_stints_for_team(df, t):
-    team_df = get_team_df(df, t)
-    team_lineups = get_lineups_for_team(team_df)
+def get_game_player_stints_for_team(team_lineups):
     players = []
     for line_up in team_lineups:
         for player in line_up['players']:
             if player not in players:
                 players.append(player)
+
     team_player_stints = []
     for player in players:
         player_lineups = list(filter(lambda x: player in x['players'], team_lineups))
+
         player_stints = []
         previous_start_time = player_lineups[0]['start_time']
         previous_end_time = player_lineups[0]['end_time']
+
         for line_up in player_lineups[1:]:
             if line_up['start_time'] == previous_end_time:
                 previous_end_time = line_up['end_time']
@@ -126,44 +147,44 @@ def get_game_player_stints_for_team(df, t):
                 })
                 previous_start_time = line_up['start_time']
                 previous_end_time = line_up['end_time']
+
         player_stints.append({
             'player': player,
             'start_time': previous_start_time,
             'end_time': previous_end_time
         })
+
         team_player_stints.extend(player_stints)
+
     team_player_stints_df = pd.DataFrame(team_player_stints)
     team_player_stints_df['time'] = team_player_stints_df['end_time'] - team_player_stints_df['start_time']
+
     return team_player_stints_df
 
 
-def transform_stints_for_viz(df):
+def transform_stints_for_viz(player_stints_df):
     data = []
-    for player in df['player'].unique():
-        player_df = df[df['player'] == player]
-        for minute in range(0, 48):
+    minute_max = int(player_stints_df['end_time'].max() / 60)
+    for player in player_stints_df['player'].unique():
+        player_df = player_stints_df[player_stints_df['player'] == player]
+        for minute in range(0, minute_max):
             minute_start = minute * 60
             minute_end = (minute + 1) * 60
 
-            if minute == 47:
+            if minute == minute_max - 1:
                 minute_end += 1
 
-            df1 = player_df[player_df['start_time'] >= minute_start]
-            df1 = df1[df1['start_time'] < minute_end - 30]
+            time_missed_before = player_df['start_time'].map(
+                lambda x: 0 if x <= minute_start else 60 if x >= minute_end else x - minute_start)
+            time_missed_after = player_df['end_time'].map(
+                lambda x: 0 if x >= minute_end else 60 if x <= minute_start else minute_end - x)
 
-            df2 = player_df[player_df['end_time'] > minute_start + 30]
-            df2 = df2[df2['end_time'] <= minute_end]
-
-            df3 = player_df[player_df['start_time'] < minute_start]
-            df3 = df3[df3['end_time'] > minute_end]
-
-            merge_df = pd.merge(df1, df2, on=['player', 'start_time', 'end_time'], how='outer')
-            merge_df = pd.merge(merge_df, df3, on=['player', 'start_time', 'end_time'], how='outer')
+            time_in_minute = (60 - time_missed_before - time_missed_after).sum()
 
             data.append({
                 'player': player,
                 'minute': str(minute + 1),
-                'value': len(merge_df)
+                'value': time_in_minute
             })
 
     return pd.DataFrame(data)
@@ -172,15 +193,13 @@ def transform_stints_for_viz(df):
 def get_score_data_for_game(game):
     pbp_ep = PlayByPlay()
 
-    data = []
-    for m in range(1, 49):
-        data.append({'minute': m, 'score_margin': 0})
-
     pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game}, override_file=False)
-    pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
+    pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD']) / 60
 
     pbp_df = pbp_df[pbp_df['SCOREMARGIN'].notnull()]
     pbp_df = pbp_df[pbp_df['PLAYER1_ID'].notnull()]
+
+    pbp_df['SCOREMARGIN'] = pbp_df['SCOREMARGIN'].map(lambda x: 0 if x == 'TIE' else x)
 
     pbp_df = pbp_df.rename(columns={'SCOREMARGIN': 'score_margin', 'TIME': 'minute'})
     pbp_df = pbp_df[['score_margin', 'minute']]
@@ -239,12 +258,15 @@ def get_rotation_data_for_game(game_id, year='2017-18', single_game_file_path='.
     rotation_df = pd.DataFrame()
     index = 1
     for t in teams:
-        game_stints_df = get_game_player_stints_for_team(pbp_df, t)
-        team_rotation_df = transform_stints_for_viz(game_stints_df)
+        team_df = get_team_df(pbp_df, t)
+        team_lineups = get_game_lineups_for_team(team_df)
+        team_game_player_stints_df = get_game_player_stints_for_team(team_lineups)
+        team_rotation_df = transform_stints_for_viz(team_game_player_stints_df)
 
-        players = game_stints_df['player'].unique()
+        players = team_game_player_stints_df['player'].unique()
         players = sorted(players,
-                         key=lambda x: -game_stints_df[game_stints_df['player'] == x]['time'].sum())
+                         key=lambda x: -team_game_player_stints_df[team_game_player_stints_df['player'] == x][
+                             'time'].sum())
 
         team_rotation_df['pindex'] = 0
         for player in players:
@@ -263,3 +285,5 @@ def get_rotation_data_for_game(game_id, year='2017-18', single_game_file_path='.
     score_df = get_score_data_for_game(game_id)
     score_df.to_csv(single_game_file_path + 'score.csv')
 
+
+# get_rotation_data_for_game('0021700807')

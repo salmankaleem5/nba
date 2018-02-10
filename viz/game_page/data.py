@@ -1,10 +1,25 @@
 from viz.rotations.data import get_rotation_data_for_game, is_home
 from viz.shotCharts.data import get_shot_data_for_game
 from util.util import merge_shot_pbp_for_game
-from util.nba_stats import TrackingStats, HustleStats
+from util.nba_stats import TrackingStats, HustleStats, GeneralPlayerStats
 import pandas as pd
+import requests
+import shutil
 
 file_dir = './data/'
+
+
+def get_team_logos():
+    teams = GeneralPlayerStats().get_data({})['TEAM_ABBREVIATION'].unique()
+    logo_url = 'http://stats.nba.com/media/img/teams/logos/{}_logo.svg'
+    logo_file_location = './img/{}.svg'
+    for t in teams:
+        team_logo_url = logo_url.format(t)
+        team_logo_file_location = logo_file_location.format(t)
+        response = requests.get(team_logo_url, stream=True)
+        with open(team_logo_file_location, 'wb') as out_file:
+            shutil.copyfileobj(response.raw, out_file)
+        del response
 
 
 def get_scoring_stats_from_pbp(pbp_df):
@@ -121,9 +136,9 @@ def get_stats_for_game(game_id, year, game_date, file_path, data_override=False)
 
 
 def get_data_for_game(game_id, game_date, year='2017-18'):
-    # get_rotation_data_for_game(game_id, year=year, single_game_file_path=file_dir)
-    get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=False)
+    get_rotation_data_for_game(game_id, year=year, single_game_file_path=file_dir)
+    # get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=False)
     # get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=True)
 
 
-get_data_for_game('0021700780', '02/03/2018')
+get_data_for_game('0021700807', '02/07/2018')

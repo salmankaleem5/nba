@@ -5,7 +5,7 @@ function create_stats_table(){
   $.getJSON("./data/stats.json", function(json) {
     table = $("#stats-table").DataTable({
       data: json,
-      order: [[1, "desc"]],
+      order: [[1, "desc"], [2, "desc"]],
       paging: false,
       columns: [
         {title: 'Name', data: 'player'},

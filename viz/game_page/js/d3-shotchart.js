@@ -25,7 +25,7 @@
               }
               else {
                   var svg = d3.select(this).append("svg")
-                      .attr("viewBox", "0, 15, " + 50 + ", " + 33 + "")
+                      .attr("viewBox", "0, 10, " + 50 + ", " + 43 + "")
                       .classed("court", true);
               // Append the outer paint rectangle
                   svg.append("g")
@@ -53,29 +53,14 @@
                       .attr("y2", yScale(0));
                   // Append foul circle
                   // Add clipPaths w/ rectangles to make the 2 semi-circles with our desired styles
-                  var dashedFoulCircle = svg.append("g").classed("foul-circle dashed", true);
-                  dashedFoulCircle.append("defs").append("clipPath")
-                      .attr("id", "cut-off-top")
-                      .append("rect")
-                      .attr("width", 12)
-                      .attr("height", 6)
-                      .attr("x", 25)
-                      .attr("y", yScale(19)) // 47-19 (top of rectangle is pinned to foul line, which is at 19 ft)
-                      .attr("transform", "translate(" + -6 + "," + 0 + ")");
-                  dashedFoulCircle.append("circle")
-                      .attr("cx", 25)
-                      .attr("cy", yScale(19)) // 47-19
-                      .attr("r", 6)
-                      .attr("stroke-dasharray", 1 + "," + 1)
-                      .attr("clip-path", "url(#cut-off-top)");
                   var solidFoulCircle = svg.append("g").classed("foul-circle solid", true);
                   solidFoulCircle.append("defs").append("clipPath")
                       .attr("id", "cut-off-bottom")
                       .append("rect")
-                      .attr("width", 12)
+                      .attr("width", 100)
                       .attr("height", 6)
-                      .attr("x", 25)
-                      .attr("y", yScale(19)) /*foul line is 19 feet, then transform by 6 feet (circle radius) to pin rectangle above foul line..clip paths only render the parts of the circle that are in the rectangle path */
+                      .attr("x", 23)
+                      .attr("y", 27.9) /*foul line is 19 feet, then transform by 6 feet (circle radius) to pin rectangle above foul line..clip paths only render the parts of the circle that are in the rectangle path */
                       .attr("transform", "translate(" + -6 + "," + -6 + ")");
                   solidFoulCircle.append("circle")
                       .attr("cx", 25)
@@ -99,26 +84,16 @@
                   restrictedArea.append("defs").append("clipPath")
                       .attr("id", "restricted-cut-off")
                       .append("rect")
-                      .attr("width", 8) // width is 2r of the circle it's cutting off
-                      .attr("height", 4) // height is 1r of the circle it's cutting off
-                      .attr("x", 25) // center rectangle
-                      .attr("y", yScale(4.75))
+                      .attr("width", 10) // width is 2r of the circle it's cutting off
+                      .attr("height", 6.5) // height is 1r of the circle it's cutting off
+                      .attr("x", 24) // center rectangle
+                      .attr("y", 40)
                       .attr("transform", "translate(" + -4 + "," + -4 + ")");
                   restrictedArea.append("circle")
                       .attr("cx", 25)
                       .attr("cy", yScale(4.75))
                       .attr("r", 4)
                       .attr("clip-path", "url(#restricted-cut-off)");
-                  restrictedArea.append("line")
-                      .attr("x1", 21)
-                      .attr("x2", 21)
-                      .attr("y1", yScale(5.25))
-                      .attr("y2", yScale(4));
-                  restrictedArea.append("line")
-                      .attr("x1", 29)
-                      .attr("x2", 29)
-                      .attr("y1", yScale(5.25))
-                      .attr("y2", yScale(4));
                   // Add 3 point arc
                   var threePointArea = svg.append("g").classed("three-point-area", true);
                   threePointArea.append("defs").append("clipPath")
@@ -127,7 +102,7 @@
                       .attr("width", 44)
                       .attr("height", 23.75)
                       .attr("x", 25)
-                      .attr("y", yScale(4.75)) // put recentagle at centerpoint of circle then translate by the inverse of the circle radius to cut off top half
+                      .attr("y", yScale(6)) // put recentagle at centerpoint of circle then translate by the inverse of the circle radius to cut off top half
                       .attr("transform", "translate(" + -22 + "," + -23.75 + ")");
                   threePointArea.append("circle")
                       .attr("cx", 25)
@@ -135,57 +110,15 @@
                       .attr("r", 23.75)
                       .attr("clip-path", "url(#three-point-cut-off)");
                   threePointArea.append("line")
-                      .attr("x1", 3)
-                      .attr("x2", 3)
-                      .attr("y1", yScale(14))
+                      .attr("x1", 3.12)
+                      .attr("x2", 3.12)
+                      .attr("y1", 32.8)
                       .attr("y2", yScale(0));
                   threePointArea.append("line")
-                      .attr("x1", 47)
-                      .attr("x2", 47)
-                      .attr("y1", yScale(14))
+                      .attr("x1", 46.9)
+                      .attr("x2", 46.9)
+                      .attr("y1", 32.8)
                       .attr("y2", yScale(0));
-                  // Add key lines
-                  var keyLines = svg.append("g").classed("key-lines", true);
-                  keyLines.append("line")
-                      .attr("x1", 16)
-                      .attr("x2", 17)
-                      .attr("y1", yScale(7))
-                      .attr("y2", yScale(7));
-                  keyLines.append("line")
-                      .attr("x1", 16)
-                      .attr("x2", 17)
-                      .attr("y1", yScale(8))
-                      .attr("y2", yScale(8));
-                  keyLines.append("line")
-                      .attr("x1", 16)
-                      .attr("x2", 17)
-                      .attr("y1", yScale(11))
-                      .attr("y2", yScale(11));
-                  keyLines.append("line")
-                      .attr("x1", 16)
-                      .attr("x2", 17)
-                      .attr("y1", yScale(14))
-                      .attr("y2", yScale(14));
-                  keyLines.append("line")
-                      .attr("x1", 33)
-                      .attr("x2", 34)
-                      .attr("y1", yScale(7))
-                      .attr("y2", yScale(7));
-                  keyLines.append("line")
-                      .attr("x1", 33)
-                      .attr("x2", 34)
-                      .attr("y1", yScale(8))
-                      .attr("y2", yScale(8));
-                  keyLines.append("line")
-                      .attr("x1", 33)
-                      .attr("x2", 34)
-                      .attr("y1", yScale(11))
-                      .attr("y2", yScale(11));
-                  keyLines.append("line")
-                      .attr("x1", 33)
-                      .attr("x2", 34)
-                      .attr("y1", yScale(14))
-                      .attr("y2", yScale(14));
                   // Append baseline
                   svg.append("g")
                       .classed("court-baseline", true)

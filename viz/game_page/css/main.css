@@ -3,6 +3,16 @@ rect.bordered {
   stroke-width:2px;
 }
 
+.score {
+  font-size: 50pt;
+}
+
+
+.table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
+	border: 1px solid #848484;
+}
+
+
 text.mono {
   font-size: 9pt;
   font-family: Consolas, courier;
@@ -19,8 +29,8 @@ text.axis-worktime {
 
 #container {
   text-align: center;
-  background-color: white !important;
-  width: 80%;
+  background-color: lightgray !important;
+  width: 100%;
   margin: 0 auto;
 }
 
