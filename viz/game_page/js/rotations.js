@@ -2,8 +2,7 @@ function plot_rotations(){
   var margin = { top: 15, right: 150, bottom: 0, left: 170 },
       width = 1200 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom,
-      gridSize = Math.floor(width / 47),
-      legendElementWidth = gridSize*2,
+      gridSize = 0,
       buckets = 9,
       playerColors = colorbrewer.Greys[9],
       max_minute = 0,
@@ -59,6 +58,8 @@ function plot_rotations(){
         }
       });
 
+      gridSize = Math.floor(width / max_minute);
+
       var playerLabels = svg.selectAll(".playerLabel")
           .data(players)
           .enter().append("text")
@@ -74,7 +75,7 @@ function plot_rotations(){
         extra_minutes = max_minute - 48;
         for (i = 0; i < extra_minutes; i++) {
           if(i % 5 == 0) {
-            minutes.push("OT" + ((i + 1) - (5 * i)));
+            minutes.push("OT" + (i/5 + 1));
           }
           else {
             minutes.push("");
@@ -143,12 +144,12 @@ function plot_rotations(){
             max_lead = Math.max(max_home_lead, max_vis_lead),
             max_lead_ratio = Math.min(max_home_lead, max_vis_lead) / Math.max(max_home_lead, max_vis_lead);
 
-        var yAxisShiftBool = max_lead_ratio == max_home_lead ? true : false;
+        var yAxisShiftBool = max_lead == max_home_lead ? false : true;
 
         var yAxisScale = height - (((max_pindex * gridSize) / 2) * (1 + max_lead_ratio)),
-            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) : 0;
+            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 60 : 0;
 
-        console.log(yAxisShift);
+        console.log(yAxisShiftBool);
 
         var x = d3.scaleLinear()
           .rangeRound([margin.left, width + margin.right]);
