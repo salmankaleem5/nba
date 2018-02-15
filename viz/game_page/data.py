@@ -35,6 +35,7 @@ def get_scoring_stats_from_pbp(pbp_df):
         ft1a = len(ft_df[ft_df[desc].str.contains('of 1')])
         ft2a = len(ft_df[ft_df[desc].str.contains('of 2')])
         ft3a = len(ft_df[ft_df[desc].str.contains('of 3')])
+        ft_tech = len(ft_df[ft_df[desc].str.contains('Free Throw Technical')])
         ftm = len(ft_df[ft_df[desc].str.contains('PTS')])
 
         fg2_df = p_df[p_df['SHOT_TYPE'] == '2PT Field Goal']
@@ -54,6 +55,7 @@ def get_scoring_stats_from_pbp(pbp_df):
             'and_one': ft1a,
             '2pt_ft': ft2a,
             '3pt_ft': ft3a,
+            'tech_ft': ft_tech,
             'ftm': ftm,
             '2pt_fga': fg2a,
             '2pt_fgm': fg2m,
@@ -141,4 +143,4 @@ def get_data_for_game(game_id, game_date, year='2017-18'):
     # get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=True)
 
 
-get_data_for_game('0021700807', '02/07/2018')
+get_data_for_game('0021700826', '02/15/2018')

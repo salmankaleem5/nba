@@ -204,6 +204,10 @@ def get_score_data_for_game(game):
     pbp_df = pbp_df.rename(columns={'SCOREMARGIN': 'score_margin', 'TIME': 'minute'})
     pbp_df = pbp_df[['score_margin', 'minute']]
 
+    initial_row = [{'score_margin': 0, 'minute': 0}]
+
+    pbp_df = pd.concat([pd.DataFrame(initial_row), pbp_df], ignore_index=True)
+
     return pbp_df
 
 
@@ -270,7 +274,6 @@ def get_rotation_data_for_game(game_id, year='2017-18', single_game_file_path='.
 
         team_rotation_df['pindex'] = 0
         for player in players:
-            sys.stdout.write("\"" + player + "\",")
             cond = team_rotation_df.player == player
             team_rotation_df.pindex[cond] = index
             index += 1

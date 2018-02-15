@@ -28,7 +28,7 @@ function create_stats_table(){
           title: 'Free Throws',
           data: null,
           render: function(data){
-              var attempts = data['and_one'] + data['2pt_ft'] + data['3pt_ft'];
+              var attempts = data['and_one'] + data['2pt_ft'] + data['3pt_ft'] + data['tech_ft'];
               if (attempts > 0) {
                 return data['ftm'] + '/' + attempts + ' (' + Math.round(data['ftm'] / attempts * 1000) / 10 + '%)';
               }
