@@ -132,7 +132,7 @@ function plot_rotations(){
           .style("fill", function(d, i) { return playerColors[i]; });
 
       legend.enter().append("text")
-        .style("fill", function(d) { return playerColorScale(60-d);})
+        .style("fill", function(d) { return playerColorScale(d < 30? 60 : 0);})
         .text(function(d, i) { return " ≥ " + Math.round(d); })
         .attr("x", function(d, i) { return legendElementWidth * i; })
         .attr("y", height + gridSize - 5)
