@@ -36,4 +36,20 @@ $(document).ready(function() {
       });
 
       create_stats_table();
+
+      $('#rotations-toggle').change(function (){
+        if(!this.checked){
+          $('.hour, .legend').hide();
+        } else {
+          $('.hour, .legend').show();
+        }
+      });
+
+      $('#point-diff-toggle').change(function (){
+        if(!this.checked){
+          $('.point-diff').hide();
+        } else {
+          $('.point-diff').show();
+        }
+      });
 });
