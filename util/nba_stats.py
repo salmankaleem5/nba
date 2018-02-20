@@ -476,13 +476,73 @@ class PlayByPlay(EndPoint):
     def determine_file_path(self, params):
         return data_dir + 'playbyplayv2/' + params['Season'] + '/' + params['GameID'] + '.csv'
 
-    def update_pbp_data(self, season='2017-18', season_type='Regular Season'):
+    def update_data(self, season='2017-18', season_type='Regular Season'):
         log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
         games = log.GAME_ID.unique()
         for g in games:
             if len(str(g)) < 10:
                 g = '00' + str(g)
             self.get_data({'GameID': g, 'Season': season, 'SeasonType': season_type})
+
+
+class Matchups(EndPoint):
+    base_url = 'http://stats.nba.com/stats/boxscorematchups'
+    default_params = {
+        'GameID': ''
+    }
+
+    def determine_file_path(self, params):
+        return data_dir + 'boxscorematchups/' + params['GameID'] + '.csv'
+
+    def update_data(self, season='2017-18', season_type='Regular Season'):
+        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
+        games = log.GAME_ID.unique()
+        for g in games:
+            if len(str(g)) < 10:
+                g = '00' + str(g)
+            self.get_data({'GameID': g})
+
+    def aggregate_data(self, season='2017-18', season_type='Regular Season'):
+        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
+        games = log.GAME_ID.unique()
+
+        season_df = pd.DataFrame()
+        for g in games:
+            if len(str(g)) < 10:
+                g = '00' + str(g)
+            season_df = season_df.append(self.get_data({'GameID': g}))
+
+        matchup_data = []
+        players = season_df['OFF_PLAYER_NAME'].unique()
+        for off_player in players:
+            for def_player in players:
+                matchup_df = season_df[
+                    (season_df['OFF_PLAYER_NAME'] == off_player) & (season_df['DEF_PLAYER_NAME'] == def_player)]
+                if (len(matchup_df)) > 0:
+                    matchup_data.append({
+                        'Off_Player': off_player,
+                        'Def_Player': def_player,
+                        'Ast': matchup_df['AST'].sum(),
+                        'Fg3a': matchup_df['FG3A'].sum(),
+                        'Fg3m': matchup_df['FG3M'].sum(),
+                        'Fg3pct': matchup_df['FG3_PCT'].sum(),
+                        'Fga': matchup_df['FGA'].sum(),
+                        'Fgm': matchup_df['FGM'].sum(),
+                        'Ftm': matchup_df['FTM'].sum(),
+                        'Games': matchup_df['GAME_ID'].tolist(),
+                        'Poss': matchup_df['POSS'].sum(),
+                        'Sfl': matchup_df['SFL'].sum(),
+                        'Tm_pts': matchup_df['TEAM_PTS'].sum(),
+                        'Pl_pts': matchup_df['PLAYER_PTS'].sum(),
+                        'Efg': matchup_df['PLAYER_PTS'].sum() / matchup_df['FGA'].sum() if matchup_df['FGA'].sum() != 0 else 0,
+                        'Tov': matchup_df['TOV'].sum(),
+                        'Blk': matchup_df['BLK'].sum(),
+                        'HBlk': matchup_df['HELP_BLK'].sum(),
+                        'HBlk_rec': matchup_df['HELP_BLK_REC'].sum()
+                    })
+        df = pd.DataFrame(matchup_data)
+        df = df[df['Poss'] >= 10]
+        df.to_csv(data_dir + 'boxscorematchups/aggregate.csv')
 
 
 class OnOffSummary(EndPoint):
@@ -548,6 +608,7 @@ class Standings(EndPoint):
     default_params = {'LeagueID': '00',
                       'Season': '2017-18',
                       'SeasonType': 'Regular Season'}
+
 
 class SynergyPlayerStats(EndPoint):
     base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/'
