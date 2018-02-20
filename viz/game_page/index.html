@@ -12,9 +12,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js"></script>
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
     <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 
   	<script src="./js/d3-shotchart.js" ></script>
   	<script src="./js/d3hexbin.js" ></script>
@@ -35,23 +37,31 @@
   <img src='./img/NOP.svg' height="200px" width="200px"/>
   <span class='score'>139</span>
 
-  <!-- <h1> Rotations </h1> -->
+  <h1> Rotations </h1>
+  <label class="checkbox-inline">
+    <input id='rotations-toggle' checked data-toggle="toggle" type="checkbox"> Rotations
+  </label>
+  <label class="checkbox-inline">
+    <input id='point-diff-toggle' checked data-toggle="toggle" type="checkbox"> Point Differential
+  </label>
   <div id="chart"></div>
 
   <h1> Shots </h1>
+  <div>
+  <select id='player-select' class='form-control form-control-lg' style='width: 20%; text-align: center; display: inline;'></br>
+  </select>
+  </div>
+  <div>
+    <svg height=20>
+    <g class='shots'><circle class="shot assist" cx="20" cy="10" r="7"></circle><text x=30 y=15>Assist</text></g>
+    <g class='shots'><circle class="shot make" cx="100" cy="10" r="7"></circle><text x=110 y=15>Shot Make</text></g>
+    <g class='shots'><circle class="shot miss" cx="200" cy="10" r="7"></circle><text x=210 y=15>Shot Miss</text></g>
+    </svg>
+    </div>
+
   <div id="shot-chart"></div>
 
-  <div>
-  <select id='player-select'></br>
-  </select>
-</div>
-<div>
-  <svg>
-  <g class='shots'><circle class="shot assist" cx="30" cy="30" r="7"></circle><text x=40 y=35>Assist</text></g>
-  <g class='shots'><circle class="shot make" cx="30" cy="50" r="7"></circle><text x=40 y=55>Shot Make</text></g>
-  <g class='shots'><circle class="shot miss" cx="30" cy="70" r="7"></circle><text x=40 y=75>Shot Miss</text></g>
-</svg>
-  </div>
+
   <h1> Stats </h1>
   <div style='padding-top: 20px;'>
   <span style='font-weight: bold;'>Click Top Level Categories to Expand / Collapse</span>
@@ -65,7 +75,7 @@
         <th id='scoring-header' colspan=6>Scoring</th>
         <th id='passing-header' colspan=4>Passing</th>
         <th id='possession-header' colspan=5>Possession</th>
-        <th id='rebounding-header' colspan=7>Rebounding</th>
+        <th id='rebounding-header' colspan=4>Rebounding</th>
         <th id='perimeter-d-header' colspan=3>Perimeter D</th>
         <th id='intererio-d-header' colspan=3>Interior D</th>
         <th id='misc-header' colspan=1>Misc</th>
@@ -100,13 +110,10 @@
         <th></th>
         <th></th>
         <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
       </tr>
     </thead>
   </table>
+  
   </div>
 </div>
 </body>

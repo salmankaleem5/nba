@@ -85,27 +85,34 @@ function create_stats_table(){
         {title: 'Post Touch', data: 'POST_TOUCHES', visible: false, name: 'post'},
         {title: 'Paint Touch', data: 'PAINT_TOUCHES', visible: false, name: 'paint'},
         {title: 'Reb', data: 'REB'},
-        {title: 'Oreb', data: 'OREB', visible: false, name: 'oreb'},
-        {title: 'Oreb Chacne', data: 'OREB_CHANCES', visible: false, name: 'oreb-chance'},
+        {title: 'Box Outs', data: 'BOX_OUTS', visible: false, name: 'box-outs'},
         {
-          title: 'Oreb Chance Pct',
-          data: 'OREB_CHANCE_PCT_ADJ',
-          render: function(data){
-            return data + '%';
+          title: 'OReb / Chances',
+          data: null,
+          render: function(data) {
+            var adj_chances = data['OREB_CHANCES'] - data['OREB_CHANCE_DEFER'];
+            if (adj_chances > 0) {
+              return data['OREB'] + '/' + (adj_chances) + ' (' + Math.round(data['OREB'] / adj_chances * 1000) / 10 + '%)';
+            } else {
+              return '0/0 (0%)';
+            }
           },
           visible: false,
-          name: 'oreb-pct'
+          name: 'oreb'
         },
-        {title: 'Dreb', data: 'DREB', visible: false, name: 'dreb'},
-        {title: 'Dreb Chance', data: 'DREB_CHANCES', visible: false, name: 'dreb-chance'},
         {
-          title: 'Dreb Chance Pct',
-          data: 'DREB_CHANCE_PCT_ADJ',
-          render: function(data){
-            return data + '%';
+          title: 'DReb / Chances',
+          data: null,
+          render: function(data) {
+            var adj_chances = data['DREB_CHANCES'] - data['DREB_CHANCE_DEFER'];
+            if (adj_chances > 0) {
+              return data['DREB'] + '/' + (adj_chances) + ' (' + Math.round(data['DREB'] / adj_chances * 1000) / 10 + '%)';
+            } else {
+              return '0/0 (0%)';
+            }
           },
           visible: false,
-          name: 'dreb-pct'
+          name: 'dreb'
         },
         {title: 'Stl', data: 'STL'},
         {title: 'Deflections', data: 'DEFLECTIONS', visible: false, name: 'deflections'},
@@ -143,7 +150,7 @@ function create_stats_table(){
   });
 
   $('#rebounding-header').click(function() {
-    cols = ['oreb', 'oreb-chance', 'oreb-pct', 'dreb', 'dreb-chance', 'dreb-pct'];
+    cols = ['oreb', 'oreb-chance', 'oreb-pct', 'dreb', 'dreb-chance', 'dreb-pct', 'box-outs'];
     cols.forEach(function(col){
       var col = table.column(col + ':name');
       col.visible(!col.visible());

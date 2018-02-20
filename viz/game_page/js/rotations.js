@@ -1,8 +1,9 @@
 function plot_rotations(){
-  var margin = { top: 15, right: 150, bottom: 0, left: 170 },
+  var margin = { top: 15, right: 150, bottom: 30, left: 170 },
       width = 1200 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom,
+      height = 510 - margin.top - margin.bottom,
       gridSize = 0,
+      legendElementWidth = 0,
       buckets = 9,
       playerColors = colorbrewer.Greys[9],
       max_minute = 0,
@@ -59,6 +60,7 @@ function plot_rotations(){
       });
 
       gridSize = Math.floor(width / max_minute);
+      legendElementWidth = gridSize*2;
 
       var playerLabels = svg.selectAll(".playerLabel")
           .data(players)
@@ -116,6 +118,36 @@ function plot_rotations(){
       cards.select("title").text(function(d) { return d.value; });
 
       cards.exit().remove();
+
+      var legend = svg.selectAll(".legend")
+          .data([0].concat(playerColorScale.quantiles()), function(d) { return d; });
+
+      legend.enter().append("g")
+          .attr("class", "legend")
+          .append("rect")
+          .attr("x", function(d, i) {return legendElementWidth * i; })
+          .attr("y", height)
+          .attr("width", legendElementWidth)
+          .attr("height", gridSize)
+          .style("fill", function(d, i) { return playerColors[i]; });
+
+      legend.enter().append("text")
+        .style("fill", function(d) { return playerColorScale(60-d);})
+        .text(function(d, i) { return " ≥ " + Math.round(d); })
+        .attr("x", function(d, i) { return legendElementWidth * i; })
+        .attr("y", height + gridSize - 5)
+        .attr("class", "legend");
+
+      svg.selectAll(".legendLabel")
+        .data(["Seconds Played in Minute"])
+        .enter()
+        .append("text")
+        .text(function(d) {return d;})
+        .attr("y", height + gridSize - 5)
+        .attr("x", function() { return (legend.enter().data().length * legendElementWidth) + 5})
+        .attr("class", "legend");
+
+      legend.exit().remove();
     });
   };
 
@@ -147,9 +179,7 @@ function plot_rotations(){
         var yAxisShiftBool = max_lead == max_home_lead ? false : true;
 
         var yAxisScale = height - (((max_pindex * gridSize) / 2) * (1 + max_lead_ratio)),
-            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 60 : 0;
-
-        console.log(yAxisShiftBool);
+            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 60 : -margin.bottom;
 
         var x = d3.scaleLinear()
           .rangeRound([margin.left, width + margin.right]);
@@ -177,6 +207,7 @@ function plot_rotations(){
 
         svg.append("path")
           .datum(data)
+          .attr("class", "point-diff")
           .attr("fill", "none")
           .attr("stroke", "steelblue")
           .attr("stroke-opacity", 0.7)
