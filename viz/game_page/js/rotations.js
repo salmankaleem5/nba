@@ -90,7 +90,7 @@ function plot_rotations(){
           .data(minutes)
           .enter().append("text")
             .text(function(d) { return d; })
-            .attr("x", function(d, i) { return (i * gridSize) -5; })
+            .attr("x", function(d, i) { return (i * gridSize); })
             .attr("y", top_team_player_count * gridSize)
             .style("text-anchor", "middle")
             .attr("transform", "translate(" + (gridSize - 13) * 2 + ", -6)")
@@ -126,7 +126,7 @@ function plot_rotations(){
           .attr("class", "legend")
           .append("rect")
           .attr("x", function(d, i) {return legendElementWidth * i; })
-          .attr("y", height)
+          .attr("y", height - 97)
           .attr("width", legendElementWidth)
           .attr("height", gridSize)
           .style("fill", function(d, i) { return playerColors[i]; });
@@ -135,7 +135,7 @@ function plot_rotations(){
         .style("fill", function(d) { return playerColorScale(d < 30? 60 : 0);})
         .text(function(d, i) { return " ≥ " + Math.round(d); })
         .attr("x", function(d, i) { return legendElementWidth * i; })
-        .attr("y", height + gridSize - 5)
+        .attr("y", height + gridSize - 100)
         .attr("class", "legend");
 
       svg.selectAll(".legendLabel")
@@ -143,7 +143,7 @@ function plot_rotations(){
         .enter()
         .append("text")
         .text(function(d) {return d;})
-        .attr("y", height + gridSize - 5)
+        .attr("y", height + gridSize - 100)
         .attr("x", function() { return (legend.enter().data().length * legendElementWidth) + 5})
         .attr("class", "legend");
 
@@ -179,10 +179,10 @@ function plot_rotations(){
         var yAxisShiftBool = max_lead == max_home_lead ? false : true;
 
         var yAxisScale = height - (((max_pindex * gridSize) / 2) * (1 + max_lead_ratio)),
-            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 60 : -margin.bottom;
+            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 55 : -margin.bottom;
 
         var x = d3.scaleLinear()
-          .rangeRound([margin.left, width + margin.right]);
+          .rangeRound([margin.left, width + margin.right- 15]);
 
         var y = d3.scaleLinear()
           .rangeRound([height - margin.top, yAxisScale]);
@@ -197,7 +197,7 @@ function plot_rotations(){
 
         svg.append("g")
           .call(d3.axisRight(y))
-          .attr("transform", "translate(" + width + ", " + (margin.bottom - yAxisScale + yAxisShift) + ")")
+          .attr("transform", "translate(" + (width - 25) + ", " + (margin.bottom - yAxisScale + yAxisShift) + ")")
           .append("text")
           .attr("fill", "#000")
           .attr("transform", "rotate(-90)")

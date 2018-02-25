@@ -233,13 +233,13 @@
                       .append("circle")
                       .classed("shot", true)
                       .classed("make", function(d){
-                            return d.shot_made_flag === 1 && d.player === d.shooter; // used to set fill color to green if it's a made shot
+                            return (d.shot_made_flag === 1) && (d.player === d.shooter); // used to set fill color to green if it's a made shot
                       })
                       .classed("miss", function(d){
-                            return d.shot_made_flag === 0; // used to set fill color to red if it's a miss
+                            return (d.shot_made_flag === 0); // used to set fill color to red if it's a miss
                       })
                       .classed("assist", function(d){
-                            return d.assist === d.player && d.player === d.assist;
+                            return (d.assist === d.player);
                       })
                       .attr("cx", function(d) { return d.x + 25; })
                       .attr("cy", function(d) { return yScale$1(d.y) - 5; })

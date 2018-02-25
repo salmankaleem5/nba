@@ -502,47 +502,47 @@ class Matchups(EndPoint):
                 g = '00' + str(g)
             self.get_data({'GameID': g})
 
-    def aggregate_data(self, season='2017-18', season_type='Regular Season'):
-        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
-        games = log.GAME_ID.unique()
+    def aggregate_data(self, season='2017-18', season_type='Regular Season', override_file=False):
+        file_path = data_dir + 'boxscorematchups/aggregate.csv'
 
-        season_df = pd.DataFrame()
-        for g in games:
-            if len(str(g)) < 10:
-                g = '00' + str(g)
-            season_df = season_df.append(self.get_data({'GameID': g}))
+        if (not file_check(file_path)) or override_file:
 
-        matchup_data = []
-        players = season_df['OFF_PLAYER_NAME'].unique()
-        for off_player in players:
-            for def_player in players:
-                matchup_df = season_df[
-                    (season_df['OFF_PLAYER_NAME'] == off_player) & (season_df['DEF_PLAYER_NAME'] == def_player)]
-                if (len(matchup_df)) > 0:
-                    matchup_data.append({
-                        'Off_Player': off_player,
-                        'Def_Player': def_player,
-                        'Ast': matchup_df['AST'].sum(),
-                        'Fg3a': matchup_df['FG3A'].sum(),
-                        'Fg3m': matchup_df['FG3M'].sum(),
-                        'Fg3pct': matchup_df['FG3_PCT'].sum(),
-                        'Fga': matchup_df['FGA'].sum(),
-                        'Fgm': matchup_df['FGM'].sum(),
-                        'Ftm': matchup_df['FTM'].sum(),
-                        'Games': matchup_df['GAME_ID'].tolist(),
-                        'Poss': matchup_df['POSS'].sum(),
-                        'Sfl': matchup_df['SFL'].sum(),
-                        'Tm_pts': matchup_df['TEAM_PTS'].sum(),
-                        'Pl_pts': matchup_df['PLAYER_PTS'].sum(),
-                        'Efg': matchup_df['PLAYER_PTS'].sum() / matchup_df['FGA'].sum() if matchup_df['FGA'].sum() != 0 else 0,
-                        'Tov': matchup_df['TOV'].sum(),
-                        'Blk': matchup_df['BLK'].sum(),
-                        'HBlk': matchup_df['HELP_BLK'].sum(),
-                        'HBlk_rec': matchup_df['HELP_BLK_REC'].sum()
-                    })
-        df = pd.DataFrame(matchup_data)
-        df = df[df['Poss'] >= 10]
-        df.to_csv(data_dir + 'boxscorematchups/aggregate.csv')
+            log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
+            games = log.GAME_ID.unique()
+
+            season_df = pd.DataFrame()
+            for g in games:
+                if len(str(g)) < 10:
+                    g = '00' + str(g)
+                season_df = season_df.append(self.get_data({'GameID': g}))
+
+            cols = ['AST', 'BLK', 'DEF_FOULS', 'FG3A', 'FG3M', 'FGA', 'FGM', 'FTM', 'HELP_BLK', 'HELP_BLK_REC', 'OFF_FOULS', 'PLAYER_PTS', 'POSS', 'SFL', 'TEAM_PTS', 'TOV']
+            matchup_data = []
+            players = season_df['OFF_PLAYER_NAME'].unique()
+            for off_player in players:
+                for def_player in players:
+                    matchup_df = season_df[
+                        (season_df['OFF_PLAYER_NAME'] == off_player) & (season_df['DEF_PLAYER_NAME'] == def_player)]
+                    if (len(matchup_df)) > 0:
+                        pair_data = {
+                            'OFF_PLAYER': off_player,
+                            'DEF_PLAYER': def_player,
+                            'GAMES': matchup_df['GAME_ID'].tolist(),
+                            'DEF_TEAM_ID': matchup_df['DEF_TEAM_ID'].iloc[0],
+                            'OFF_TEAM_ID': matchup_df['OFF_TEAM_ID'].iloc[0],
+                            'OFF_PLAYER_ID': matchup_df['OFF_PLAYER_ID'].iloc[0],
+                            'DEF_PLAYER_ID': matchup_df['DEF_PLAYER_ID'].iloc[0]
+                        }
+                        for col in cols:
+                            pair_data[col] = matchup_df[col].sum()
+                        matchup_data.append(pair_data)
+
+            df = pd.DataFrame(matchup_data)
+            df = df[df['POSS'] >= 10]
+            df.to_csv(file_path)
+            return df
+        else:
+            return pd.read_csv(file_path)
 
 
 class OnOffSummary(EndPoint):
