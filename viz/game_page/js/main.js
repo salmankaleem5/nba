@@ -32,7 +32,6 @@ $(document).ready(function() {
           return d.player == player;
         });
         var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
-        courtSelection.datum([]).call(shots)
         courtSelection.datum(player_data).call(shots);
       });
 

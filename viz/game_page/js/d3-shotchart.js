@@ -211,7 +211,7 @@
                   }
 
                   var shots = shotsGroup.selectAll(".shot")
-                                      .data(data, function(d){ return [d.x, d.y]; });
+                                      .data(data, function(d){ return [d.x, d.y, d.player]; });
                   shots.exit()
                       .transition().duration(1000)
                       .attr("r", 0)
