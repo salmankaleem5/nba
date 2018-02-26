@@ -67,10 +67,10 @@ function create_stats_table(){
           visible: false,
           name: '3pt-fgm'
         },
-        {title: 'Ast', data: 'AST'},
+        {title: 'Ast', data: 'ast'},
         {title: 'Passes Made', data: 'PASSES_MADE', visible: false, name: 'passes'},
         {title: 'Potential Ast', data: 'POTENTIAL_AST', visible: false, name: 'potential-ast'},
-        {title: 'Ast Pts', data: 'AST_POINTS_CREATED', visible: false, name: 'ast-pts'},
+        {title: 'Ast Pts', data: 'ast_pts', visible: false, name: 'ast-pts'},
         {title: 'Touches', data: 'FRONT_CT_TOUCHES'},
         {
           title: 'Seconds of Poss',
@@ -92,7 +92,7 @@ function create_stats_table(){
           render: function(data) {
             var adj_chances = data['OREB_CHANCES'] - data['OREB_CHANCE_DEFER'];
             if (adj_chances > 0) {
-              return data['OREB'] + '/' + (adj_chances) + ' (' + Math.round(data['OREB'] / adj_chances * 1000) / 10 + '%)';
+              return data['oreb'] + '/' + (adj_chances) + ' (' + Math.round(data['oreb'] / adj_chances * 1000) / 10 + '%)';
             } else {
               return '0/0 (0%)';
             }
@@ -106,7 +106,7 @@ function create_stats_table(){
           render: function(data) {
             var adj_chances = data['DREB_CHANCES'] - data['DREB_CHANCE_DEFER'];
             if (adj_chances > 0) {
-              return data['DREB'] + '/' + (adj_chances) + ' (' + Math.round(data['DREB'] / adj_chances * 1000) / 10 + '%)';
+              return data['dreb'] + '/' + (adj_chances) + ' (' + Math.round(data['oreb'] / adj_chances * 1000) / 10 + '%)';
             } else {
               return '0/0 (0%)';
             }

@@ -31,7 +31,6 @@ $(document).ready(function() {
         player_data = data.filter(function(d) {
           return d.player == player;
         });
-        console.log(player_data);
         var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
         courtSelection.datum([]).call(shots)
         courtSelection.datum(player_data).call(shots);

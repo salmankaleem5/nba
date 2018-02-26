@@ -178,7 +178,7 @@ function plot_rotations(){
 
         var yAxisShiftBool = max_lead == max_home_lead ? false : true;
 
-        var yAxisScale = height - (((max_pindex * gridSize) / 2) * (1 + max_lead_ratio)),
+        var yAxisScale = height - (((max_pindex * gridSize) / 2) * (1 + max_lead_ratio) + 12),
             yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 55 : -margin.bottom;
 
         var x = d3.scaleLinear()
