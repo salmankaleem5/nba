@@ -1,7 +1,7 @@
 from viz.rotations.data import get_rotation_data_for_game, is_home
 from viz.shotCharts.data import get_shot_data_for_game
 from util.util import merge_shot_pbp_for_game
-from util.nba_stats import TrackingStats, HustleStats, GeneralPlayerStats
+from util.nba_stats import TrackingStats, HustleStats, GeneralPlayerStats, Matchups
 import pandas as pd
 import requests
 import shutil
@@ -178,10 +178,17 @@ def get_stats_for_game(game_id, year, game_date, file_path, data_override=False)
     stats_df.to_json(file_path, orient='records')
 
 
+def get_matchup_data_for_game(game_id, file_path, data_override=False):
+    matchup_df = Matchups().get_data({'GameID': game_id}, override_file=data_override)
+
+    matchup_df.to_json(file_path, orient='records')
+
+
 def get_data_for_game(game_id, game_date, year='2017-18'):
-    get_rotation_data_for_game(game_id, year=year, single_game_file_path=file_dir)
-    get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=False)
-    get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=True)
+    # get_rotation_data_for_game(game_id, year=year, single_game_file_path=file_dir)
+    # get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=False)
+    # get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=False)
+    get_matchup_data_for_game(game_id, file_dir + 'matchups.json', data_override=False)
 
 
 get_data_for_game('0021700902', '02/26/2018')

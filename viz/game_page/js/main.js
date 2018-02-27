@@ -5,9 +5,10 @@ $(document).ready(function() {
       var court = d3.court().width(1000);
       courtSelection.call(court);
 
+      players = [];
+
       $.getJSON("./data/shots.json", function(json) {
           data = json;
-  				players = [];
           x = {};
   				$.each(data, function(i, d){
   					if ($.inArray(this.shooter, players) === -1){
@@ -33,6 +34,14 @@ $(document).ready(function() {
         });
         var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
         courtSelection.datum(player_data).call(shots);
+      });
+
+      $.getJSON("./data/matchups.json", function(json) {
+        player_data = json.filter(function(d) {
+          return d.OFF_PLAYER_NAME == players[0]
+        });
+        player_data.sort(function(a, b) { return b['POSS'] - a['POSS']})
+        plot_matchups(player_data);
       });
 
       create_stats_table();
