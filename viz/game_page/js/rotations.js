@@ -178,11 +178,11 @@ function plot_rotations(){
 
         var yAxisShiftBool = max_lead == max_home_lead ? false : true;
 
-        var yAxisScale = height - (((max_pindex * gridSize) / 2) * (1 + max_lead_ratio) + 12),
-            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 55 : -margin.bottom;
+        var yAxisScale = height - (((max_pindex * gridSize) / 2) * (1 + max_lead_ratio)),
+            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 37 : -margin.bottom;
 
         var x = d3.scaleLinear()
-          .rangeRound([margin.left, width + margin.right- 15]);
+          .rangeRound([margin.left, width + margin.right]);
 
         var y = d3.scaleLinear()
           .rangeRound([height - margin.top, yAxisScale]);
@@ -197,7 +197,7 @@ function plot_rotations(){
 
         svg.append("g")
           .call(d3.axisRight(y))
-          .attr("transform", "translate(" + (width - 25) + ", " + (margin.bottom - yAxisScale + yAxisShift) + ")")
+          .attr("transform", "translate(" + (width - 10) + ", " + (margin.bottom - yAxisScale + yAxisShift) + ")")
           .append("text")
           .attr("fill", "#000")
           .attr("transform", "rotate(-90)")

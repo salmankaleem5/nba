@@ -184,4 +184,4 @@ def get_data_for_game(game_id, game_date, year='2017-18'):
     get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=True)
 
 
-get_data_for_game('0021700893', '02/25/2018')
+get_data_for_game('0021700902', '02/26/2018')
