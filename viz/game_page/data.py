@@ -59,8 +59,8 @@ def get_stats_from_pbp(pbp_df):
         rebound_df = player_df[player_df['EVENTMSGTYPE'] == 4]
         if len(rebound_df) > 0:
             rebound_str = rebound_df.iloc[-1][desc]
-            off_reb = int(rebound_str.split('Off:')[1][0])
-            def_reb = int(rebound_str.split('Def:')[1][0])
+            off_reb = int(str(rebound_str.split('Off:')[1]).split(' ')[0])
+            def_reb = int(str(rebound_str.split('Def:')[1]).split(')')[0])
         else:
             off_reb = 0
             def_reb = 0
