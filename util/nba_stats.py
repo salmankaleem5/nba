@@ -114,7 +114,7 @@ class EndPoint:
             # param_string += ',' + str(p) + '=' + str(params[p])
         param_hash = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
         return data_dir +\
-            self.base_url.split('/') + '/' + param_hash + '.csv'
+            self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
 
     def get_data(self, passed_params, override_file=False):
         check_params(passed_params)
@@ -552,7 +552,7 @@ class Matchups(EndPoint):
     def aggregate_data(self, season='2017-18', season_type='Regular Season',
                        override_file=False):
 
-        file_path = data_dir + 'boxscorematchups/aggregate.csv'
+        file_path = data_dir + '/boxscorematchups/aggregate.csv'
 
         if (not file_check(file_path)) or override_file:
 
