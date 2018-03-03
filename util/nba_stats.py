@@ -9,30 +9,40 @@ from util.format import get_year_string
 
 request_headers = {
     'Host': 'stats.nba.com',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)' +
+                  ' Gecko/20100101 Firefox/55.0',
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'en-US,en;q=0.5',
     'Accept-Encoding': 'gzip, deflate',
     'x-nba-stats-origin': 'stats',
     'x-nba-stats-token': 'true',
-    'Cookie': '_ga=GA1.2.1910425825.1503411323; s_fid=77702B4521AF9F5D-27C7181E5E3CC3A4; ug=59a6c4cf03229f0a3c26e13'
-              'a1b015b2b; s_vi=[CS]v1|2CD36268050316EB-60001184600029D9[CE]; __gads=ID=390e9947dd413dc1:T=150410158'
-              '4:S=ALNI_Mae1yHotZvFo066PX75ZYAUGvQlVA; s_cc=true; s_sq=%5B%5BB%5D%5D',
+    'Cookie': '_ga=GA1.2.1910425825.1503411323;' +
+              ' s_fid=77702B4521AF9F5D-27C7181E5E3CC3A4;' +
+              ' ug=59a6c4cf03229f0a3c26e13' +
+              'a1b015b2b; s_vi=[CS]v1|2CD36268050316EB-60001184600029D9[CE];' +
+              ' __gads=ID=390e9947dd413dc1:T=150410158' +
+              '4:S=ALNI_Mae1yHotZvFo066PX75ZYAUGvQlVA;' +
+              ' s_cc=true; s_sq=%5B%5BB%5D%5D',
     'DNT': '1'
 }
 
 param_list = {
     'DateFrom': {'type': 'Date'},
     'DateTo': {'type': 'Date'},
-    'MeasureType': {'type': 'Enum', 'choices': ['Base', 'Advanced', 'Misc', 'Scoring', 'Usage', 'Opponent', 'Defense']},
-    'SeasonType': {'type': 'Enum', 'choices': ['Pre Season', 'Regular Season', 'Playoffs', 'All Star']},
-    'PerMode': {'type': 'Enum',
-                'choices': ['PerGame', 'Per100Possessions', 'PerPossession', 'Per100Plays', 'PerPlay', 'PerMinute',
-                            'Per36', 'Per40', 'Per48', 'Totals']},
+    'MeasureType': {'type': 'Enum', 'choices': [
+        'Base', 'Advanced', 'Misc', 'Scoring',
+        'Usage', 'Opponent', 'Defense']},
+    'SeasonType': {'type': 'Enum', 'choices': [
+        'Pre Season', 'Regular Season', 'Playoffs', 'All Star']},
+    'PerMode': {'type': 'Enum', 'choices': [
+        'PerGame', 'Per100Possessions', 'PerPossession',
+        'Per100Plays', 'PerPlay', 'PerMinute', 'Per36',
+        'Per40', 'Per48', 'Totals']},
     'PlayerOrTeam': {'type': 'Enum', 'choices': ['Player', 'Team', 'P', 'T']},
-    'PtMeasureType': {'type': 'Enum',
-                      'choices': ['Drives', 'Defense', 'CatchShoot', 'Passing', 'Possessions', 'PullUpShot',
-                                  'Rebounding', 'Efficiency', 'SpeedDistance', 'ElbowTouch', 'PostTouch', 'PaintTouch']}
+    'PtMeasureType': {'type': 'Enum', 'choices': [
+        'Drives', 'Defense', 'CatchShoot', 'Passing', 'Possessions',
+        'PullUpShot', 'Rebounding', 'Efficiency', 'SpeedDistance',
+        'ElbowTouch', 'PostTouch', 'PaintTouch']}
 }
 
 
@@ -43,15 +53,22 @@ def check_params(params):
             if p['type'] == 'Enum' and value not in p['choices']:
                 suggestions = process.extract(value, p['choices'], limit=3)
                 raise ValueError(
-                    str(value) + " is not a valid value for " + str(key) + ". Did you mean: " + str(suggestions))
+                    f'{value} is not a valid value for {key}.' +
+                    f'Did you mean: {suggestions}?'
+                )
+
             if p['type'] == 'Date' and value != '':
                 parse(value)
 
 
 def construct_full_url(base, params):
     s = base + '?'
-    for param in params:
-        s += str(param) + '=' + str(params[param]).replace(' ', '+') + '&'
+
+    s += ''.join([
+        f'{param}=' +
+        str(value).replace(' ', '+') +
+        '&' for param, value in params.items()])
+
     return s
 
 
@@ -78,17 +95,26 @@ class EndPoint:
             if key in self.default_params:
                 params[key] = value
             else:
-                suggestions = process.extract(key, self.default_params.keys(), limit=3)
+                suggestions = process.extract(
+                    key,
+                    self.default_params.keys(),
+                    limit=3
+                )
                 raise ValueError(
-                    str(key) + " is not a valid parameter for this endpoint. Did you mean: " + str(suggestions))
+                    f'{value} is not a valid value for {key}.' +
+                    f'Did you mean: {suggestions}?'
+                )
+
         return params
 
     def determine_file_path(self, params):
         param_string = ''
         for p in sorted(params):
-            param_string += ',' + str(p) + '=' + str(params[p])
+            param_string += f',{str(p)}={str(params[p])}'
+            # param_string += ',' + str(p) + '=' + str(params[p])
         param_hash = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
-        return data_dir + self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
+        return data_dir +\
+            self.base_url.split('/') + '/' + param_hash + '.csv'
 
     def get_data(self, passed_params, override_file=False):
         check_params(passed_params)
@@ -97,9 +123,16 @@ class EndPoint:
 
         if (not file_check(file_path)) or override_file:
             print(construct_full_url(self.base_url, params))
-            r = requests.post(self.base_url, data=params, headers=request_headers)
+            r = requests.post(
+                self.base_url,
+                data=params,
+                headers=request_headers
+            )
             if r.status_code != 200:
-                raise ConnectionError(str(r.status_code) + ': ' + str(r.reason))
+                raise ConnectionError(
+                    str(r.status_code) + ': ' + str(r.reason)
+                )
+
             df = json_to_pandas(r.json(), self.index)
             df.to_csv(file_path)
             return df
@@ -474,15 +507,24 @@ class PlayByPlay(EndPoint):
     }
 
     def determine_file_path(self, params):
-        return data_dir + 'playbyplayv2/' + params['Season'] + '/' + params['GameID'] + '.csv'
+        return data_dir + 'playbyplayv2/' + params['Season'] \
+            + '/' + params['GameID'] + '.csv'
 
     def update_data(self, season='2017-18', season_type='Regular Season'):
-        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
+        log = TeamAdvancedGameLogs().get_data(
+            {'Season': season, 'SeasonType': season_type},
+            override_file=True
+        )
+
         games = log.GAME_ID.unique()
+
         for g in games:
             if len(str(g)) < 10:
                 g = '00' + str(g)
-            self.get_data({'GameID': g, 'Season': season, 'SeasonType': season_type})
+
+            self.get_data({
+                'GameID': g, 'Season': season, 'SeasonType': season_type
+            })
 
 
 class Matchups(EndPoint):
@@ -495,19 +537,30 @@ class Matchups(EndPoint):
         return data_dir + 'boxscorematchups/' + params['GameID'] + '.csv'
 
     def update_data(self, season='2017-18', season_type='Regular Season'):
-        log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
+        log = TeamAdvancedGameLogs().get_data(
+            {'Season': season, 'SeasonType': season_type},
+            override_file=True
+        )
+
         games = log.GAME_ID.unique()
+
         for g in games:
             if len(str(g)) < 10:
                 g = '00' + str(g)
             self.get_data({'GameID': g})
 
-    def aggregate_data(self, season='2017-18', season_type='Regular Season', override_file=False):
+    def aggregate_data(self, season='2017-18', season_type='Regular Season',
+                       override_file=False):
+
         file_path = data_dir + 'boxscorematchups/aggregate.csv'
 
         if (not file_check(file_path)) or override_file:
 
-            log = TeamAdvancedGameLogs().get_data({'Season': season, 'SeasonType': season_type}, override_file=True)
+            log = TeamAdvancedGameLogs().get_data({
+                'Season': season, 'SeasonType': season_type},
+                override_file=True
+            )
+
             games = log.GAME_ID.unique()
 
             season_df = pd.DataFrame()
@@ -516,13 +569,23 @@ class Matchups(EndPoint):
                     g = '00' + str(g)
                 season_df = season_df.append(self.get_data({'GameID': g}))
 
-            cols = ['AST', 'BLK', 'DEF_FOULS', 'FG3A', 'FG3M', 'FGA', 'FGM', 'FTM', 'HELP_BLK', 'HELP_BLK_REC', 'OFF_FOULS', 'PLAYER_PTS', 'POSS', 'SFL', 'TEAM_PTS', 'TOV']
+            cols = [
+                'AST', 'BLK', 'DEF_FOULS', 'FG3A', 'FG3M', 'FGA', 'FGM',
+                'FTM', 'HELP_BLK', 'HELP_BLK_REC', 'OFF_FOULS', 'PLAYER_PTS',
+                'POSS', 'SFL', 'TEAM_PTS', 'TOV'
+            ]
+
             matchup_data = []
+
             players = season_df['OFF_PLAYER_NAME'].unique()
+
             for off_player in players:
                 for def_player in players:
                     matchup_df = season_df[
-                        (season_df['OFF_PLAYER_NAME'] == off_player) & (season_df['DEF_PLAYER_NAME'] == def_player)]
+                        (season_df['OFF_PLAYER_NAME'] == off_player) &
+                        (season_df['DEF_PLAYER_NAME'] == def_player)
+                    ]
+
                     if (len(matchup_df)) > 0:
                         pair_data = {
                             'OFF_PLAYER': off_player,
@@ -530,11 +593,15 @@ class Matchups(EndPoint):
                             'GAMES': matchup_df['GAME_ID'].tolist(),
                             'DEF_TEAM_ID': matchup_df['DEF_TEAM_ID'].iloc[0],
                             'OFF_TEAM_ID': matchup_df['OFF_TEAM_ID'].iloc[0],
-                            'OFF_PLAYER_ID': matchup_df['OFF_PLAYER_ID'].iloc[0],
-                            'DEF_PLAYER_ID': matchup_df['DEF_PLAYER_ID'].iloc[0]
+                            'OFF_PLAYER_ID': matchup_df[
+                                'OFF_PLAYER_ID'].iloc[0],
+                            'DEF_PLAYER_ID': matchup_df[
+                                'DEF_PLAYER_ID'].iloc[0]
                         }
+
                         for col in cols:
                             pair_data[col] = matchup_df[col].sum()
+
                         matchup_data.append(pair_data)
 
             df = pd.DataFrame(matchup_data)
@@ -578,26 +645,46 @@ class OnOffSummary(EndPoint):
         file_path = self.determine_file_path(params)
 
         if (not file_check(file_path)) or override_file:
-            r = requests.post(self.base_url, data=params, headers=request_headers)
+            r = requests.post(
+                self.base_url,
+                data=params,
+                headers=request_headers)
+
             print(str(r.status_code) + ': ' + str(self.base_url))
+
             data = r.json()['resultSets'][1]
-            headers = ['GROUP_SET_ON', 'TEAM_ID', 'TEAM_ABBREVIATION', 'TEAM_NAME', 'VS_PLAYER_ID', 'VS_PLAYER_NAME',
-                       'COURT_STATUS_ON', 'GP_ON', 'MIN_ON', 'PLUS_MINUS_ON', 'OFF_RATING_ON', 'DEF_RATING_ON',
-                       'NET_RATING_ON']
+
+            headers = [
+                'GROUP_SET_ON', 'TEAM_ID', 'TEAM_ABBREVIATION',
+                'TEAM_NAME', 'VS_PLAYER_ID', 'VS_PLAYER_NAME',
+                'COURT_STATUS_ON', 'GP_ON', 'MIN_ON', 'PLUS_MINUS_ON',
+                'OFF_RATING_ON', 'DEF_RATING_ON', 'NET_RATING_ON'
+            ]
+
             rows = data['rowSet']
             data_dict = [dict(zip(headers, row)) for row in rows]
             on_df = pd.DataFrame(data_dict)
             data = r.json()['resultSets'][2]
-            headers = ['GROUP_SET_OFF', 'TEAM_ID', 'TEAM_ABBREVIATION', 'TEAM_NAME', 'VS_PLAYER_ID', 'VS_PLAYER_NAME',
-                       'COURT_STATUS_OFF', 'GP_OFF', 'MIN_OFF', 'PLUS_MINUS_OFF', 'OFF_RATING_OFF', 'DEF_RATING_OFF',
-                       'NET_RATING_OFF']
+
+            headers = [
+                'GROUP_SET_OFF', 'TEAM_ID', 'TEAM_ABBREVIATION', 'TEAM_NAME',
+                'VS_PLAYER_ID', 'VS_PLAYER_NAME', 'COURT_STATUS_OFF',
+                'GP_OFF', 'MIN_OFF', 'PLUS_MINUS_OFF', 'OFF_RATING_OFF',
+                'DEF_RATING_OFF', 'NET_RATING_OFF']
+
             rows = data['rowSet']
             data_dict = [dict(zip(headers, row)) for row in rows]
             off_df = pd.DataFrame(data_dict)
+
             df = pd.merge(on_df, off_df,
-                          on=['TEAM_ID', 'TEAM_ABBREVIATION', 'TEAM_NAME', 'VS_PLAYER_ID', 'VS_PLAYER_NAME'])
+                          on=['TEAM_ID', 'TEAM_ABBREVIATION', 'TEAM_NAME',
+                              'VS_PLAYER_ID', 'VS_PLAYER_NAME']
+                          )
+
             df.to_csv(file_path)
+
             return df
+
         else:
             print(file_path)
             return pd.read_csv(file_path)
@@ -618,9 +705,11 @@ class SynergyPlayerStats(EndPoint):
                       'q': '2511761',
                       'season': '2016',
                       'seasonType': 'Reg'}
+
     synergy_request_headers = {
         'Host': 'dev.stats.nba.com',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)' +
+                      ' Gecko/20100101 Firefox/55.0',
         'Accept': 'application/json, text/plain, */*',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
@@ -637,12 +726,22 @@ class SynergyPlayerStats(EndPoint):
 
         if (not file_check(file_path)) or override_file:
             print(construct_full_url(self.base_url, params))
-            r = requests.post(self.base_url, data=params, headers=synergy_request_headers)
+            r = requests.post(
+                self.base_url,
+                data=params,
+                headers=synergy_request_headers
+            )
+
             if r.status_code != 200:
-                raise ConnectionError(str(r.status_code) + ': ' + str(r.reason))
+                raise ConnectionError(
+                    f'{r.status_code}:{r.reason}'
+                )
+
             df = json_to_pandas(r.json(), self.index)
             df.to_csv(file_path)
+
             return df
+
         else:
             print(file_path)
             return pd.read_csv(file_path)
