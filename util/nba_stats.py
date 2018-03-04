@@ -749,6 +749,36 @@ class SynergyPlayerStats(EndPoint):
 
 
 class DraftCombineAnthro(EndPoint):
+    '''
+        Draft Combine Anthropology Data.
+        Args:
+            SeasonYear (str):
+                Draft Season. Format: {start_year_long}-{end_year_short}
+
+        Returns:
+            Draft Combine Anthro (df): Draft Combine statistics from Season.
+            Columns:
+                FIRST_NAME
+                HAND_LENGTH
+                HAND_WIDTH
+                HEIGHT_WO_SHOES
+                HEIGHT_WO_SHOES_FT_IN
+                HEIGHT_W_SHOES
+                HEIGHT_W_SHOES_FT_IN
+                LAST_NAME
+                PLAYER_ID
+                PLAYER_NAME
+                POSITION
+                STANDING_REACH
+                STANDING_REACH_FT_IN
+                TEMP_PLAYER_ID
+                WEIGHT
+                WINGSPAN
+                WINGSPAN_FT_IN
+
+
+    '''
+
     base_url = 'https://stats.nba.com/stats/draftcombineplayeranthro'
     default_params = {
         'LeagueID': '00',
