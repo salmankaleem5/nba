@@ -745,3 +745,11 @@ class SynergyPlayerStats(EndPoint):
         else:
             print(file_path)
             return pd.read_csv(file_path)
+
+
+class DraftCombineAnthro(EndPoint):
+    base_url = 'https://stats.nba.com/stats/draftcombineplayeranthro'
+    default_params = {
+        'LeagueID': '00',
+        'SeasonYear': '2017-18'
+    }
