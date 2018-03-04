@@ -134,6 +134,7 @@ class EndPoint:
                 )
 
             df = json_to_pandas(r.json(), self.index)
+            df.drop(df.columns[0], inplace=True, axis=1)
             df.to_csv(file_path)
             return df
         else:
