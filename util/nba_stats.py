@@ -534,7 +534,7 @@ class Matchups(EndPoint):
     }
 
     def determine_file_path(self, params):
-        return data_dir + 'boxscorematchups/' + params['GameID'] + '.csv'
+        return data_dir + '/boxscorematchups/' + params['GameID'] + '.csv'
 
     def update_data(self, season='2017-18', season_type='Regular Season'):
         log = TeamAdvancedGameLogs().get_data(
