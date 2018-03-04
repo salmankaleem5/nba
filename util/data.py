@@ -11,7 +11,7 @@ else:
     split = '/'
 
 data_dir = '/'.join(
-    wd.split(split) + ['data']
+    wd.split(split) + ['data/']
 )
 
 
