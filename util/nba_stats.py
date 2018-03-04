@@ -783,3 +783,11 @@ class DraftCombineAnthro(EndPoint):
         'LeagueID': '00',
         'SeasonYear': '2017-18'
     }
+
+
+class DraftCombineStrengthAgility(EndPoint):
+    base_url = 'https://stats.nba.com/stats/draftcombinedrillresults'
+    default_params = {
+        'LeagueID': '00',
+        'SeasonYear': '2017-18'
+    }
