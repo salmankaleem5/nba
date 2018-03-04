@@ -116,7 +116,7 @@ class EndPoint:
         return data_dir +\
             self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
 
-    def get_data(self, passed_params, override_file=False):
+    def get_data(self, passed_params=default_params, override_file=False):
         check_params(passed_params)
         params = self.set_params(passed_params)
         file_path = self.determine_file_path(params)
