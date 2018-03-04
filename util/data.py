@@ -10,8 +10,10 @@ if 'Windows' in platform.platform():
 else:
     split = '/'
 
+nba_index = wd.split(split).index('nba')
+
 data_dir = '/'.join(
-    wd.split(split) + ['data/']
+    wd.split(split)[:nba_index + 1] + ['data/']
 )
 
 
