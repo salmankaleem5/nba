@@ -97,8 +97,8 @@ def get_tracking_stats_for_date(game_date, year, data_override=False):
         passing_cols = ['POTENTIAL_AST', 'PASSES_MADE']
         poss_cols = ['FRONT_CT_TOUCHES', 'TIME_OF_POSS', 'ELBOW_TOUCHES', 'POST_TOUCHES', 'PAINT_TOUCHES']
         reb_cols = ['OREB_CHANCES', 'OREB_CHANCE_DEFER', 'OREB_CHANCE_PCT_ADJ', 'DREB_CHANCES',
-                'DREB_CHANCE_DEFER', 'DREB_CHANCE_PCT_ADJ', 'REB', 'REB_CHANCES', 'REB_CHANCE_DEFER',
-                'REB_CHANCE_PCT_ADJ']
+                    'DREB_CHANCE_DEFER', 'DREB_CHANCE_PCT_ADJ', 'REB', 'REB_CHANCES', 'REB_CHANCE_DEFER',
+                    'REB_CHANCE_PCT_ADJ']
         def_cols = ['BLK', 'STL', 'DEF_RIM_FGM', 'DEF_RIM_FGA', 'DEF_RIM_FG_PCT']
 
         all_cols.extend(passing_cols)
@@ -153,14 +153,15 @@ def get_tracking_stats_for_date(game_date, year, data_override=False):
     return merge_df
 
 
-def get_hustle_stats_for_data(game_date, year):
+def get_hustle_stats_for_data(game_date, year, data_override=False):
     hustle_ep = HustleStats()
     hustle_df = hustle_ep.get_data({
         'DateFrom': game_date,
         'DateTo': game_date,
         'Season': year
-    })[['PLAYER_NAME', 'TEAM_ABBREVIATION', 'MIN', 'CONTESTED_SHOTS_2PT', 'CONTESTED_SHOTS_3PT', 'CHARGES_DRAWN',
-        'DEFLECTIONS', 'LOOSE_BALLS_RECOVERED', 'SCREEN_ASSISTS', 'BOX_OUTS']]
+    }, override_file=data_override)[
+        ['PLAYER_NAME', 'TEAM_ABBREVIATION', 'MIN', 'CONTESTED_SHOTS_2PT', 'CONTESTED_SHOTS_3PT', 'CHARGES_DRAWN',
+         'DEFLECTIONS', 'LOOSE_BALLS_RECOVERED', 'SCREEN_ASSISTS', 'BOX_OUTS']]
     return hustle_df
 
 
@@ -171,7 +172,8 @@ def get_stats_for_game(game_id, year, game_date, file_path, data_override=False)
     stats_df = stats_df.merge(tracking_df, left_on='player', right_on='PLAYER_NAME', how='left')
     if len(tracking_df) == 1:
         stats_df = stats_df.fillna(-1)
-    stats_df = stats_df.merge(get_hustle_stats_for_data(game_date, year), left_on='player', right_on='PLAYER_NAME',
+    stats_df = stats_df.merge(get_hustle_stats_for_data(game_date, year, data_override=data_override), left_on='player',
+                              right_on='PLAYER_NAME',
                               how='left')
     stats_df = stats_df.fillna(0)
     stats_df = stats_df[stats_df['TEAM_ABBREVIATION'] != 0]
@@ -184,11 +186,11 @@ def get_matchup_data_for_game(game_id, file_path, data_override=False):
     matchup_df.to_json(file_path, orient='records')
 
 
-def get_data_for_game(game_id, game_date, year='2017-18'):
-    # get_rotation_data_for_game(game_id, year=year, single_game_file_path=file_dir)
-    # get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=False)
-    # get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=False)
-    get_matchup_data_for_game(game_id, file_dir + 'matchups.json', data_override=False)
+def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
+    get_rotation_data_for_game(game_id, year=year, single_game_file_path=file_dir)
+    get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=data_override)
+    get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=data_override)
+    get_matchup_data_for_game(game_id, file_dir + 'matchups.json', data_override=data_override)
 
 
-get_data_for_game('0021700902', '02/26/2018')
+get_data_for_game('0021700964', '03/06/2018', data_override=True)

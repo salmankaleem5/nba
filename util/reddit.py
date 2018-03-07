@@ -6,7 +6,7 @@ def print_reddit_table(df, columns):
         try:
             df[col] = df[col].round(2)
         except TypeError:
-            print(TypeError)
+            None
         sys.stdout.write(str(col) + (' | ' if ix is not len(columns) - 1 else ''))
     print('')
     for ix, col in enumerate(columns):

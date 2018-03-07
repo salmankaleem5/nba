@@ -8,6 +8,7 @@ function plot_rotations(){
       playerColors = colorbrewer.Greys[9],
       max_minute = 0,
       top_team_player_count = 0,
+      bot_team_player_count = 0,
       max_pindex = 0;
 
   var svg = d3.select("#chart").append("svg")
@@ -44,7 +45,7 @@ function plot_rotations(){
         if ($.inArray(this.player, players) === -1) {
           if (this.pindex - previous_pindex > 1) {
             players.push("");
-            top_team_player_count=this.pindex-1;
+            top_team_player_count=this.pindex-2;
           }
           players.push(this.player);
         }
@@ -58,6 +59,8 @@ function plot_rotations(){
           max_minute = this.minute;
         }
       });
+
+      bot_team_player_count = (players.length - 1) - top_team_player_count;
 
       gridSize = Math.floor(width / max_minute);
       legendElementWidth = gridSize*2;
@@ -91,7 +94,7 @@ function plot_rotations(){
           .enter().append("text")
             .text(function(d) { return d; })
             .attr("x", function(d, i) { return (i * gridSize); })
-            .attr("y", top_team_player_count * gridSize)
+            .attr("y", (top_team_player_count + 1) * gridSize)
             .style("text-anchor", "middle")
             .attr("transform", "translate(" + (gridSize - 13) * 2 + ", -6)")
             .attr("class", "timeLabel mono axis axis-worktime");
@@ -122,11 +125,13 @@ function plot_rotations(){
       var legend = svg.selectAll(".legend")
           .data([0].concat(playerColorScale.quantiles()), function(d) { return d; });
 
+      var legend_y_shift = 0;
+
       legend.enter().append("g")
           .attr("class", "legend")
           .append("rect")
           .attr("x", function(d, i) {return legendElementWidth * i; })
-          .attr("y", height - 97)
+          .attr("y", height - legend_y_shift)
           .attr("width", legendElementWidth)
           .attr("height", gridSize)
           .style("fill", function(d, i) { return playerColors[i]; });
@@ -135,7 +140,7 @@ function plot_rotations(){
         .style("fill", function(d) { return playerColorScale(d < 30? 60 : 0);})
         .text(function(d, i) { return " ≥ " + Math.round(d); })
         .attr("x", function(d, i) { return legendElementWidth * i; })
-        .attr("y", height + gridSize - 100)
+        .attr("y", height + gridSize - legend_y_shift - 3)
         .attr("class", "legend");
 
       svg.selectAll(".legendLabel")
@@ -143,7 +148,7 @@ function plot_rotations(){
         .enter()
         .append("text")
         .text(function(d) {return d;})
-        .attr("y", height + gridSize - 100)
+        .attr("y", height + gridSize - (legend_y_shift + 3))
         .attr("x", function() { return (legend.enter().data().length * legendElementWidth) + 5})
         .attr("class", "legend");
 
@@ -170,22 +175,21 @@ function plot_rotations(){
               max_vis_lead = this.score_margin;
             }
         });
-        max_vis_lead = Math.abs(max_vis_lead);
+        var max_vis_lead = Math.abs(max_vis_lead),
+            max_lead = Math.max(max_home_lead, max_vis_lead);
 
-        var max_lead_diff = max_home_lead - max_vis_lead,
-            max_lead = Math.max(max_home_lead, max_vis_lead),
-            max_lead_ratio = Math.min(max_home_lead, max_vis_lead) / Math.max(max_home_lead, max_vis_lead);
+        var yAxisShiftBool = bot_team_player_count < top_team_player_count;
 
-        var yAxisShiftBool = max_lead == max_home_lead ? false : true;
+        var yAxisScale = Math.min(top_team_player_count, bot_team_player_count) * 2 * gridSize;
+            yAxisShift = yAxisShiftBool ? ((Math.abs(top_team_player_count - bot_team_player_count) - 0.8) * gridSize) : margin.top;
 
-        var yAxisScale = height - (((max_pindex * gridSize) / 2) * (1 + max_lead_ratio)),
-            yAxisShift = yAxisShiftBool ? (1 - max_lead_ratio) * (height / 2) - 37 : -margin.bottom;
+        console.log(yAxisShift);
 
         var x = d3.scaleLinear()
           .rangeRound([margin.left, width + margin.right]);
 
         var y = d3.scaleLinear()
-          .rangeRound([height - margin.top, yAxisScale]);
+          .range([-margin.top, yAxisScale]);
 
         var line = d3.line()
           .x(function(d) { return x(d.minute); })
@@ -193,11 +197,11 @@ function plot_rotations(){
           .curve(d3.curveStep);
 
         x.domain(d3.extent(data, function(d) { return +d.minute; }));
-        y.domain(d3.extent(data, function(d) { return +d.score_margin; }));
+        y.domain([max_lead, -max_lead]);
 
         svg.append("g")
           .call(d3.axisRight(y))
-          .attr("transform", "translate(" + (width - 10) + ", " + (margin.bottom - yAxisScale + yAxisShift) + ")")
+          .attr("transform", "translate(" + (width - 10) + ", " + (margin.bottom + yAxisShift) + ")")
           .append("text")
           .attr("fill", "#000")
           .attr("transform", "rotate(-90)")
@@ -215,7 +219,7 @@ function plot_rotations(){
           .attr("stroke-linecap", "square")
           .attr("stroke-width", 3.5)
           .attr("d", line)
-          .attr("transform", "translate(" + -margin.left + "," + (margin.bottom - yAxisScale + yAxisShift) + ")");;
+          .attr("transform", "translate(" + -margin.left + "," + (margin.bottom + yAxisShift) + ")");;
       })
   };
   heatmapChart("./data/data.csv");

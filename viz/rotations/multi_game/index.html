@@ -7,160 +7,166 @@
         stroke: #E6E6E6;
         stroke-width:2px;
       }
-
-      text.mono {
-        font-size: 9pt;
-        font-family: Consolas, courier;
-        fill: #aaa;
-      }
-
-      text.axis-workweek {
-        fill: #000;
-      }
-
-      text.axis-worktime {
-        fill: #000;
-      }
-
     </style>
-    <script src="//d3js.org/d3.v3.js"></script>
+    <script src="//d3js.org/d3.v4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js"></script>
     <script src="colorbrewer.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div id="chart"></div>
 <div id="dataset-picker">
 </div>
 <script type="text/javascript">
-      var margin = { top: 10, right: 60, bottom: 100, left: 150 },
-          width = 960 - margin.left - margin.right,
-          height = 480 - margin.top - margin.bottom,
-          gridSize = Math.floor(width / 47),
-          legendElementWidth = gridSize*2,
-          buckets = 9,
-          //colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"],
-          //colors = ["#ffffd9","#7fcdbb","#225ea8","#081d58"],
-          playerColors = colorbrewer.Greys[9],
-          offenseColors = colorbrewer.Reds[9],
-          defenseColors = colorbrewer.Blues[9]
-          netColors = colorbrewer.RdBu[11].reverse(),
-          times = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48",],
-          days = ["Anthony Davis","DeMarcus Cousins","Jrue Holiday","E'Twaun Moore","Darius Miller","Rajon Rondo","Dante Cunningham","Ian Clark","Jameer Nelson","DeAndre Liggins","Omer Asik"],
-          datasets = ["data.csv"];
+function plot_rotations(){
+  var margin = { top: 40, right: 150, bottom: 30, left: 170 },
+      width = 1200 - margin.left - margin.right,
+      height = 510 - margin.top - margin.bottom,
+      gridSize = 0,
+      legendElementWidth = 0,
+      buckets = 9,
+      playerColors = colorbrewer.Greys[9],
+      max_minute = 0,
+      top_team_player_count = 0,
+      max_pindex = 0;
 
-      var svg = d3.select("#chart").append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var dayLabels = svg.selectAll(".dayLabel")
-          .data(days)
+  var heatmapChart = function(csvFile) {
+    d3.csv(csvFile,
+    function(d) {
+      return {
+        player: d.player,
+        minute: +d.minute,
+        value: +d.value,
+        pindex: +d.pindex
+      };
+    },
+    function(error, data) {
+
+      data.sort(function(a,b) {
+        if (a.pindex == b.pindex)
+          return 0;
+        if (a.pindex < b.pindex)
+          return -1;
+        if (a.pindex > b.pindex)
+          return 1;
+      });
+
+      var players = [],
+          previous_pindex = 0;
+
+      $.each(data, function(i, d) {
+        if ($.inArray(this.player, players) === -1) {
+          if (this.pindex - previous_pindex > 1) {
+            players.push("");
+            top_team_player_count=this.pindex-1;
+          }
+          players.push(this.player);
+        }
+        previous_pindex = this.pindex;
+
+        if(this.pindex > max_pindex) {
+          max_pindex = this.pindex;
+        }
+
+        if(this.minute > max_minute) {
+          max_minute = this.minute;
+        }
+      });
+
+      gridSize = Math.floor(width / max_minute);
+      legendElementWidth = gridSize*3;
+
+      var playerLabels = svg.selectAll(".playerLabel")
+          .data(players)
           .enter().append("text")
             .text(function (d) { return d; })
             .attr("x", 0)
             .attr("y", function (d, i) { return (i * gridSize); })
             .style("text-anchor", "end")
             .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
-            .attr("class", "dayLabel mono axis axis-workweek");
+            .attr("class", "dayLabel axis axis-workweek");
+
+      minutes = ["Q1","","","","","","","","","","","","Q2","","","","","","","","","","","","Q3","","","","","","","","","","","","Q4","","","","","","","","","","","end"];
 
       var timeLabels = svg.selectAll(".timeLabel")
-          .data(times)
+          .data(minutes)
           .enter().append("text")
             .text(function(d) { return d; })
-            .attr("x", function(d, i) { return (i * gridSize) + 3; })
-            .attr("y", 5)
+            .attr("x", function(d, i) { return (i * gridSize); })
+            .attr("y", top_team_player_count * gridSize)
             .style("text-anchor", "middle")
             .attr("transform", "translate(" + (gridSize - 13) * 2 + ", -6)")
             .attr("class", "timeLabel mono axis axis-worktime");
 
-      var heatmapChart = function(csvFile) {
-        d3.csv(csvFile,
-        function(d) {
-          return {
-            day: +d.player,
-            hour: +d.minute,
-            value: +d.value,
-            pindex: +d.pindex
-          };
-        },
-        function(error, data) {
-          var playerColorScale = d3.scale.quantile()
-              .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
-              .range(playerColors);
+      var playerColorScale = d3.scaleQuantile()
+          .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+          .range(playerColors);
 
-          var netColorScale = d3.scale.quantile()
-              .domain([-30, 30])
-              .range(netColors);
+      var cards = svg.selectAll(".hour")
+          .data(data, function(d) {return d.pindex+':'+d.minute;});
 
-          var cards = svg.selectAll(".hour")
-              .data(data, function(d) {return d.pindex+':'+d.hour;});
+      cards.append("title");
 
-          cards.append("title");
+      cards.enter().append("rect")
+          .attr("x", function(d) { return (d.minute - 1) * gridSize; })
+          .attr("y", function(d) { return (d.pindex - 1) * gridSize; })
+          .attr("rx", 4)
+          .attr("ry", 4)
+          .attr("class", "hour bordered")
+          .attr("width", gridSize)
+          .attr("height", gridSize)
+          .style("fill", function(d) { return playerColorScale(d.value)});
 
-          cards.enter().append("rect")
-              .attr("x", function(d) { return (d.hour - 1) * gridSize; })
-              .attr("y", function(d) { return (d.pindex - 1) * gridSize; })
-              .attr("rx", 4)
-              .attr("ry", 4)
-              .attr("class", "hour bordered")
-              .attr("width", gridSize)
-              .attr("height", gridSize)
-              .style("fill", playerColors[0]);
+      cards.select("title").text(function(d) { return d.value; });
 
-          cards.transition().duration(1000)
-              .style("fill", function(d) {
-                if (d.pindex == -1) {
-                  return netColorScale(d.value);
-                } else if (d.pindex == -2) {
-                  return offenseColorScale(d.value);
-                } else if (d.pindex == -3) {
-                  return defenseColorScale(d.value);
-                } else {
-                  return playerColorScale(d.value);
-                }
-              });
+      cards.exit().remove();
 
-          cards.select("title").text(function(d) { return d.value; });
+      var legend = svg.selectAll(".legend")
+          .data([0].concat(playerColorScale.quantiles()), function(d) { return d; });
 
-          cards.exit().remove();
+      var legend_y_shift = 0;
 
-          var legend = svg.selectAll(".legend")
-              .data([0].concat(colorScale.quantiles()), function(d) { return d; });
+      legend.enter().append("g")
+          .attr("class", "legend")
+          .append("rect")
+          .attr("x", function(d, i) {return legendElementWidth * i; })
+          .attr("y", height - legend_y_shift)
+          .attr("width", legendElementWidth)
+          .attr("height", gridSize)
+          .style("fill", function(d, i) { return playerColors[i]; });
 
-          legend.enter().append("g")
-              .attr("class", "legend");
+      legend.enter().append("text")
+        .style("fill", function(d) { return playerColorScale(d < 30? 60 : 0);})
+        .text(function(d, i) { return " ≥ " + Math.round(d); })
+        .attr("x", function(d, i) { return legendElementWidth * i; })
+        .attr("y", height + gridSize - legend_y_shift - 3)
+        .attr("class", "legend");
 
-          legend.append("rect")
-            .attr("x", function(d, i) { return legendElementWidth * i; })
-            .attr("y", height)
-            .attr("width", legendElementWidth)
-            .attr("height", gridSize / 2)
-            .style("fill", function(d, i) { return colors[i]; });
+      svg.selectAll(".legendLabel")
+        .data(["Seconds Played in Minute"])
+        .enter()
+        .append("text")
+        .text(function(d) {return d;})
+        .attr("y", height + gridSize - (legend_y_shift + 3))
+        .attr("x", function() { return (legend.enter().data().length * legendElementWidth) + 5})
+        .attr("class", "legend");
 
-          legend.append("text")
-            .attr("class", "mono")
-            .text(function(d) { return "≥ " + Math.round(d); })
-            .attr("x", function(d, i) { return legendElementWidth * i; })
-            .attr("y", height + gridSize);
+      legend.exit().remove();
+    });
+  };
+  heatmapChart("./data.csv");
+}
 
-          legend.exit().remove();
+plot_rotations()
 
-        });
-      };
-
-      heatmapChart(datasets[0]);
-
-      var datasetpicker = d3.select("#dataset-picker").selectAll(".dataset-button")
-        .data(datasets);
-
-      datasetpicker.enter()
-        .append("input")
-        .attr("value", function(d){ return "Dataset " + d })
-        .attr("type", "button")
-        .attr("class", "dataset-button")
-        .on("click", function(d) {
-          heatmapChart(d);
-        });
 
 </script>
 </body>

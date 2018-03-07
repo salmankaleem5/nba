@@ -162,9 +162,9 @@ def get_game_player_stints_for_team(team_lineups):
     return team_player_stints_df
 
 
-def transform_stints_for_viz(player_stints_df):
+def transform_stints_for_viz(player_stints_df, include_ot=True):
     data = []
-    minute_max = int(player_stints_df['end_time'].max() / 60)
+    minute_max = int(player_stints_df['end_time'].max() / 60) if include_ot else 48
     for player in player_stints_df['player'].unique():
         player_df = player_stints_df[player_stints_df['player'] == player]
         for minute in range(0, minute_max):
@@ -211,8 +211,8 @@ def get_score_data_for_game(game):
     return pbp_df
 
 
-def get_viz_data_for_team_season(team_abbreviation):
-    log = TeamAdvancedGameLogs().get_data({'Season': season, 'LastNGames': '3'}, override_file=True)
+def get_viz_data_for_team_season(team_abbreviation, last_n_games=''):
+    log = TeamAdvancedGameLogs().get_data({'Season': season, 'LastNGames': last_n_games}, override_file=True)
     log = log[log['TEAM_ABBREVIATION'] == team_abbreviation]
 
     pbp_ep = PlayByPlay()
@@ -227,14 +227,32 @@ def get_viz_data_for_team_season(team_abbreviation):
         pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game})
         pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
 
-        game_stints_df = get_game_player_stints_for_team(pbp_df, team_abbreviation)
+        team_df = get_team_df(pbp_df, team_abbreviation)
+        team_lineups = get_game_lineups_for_team(team_df)
+        game_stints_df = get_game_player_stints_for_team(team_lineups)
         season_player_stints_df = season_player_stints_df.append(game_stints_df)
 
-    rotation_data = transform_stints_for_viz(season_player_stints_df)
+    rotation_data = transform_stints_for_viz(season_player_stints_df, include_ot=False)
 
-    players = season_player_stints_df['player'].unique()
-    players = sorted(players,
-                     key=lambda x: -season_player_stints_df[season_player_stints_df['player'] == x]['time'].sum())
+    starters = season_player_stints_df[season_player_stints_df['start_time'] == 0]['player'].unique()
+    starters = sorted(starters,
+                      key=lambda x: -len(season_player_stints_df[
+                          (season_player_stints_df['player'] == x) & (season_player_stints_df['start_time'] == 0)
+                          ])
+                      )
+    starters = starters[:5]
+    starters = sorted(starters,
+                      key=lambda x: -season_player_stints_df[
+                          season_player_stints_df['player'] == x
+                          ]['time'].sum())
+
+    bench = season_player_stints_df[~season_player_stints_df['player'].isin(starters)]['player'].unique()
+    bench = sorted(bench,
+                   key=lambda x: -season_player_stints_df[
+                       season_player_stints_df['player'] == x
+                       ]['time'].sum())
+
+    players = starters + bench
 
     index = 1
     rotation_data['pindex'] = 0
@@ -267,11 +285,19 @@ def get_rotation_data_for_game(game_id, year='2017-18', single_game_file_path='.
         team_game_player_stints_df = get_game_player_stints_for_team(team_lineups)
         team_rotation_df = transform_stints_for_viz(team_game_player_stints_df)
 
-        players = team_game_player_stints_df['player'].unique()
-        players = sorted(players,
-                         key=lambda x: -team_game_player_stints_df[team_game_player_stints_df['player'] == x][
-                             'time'].sum())
+        starters = team_game_player_stints_df[team_game_player_stints_df['start_time'] == 0]['player'].unique()
+        starters = sorted(starters,
+                          key=lambda x: -team_game_player_stints_df[
+                              team_game_player_stints_df['player'] == x
+                              ]['time'].sum())
 
+        bench = team_game_player_stints_df[~team_game_player_stints_df['player'].isin(starters)]['player'].unique()
+        bench = sorted(bench,
+                       key=lambda x: -team_game_player_stints_df[
+                           team_game_player_stints_df['player'] == x
+                           ]['time'].sum())
+
+        players = starters + bench
         team_rotation_df['pindex'] = 0
         for player in players:
             cond = team_rotation_df.player == player
@@ -289,4 +315,4 @@ def get_rotation_data_for_game(game_id, year='2017-18', single_game_file_path='.
     score_df.to_csv(single_game_file_path + 'score.csv')
 
 
-# get_rotation_data_for_game('0021700807')
+#get_viz_data_for_team_season('NOP', last_n_games='9')
