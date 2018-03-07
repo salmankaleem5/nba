@@ -125,7 +125,7 @@ function plot_rotations(){
       var legend = svg.selectAll(".legend")
           .data([0].concat(playerColorScale.quantiles()), function(d) { return d; });
 
-      var legend_y_shift = 0;
+      var legend_y_shift = height - ((top_team_player_count + bot_team_player_count + 2) * gridSize);
 
       legend.enter().append("g")
           .attr("class", "legend")
