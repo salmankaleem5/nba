@@ -36,13 +36,13 @@ $(document).ready(function() {
         courtSelection.datum(player_data).call(shots);
       });
 
-      $.getJSON("./data/matchups.json", function(json) {
-        player_data = json.filter(function(d) {
-          return d.OFF_PLAYER_NAME == players[0]
-        });
-        player_data.sort(function(a, b) { return b['POSS'] - a['POSS']})
-        plot_matchups(player_data);
-      });
+      // $.getJSON("./data/matchups.json", function(json) {
+      //   player_data = json.filter(function(d) {
+      //     return d.OFF_PLAYER_NAME == players[0]
+      //   });
+      //   player_data.sort(function(a, b) { return b['POSS'] - a['POSS']})
+      //   plot_matchups(player_data);
+      // });
 
       create_stats_table();
 
