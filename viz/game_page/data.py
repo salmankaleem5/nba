@@ -193,4 +193,4 @@ def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
     get_matchup_data_for_game(game_id, file_dir + 'matchups.json', data_override=data_override)
 
 
-get_data_for_game('0021700964', '03/06/2018', data_override=True)
+get_data_for_game('0021700976', '03/08/2018', data_override=True)
