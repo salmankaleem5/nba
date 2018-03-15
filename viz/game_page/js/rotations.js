@@ -1,8 +1,8 @@
 function plot_rotation_heat_map (rotation_data, score_data) {
 
   var margin = { top: 15, right: 150, bottom: 30, left: 170 },
-      width = 1200 - margin.left - margin.right,
-      height = 510 - margin.top - margin.bottom,
+      width = 1500 - margin.left - margin.right,
+      height = 750 - margin.top - margin.bottom,
       gridSize = 0,
       legendElementWidth = 0,
       buckets = 9,
@@ -44,14 +44,14 @@ function plot_rotation_heat_map (rotation_data, score_data) {
         max_pindex = this.pindex;
       }
 
-      if(this.minute > max_minute) {
+      if(+this.minute > +max_minute) {
         max_minute = this.minute;
       }
     });
 
     bot_team_player_count = (players.length - 1) - top_team_player_count;
 
-    gridSize = Math.floor(width / max_minute) / 5;
+    gridSize = Math.floor(width / max_minute);
     legendElementWidth = gridSize*2;
 
     var playerLabels = svg.selectAll(".playerLabel")
@@ -85,7 +85,7 @@ function plot_rotation_heat_map (rotation_data, score_data) {
           .attr("x", function(d, i) { return (i * gridSize); })
           .attr("y", (top_team_player_count + 1) * gridSize)
           .style("text-anchor", "middle")
-          .attr("transform", "translate(" + (gridSize - 13) * 2 + ", -6)")
+          .attr("transform", "translate(" + (gridSize/2) + ", -6)")
           .attr("class", "timeLabel mono axis axis-worktime");
 
     var playerColorScale = d3.scaleQuantile()
@@ -152,16 +152,14 @@ function plot_rotation_heat_map (rotation_data, score_data) {
   });
   var yAxisShiftBool = bot_team_player_count < top_team_player_count;
 
-  var yAxisScale = (Math.min(top_team_player_count, bot_team_player_count) * 2 * gridSize);
-      yAxisShift = yAxisShiftBool ? ((Math.abs(top_team_player_count - bot_team_player_count) - 0.8) * gridSize) : -27;
-
-  console.log(max_lead);
+  var yAxisScale = (((Math.min(top_team_player_count, bot_team_player_count) * 2) + 1) * gridSize) + 15;
+      yAxisShift = yAxisShiftBool ? ((Math.abs(top_team_player_count - bot_team_player_count)) * gridSize) - margin.top : -margin.bottom;
 
   var x = d3.scaleLinear()
-            .rangeRound([margin.left, width + margin.right + 70]);
+            .rangeRound([margin.left, width + margin.right]);
 
   var y = d3.scaleLinear()
-            .range([-margin.top, yAxisScale]);
+            .range([-margin.top, yAxisScale - margin.bottom]);
 
   var line = d3.line()
                 .x(function(d) { return x(d.minute); })
@@ -173,7 +171,7 @@ function plot_rotation_heat_map (rotation_data, score_data) {
 
   svg.append("g")
       .call(d3.axisRight(y))
-      .attr("transform", "translate(" + (width + 60) + ", " + (margin.bottom + margin.top + yAxisShift) + ")")
+      .attr("transform", "translate(" + (max_minute * gridSize + 3) + ", " + (margin.bottom + margin.top + yAxisShift) + ")")
       .append("text")
       .attr("fill", "#000")
       .attr("transform", "rotate(-90)")
