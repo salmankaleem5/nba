@@ -1,5 +1,6 @@
 from util.data import data_dir, file_check
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 
 
