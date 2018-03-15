@@ -53,8 +53,7 @@ def check_params(params):
             if p['type'] == 'Enum' and value not in p['choices']:
                 suggestions = process.extract(value, p['choices'], limit=3)
                 raise ValueError(
-                    f'{value} is not a valid value for {key}.' +
-                    f'Did you mean: {suggestions}?'
+                    '{} is not a valid value for {}. Did you mean {}'.format(value, key, suggestions)
                 )
 
             if p['type'] == 'Date' and value != '':
@@ -65,7 +64,7 @@ def construct_full_url(base, params):
     s = base + '?'
 
     s += ''.join([
-        f'{param}=' +
+        '{}='.format(param) +
         str(value).replace(' ', '+') +
         '&' for param, value in params.items()])
 
@@ -101,8 +100,7 @@ class EndPoint:
                     limit=3
                 )
                 raise ValueError(
-                    f'{value} is not a valid value for {key}.' +
-                    f'Did you mean: {suggestions}?'
+                    '{} is not a valid value for {}. Did you mean: {}?'.format(value, key, suggestions)
                 )
 
         return params
@@ -110,7 +108,7 @@ class EndPoint:
     def determine_file_path(self, params):
         param_string = ''
         for p in sorted(params):
-            param_string += f',{str(p)}={str(params[p])}'
+            param_string += ',{}={}'.format(str(p), str(params[p]))
             # param_string += ',' + str(p) + '=' + str(params[p])
         param_hash = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
         return data_dir +\
@@ -611,7 +609,7 @@ class OnOffSummary(EndPoint):
         'VsDivision': '',
     }
 
-    def get_data(self, passed_params, override_file=False):
+    def get_data(self, passed_params=default_params, override_file=False):
         check_params(passed_params)
         params = self.set_params(passed_params)
 
@@ -692,7 +690,7 @@ class SynergyPlayerStats(EndPoint):
         'Connection': 'keep-alive'
     }
 
-    def get_data(self, passed_params, override_file=False):
+    def get_data(self, passed_params=default_params, override_file=False):
         check_params(passed_params)
         params = self.set_params(passed_params)
         file_path = self.determine_file_path(params)
@@ -702,12 +700,12 @@ class SynergyPlayerStats(EndPoint):
             r = requests.post(
                 self.base_url,
                 data=params,
-                headers=synergy_request_headers
+                headers=self.synergy_request_headers
             )
 
             if r.status_code != 200:
                 raise ConnectionError(
-                    f'{r.status_code}:{r.reason}'
+                    '{}:{}'.format(r.status_code, r.reason)
                 )
 
             df = json_to_pandas(r.json(), self.index)
