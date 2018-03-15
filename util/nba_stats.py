@@ -134,7 +134,6 @@ class EndPoint:
                 )
 
             df = json_to_pandas(r.json(), self.index)
-            df.drop(df.columns[0], inplace=True, axis=1)
             df.to_csv(file_path)
             return df
         else:
@@ -553,7 +552,7 @@ class Matchups(EndPoint):
     def aggregate_data(self, season='2017-18', season_type='Regular Season',
                        override_file=False):
 
-        file_path = data_dir + '/boxscorematchups/aggregate.csv'
+        file_path = data_dir + f'/boxscorematchups/aggregate_{season}.csv'
 
         if (not file_check(file_path)) or override_file:
 
@@ -562,50 +561,23 @@ class Matchups(EndPoint):
                 override_file=True
             )
 
-            games = log.GAME_ID.unique()
+            games = ['00' + str(g) if len(str(g)) < 10 else str(g)
+                     for g in log.GAME_ID.unique()]
 
-            season_df = pd.DataFrame()
-            for g in games:
-                if len(str(g)) < 10:
-                    g = '00' + str(g)
-                season_df = season_df.append(self.get_data({'GameID': g}))
+            season_df = pd.concat(
+                [self.get_data({'GameID': g}) for g in games]
+            )
 
-            cols = [
+            sum_col = [
                 'AST', 'BLK', 'DEF_FOULS', 'FG3A', 'FG3M', 'FGA', 'FGM',
                 'FTM', 'HELP_BLK', 'HELP_BLK_REC', 'OFF_FOULS', 'PLAYER_PTS',
                 'POSS', 'SFL', 'TEAM_PTS', 'TOV'
             ]
 
-            matchup_data = []
+            group_col = ['OFF_PLAYER_NAME', 'DEF_PLAYER_NAME']
 
-            players = season_df['OFF_PLAYER_NAME'].unique()
-
-            for off_player in players:
-                for def_player in players:
-                    matchup_df = season_df[
-                        (season_df['OFF_PLAYER_NAME'] == off_player) &
-                        (season_df['DEF_PLAYER_NAME'] == def_player)
-                    ]
-
-                    if (len(matchup_df)) > 0:
-                        pair_data = {
-                            'OFF_PLAYER': off_player,
-                            'DEF_PLAYER': def_player,
-                            'GAMES': matchup_df['GAME_ID'].tolist(),
-                            'DEF_TEAM_ID': matchup_df['DEF_TEAM_ID'].iloc[0],
-                            'OFF_TEAM_ID': matchup_df['OFF_TEAM_ID'].iloc[0],
-                            'OFF_PLAYER_ID': matchup_df[
-                                'OFF_PLAYER_ID'].iloc[0],
-                            'DEF_PLAYER_ID': matchup_df[
-                                'DEF_PLAYER_ID'].iloc[0]
-                        }
-
-                        for col in cols:
-                            pair_data[col] = matchup_df[col].sum()
-
-                        matchup_data.append(pair_data)
-
-            df = pd.DataFrame(matchup_data)
+            df = season_df.groupby(group_col)[sum_col].sum()
+            df.reset_index(inplace=True)
             df = df[df['POSS'] >= 10]
             df.to_csv(file_path)
             return df
@@ -780,6 +752,14 @@ class DraftCombineAnthro(EndPoint):
     '''
 
     base_url = 'https://stats.nba.com/stats/draftcombineplayeranthro'
+    default_params = {
+        'LeagueID': '00',
+        'SeasonYear': '2017-18'
+    }
+
+
+class DraftCombineStrengthAgility(EndPoint):
+    base_url = 'https://stats.nba.com/stats/draftcombinedrillresults'
     default_params = {
         'LeagueID': '00',
         'SeasonYear': '2017-18'
