@@ -1,8 +1,8 @@
 function plot_rotation_heat_map (rotation_data, score_data) {
 
-  var margin = { top: 15, right: 150, bottom: 30, left: 170 },
+  var margin = { top: 15, right: 150, bottom: 30, left: 350 },
       width = 1500 - margin.left - margin.right,
-      height = 750 - margin.top - margin.bottom,
+      height = 500 - margin.top - margin.bottom,
       gridSize = 0,
       legendElementWidth = 0,
       buckets = 9,
@@ -44,15 +44,19 @@ function plot_rotation_heat_map (rotation_data, score_data) {
         max_pindex = this.pindex;
       }
 
-      if(+this.minute > +max_minute) {
-        max_minute = this.minute;
+      if(+this.end_time > max_minute) {
+        max_minute = +this.end_time;
       }
     });
 
+    max_minute = max_minute / 60;
+
     bot_team_player_count = (players.length - 1) - top_team_player_count;
 
-    gridSize = Math.floor(width / max_minute);
+    gridSize = Math.floor(height / (max_pindex + 2));
     legendElementWidth = gridSize*2;
+
+    var x_scale = (width - margin.right) / (max_minute * 60);
 
     var playerLabels = svg.selectAll(".playerLabel")
         .data(players)
@@ -76,13 +80,13 @@ function plot_rotation_heat_map (rotation_data, score_data) {
         }
       };
     }
-    minutes.push('end');
+    minutes.push('E');
 
     var timeLabels = svg.selectAll(".timeLabel")
         .data(minutes)
         .enter().append("text")
           .text(function(d) { return d; })
-          .attr("x", function(d, i) { return (i * gridSize); })
+          .attr("x", function(d, i) { return (i * 60 * x_scale); })
           .attr("y", (top_team_player_count + 1) * gridSize)
           .style("text-anchor", "middle")
           .attr("transform", "translate(" + (gridSize/2) + ", -6)")
@@ -98,50 +102,18 @@ function plot_rotation_heat_map (rotation_data, score_data) {
     cards.append("title");
 
     cards.enter().append("rect")
-        .attr("x", function(d) { return (d.minute - 1) * gridSize; })
+        .attr("x", function(d) { return d.start_time * x_scale; })
         .attr("y", function(d) { return (d.pindex - 1) * gridSize; })
         .attr("rx", 4)
         .attr("ry", 4)
         .attr("class", "hour bordered")
-        .attr("width", gridSize)
-        .attr("height", gridSize)
-        .style("fill", function(d) { return playerColorScale(d.value)});
+        .attr("width", function(d) {return (d.end_time - d.start_time) * x_scale;})
+        .attr("height", gridSize - 2)
+        .style("fill", 'black');
 
     cards.select("title").text(function(d) { return d.value; });
 
     cards.exit().remove();
-
-    var legend = svg.selectAll(".legend")
-        .data([0].concat(playerColorScale.quantiles()), function(d) { return d; });
-
-    var legend_y_shift = height - ((top_team_player_count + bot_team_player_count + 2) * gridSize);
-
-    legend.enter().append("g")
-        .attr("class", "legend")
-        .append("rect")
-        .attr("x", function(d, i) {return legendElementWidth * i; })
-        .attr("y", height - legend_y_shift)
-        .attr("width", legendElementWidth)
-        .attr("height", gridSize)
-        .style("fill", function(d, i) { return playerColors[i]; });
-
-    legend.enter().append("text")
-      .style("fill", function(d) { return playerColorScale(d < 30? 60 : 0);})
-      .text(function(d, i) { return " ≥ " + Math.round(d); })
-      .attr("x", function(d, i) { return legendElementWidth * i; })
-      .attr("y", height + gridSize - legend_y_shift - 3)
-      .attr("class", "legend");
-
-    svg.selectAll(".legendLabel")
-      .data(["Seconds Played in Minute"])
-      .enter()
-      .append("text")
-      .text(function(d) {return d;})
-      .attr("y", height + gridSize - (legend_y_shift + 3))
-      .attr("x", function() { return (legend.enter().data().length * legendElementWidth) + 5})
-      .attr("class", "legend");
-
-    legend.exit().remove();
 
   var max_lead = 0;
 
@@ -153,10 +125,10 @@ function plot_rotation_heat_map (rotation_data, score_data) {
   var yAxisShiftBool = bot_team_player_count < top_team_player_count;
 
   var yAxisScale = (((Math.min(top_team_player_count, bot_team_player_count) * 2) + 1) * gridSize) + 15;
-      yAxisShift = yAxisShiftBool ? ((Math.abs(top_team_player_count - bot_team_player_count)) * gridSize) - margin.top : -margin.bottom;
+      yAxisShift = yAxisShiftBool ? ((Math.abs(top_team_player_count - bot_team_player_count)) * gridSize) - margin.top - 17 : -margin.bottom;
 
   var x = d3.scaleLinear()
-            .rangeRound([margin.left, width + margin.right]);
+            .rangeRound([margin.left, width + margin.left - margin.right]);
 
   var y = d3.scaleLinear()
             .range([-margin.top, yAxisScale - margin.bottom]);
@@ -171,7 +143,7 @@ function plot_rotation_heat_map (rotation_data, score_data) {
 
   svg.append("g")
       .call(d3.axisRight(y))
-      .attr("transform", "translate(" + (max_minute * gridSize + 3) + ", " + (margin.bottom + margin.top + yAxisShift) + ")")
+      .attr("transform", "translate(" + ((max_minute * x_scale * 60) + 5) + ", " + (margin.bottom + margin.top + yAxisShift) + ")")
       .append("text")
       .attr("fill", "#000")
       .attr("transform", "rotate(-90)")
@@ -184,10 +156,50 @@ function plot_rotation_heat_map (rotation_data, score_data) {
       .attr("class", "point-diff")
       .attr("fill", "none")
       .attr("stroke", "steelblue")
-      .attr("stroke-opacity", 0.7)
+      .attr("stroke-opacity", 1)
       .attr("stroke-linejoin", "bevel")
       .attr("stroke-linecap", "square")
       .attr("stroke-width", 3.5)
       .attr("d", line)
-      .attr("transform", "translate(" + -margin.left + "," + (margin.bottom + margin.top + yAxisShift) + ")");;
+      .attr("transform", "translate(" + -margin.left + "," + (margin.bottom + margin.top + yAxisShift) + ")");
+
+  svg.append("line")
+      .attr("x1", 0)
+      .attr("x2", 0)
+      .attr("y1", 0)
+      .attr("y2", gridSize * (max_pindex + 1))
+      .style("stroke-width", 2)
+      .attr("stroke-opacity", 0.2)
+      .style("stroke", 'black')
+      .style("fill", 'none');
+
+  svg.append("line")
+      .attr("x1", 720 * x_scale)
+      .attr("x2", 720 * x_scale)
+      .attr("y1", 0)
+      .attr("y2", gridSize * (max_pindex + 1))
+      .style("stroke-width", 2)
+      .attr("stroke-opacity", 0.2)
+      .style("stroke", 'black')
+      .style("fill", 'none');
+
+  svg.append("line")
+      .attr("x1", 1440 * x_scale)
+      .attr("x2", 1440 * x_scale)
+      .attr("y1", 0)
+      .attr("y2", gridSize * (max_pindex + 1))
+      .style("stroke-width", 2)
+      .attr("stroke-opacity", 0.2)
+      .style("stroke", 'black')
+      .style("fill", 'none');
+
+  svg.append("line")
+      .attr("x1", 2160 * x_scale)
+      .attr("x2", 2160 * x_scale)
+      .attr("y1", 0)
+      .attr("y2", gridSize * (max_pindex + 1))
+      .style("stroke-width", 2)
+      .attr("stroke-opacity", 0.2)
+      .style("stroke", 'black')
+      .style("fill", 'none');
 }

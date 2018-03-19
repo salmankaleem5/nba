@@ -621,7 +621,7 @@ class OnOffSummary(EndPoint):
                 data=params,
                 headers=request_headers)
 
-            print(str(r.status_code) + ': ' + str(self.base_url))
+            print(str(r.status_code) + ': ' + construct_full_url(self.base_url, params))
 
             data = r.json()['resultSets'][1]
 
