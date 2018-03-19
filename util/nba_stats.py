@@ -550,7 +550,7 @@ class Matchups(EndPoint):
     def aggregate_data(self, season='2017-18', season_type='Regular Season',
                        override_file=False):
 
-        file_path = data_dir + f'/boxscorematchups/aggregate_{season}.csv'
+        file_path = data_dir + '/boxscorematchups/aggregate_{}.csv'.format(season)
 
         if (not file_check(file_path)) or override_file:
 
