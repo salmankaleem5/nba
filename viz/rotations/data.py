@@ -37,6 +37,9 @@ def get_initial_lineup(df):
     initial_players = []
     subbed_in = []
     end = 0
+
+    period = (df.iloc[0]['PERIOD'] - 1)
+    start_time = period * 720 if period < 4 else 2880 + ((period - 4) * 300)
     for ix, sub in subs_df.iterrows():
         if end == 0:
             end = sub.TIME
@@ -52,7 +55,7 @@ def get_initial_lineup(df):
         if len(initial_players) == 5:
             return {
                 'players': initial_players,
-                'start_time': (df.iloc[0]['PERIOD'] - 1) * 720,
+                'start_time':  start_time,
                 'end_time': end
             }
 
@@ -68,7 +71,7 @@ def get_initial_lineup(df):
             if len(initial_players) == 5:
                 return {
                     'players': initial_players,
-                    'start_time': (df.iloc[0]['PERIOD'] - 1) * 720,
+                    'start_time': start_time,
                     'end_time': end
                 }
 
@@ -104,6 +107,9 @@ def get_game_lineups_for_team(team_df):
 
             current_players = list(filter(lambda x: x != p_out, current_players))
             current_players.append(p_in)
+
+            if s.TIME == 3600:
+                None
 
             lineups.append({
                 'players': current_players,
@@ -283,7 +289,6 @@ def get_rotation_data_for_game(game_id, year='2017-18', file_path='./single_game
         team_df = get_team_df(pbp_df, t)
         team_lineups = get_game_lineups_for_team(team_df)
         team_game_player_stints_df = get_game_player_stints_for_team(team_lineups)
-        team_rotation_df = transform_stints_for_viz(team_game_player_stints_df)
 
         starters = team_game_player_stints_df[team_game_player_stints_df['start_time'] == 0]['player'].unique()
         starters = sorted(starters,
@@ -298,21 +303,18 @@ def get_rotation_data_for_game(game_id, year='2017-18', file_path='./single_game
                            ]['time'].sum())
 
         players = starters + bench
-        team_rotation_df['pindex'] = 0
+        team_game_player_stints_df['pindex'] = 0
         for player in players:
-            cond = team_rotation_df.player == player
-            team_rotation_df.pindex[cond] = index
+            cond = team_game_player_stints_df.player == player
+            team_game_player_stints_df.pindex[cond] = index
             index += 1
 
         index += 1
 
-        rotation_df = rotation_df.append(team_rotation_df)
+        rotation_df = rotation_df.append(team_game_player_stints_df)
 
     file_check(file_path)
     rotation_df.to_json(file_path + 'rotations.json', orient='records')
 
     score_df = get_score_data_for_game(game_id)
     score_df.to_json(file_path + 'score.json', orient='records')
-
-
-#get_viz_data_for_team_season('NOP', last_n_games='9')

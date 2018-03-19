@@ -5,6 +5,7 @@ rect.bordered {
 
 .score {
   font-size: 50pt;
+  vertical-align: middle;
 }
 
 

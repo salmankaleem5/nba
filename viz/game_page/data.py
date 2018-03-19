@@ -188,9 +188,9 @@ def get_matchup_data_for_game(game_id, file_path, data_override=False):
 
 def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
     get_rotation_data_for_game(game_id, year=year, file_path=file_dir)
-    get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=data_override)
-    get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=data_override)
-    get_matchup_data_for_game(game_id, file_dir + 'matchups.json', data_override=data_override)
+    # get_shot_data_for_game(game_id, season=year, file_path=file_dir + 'shots.json', data_override=data_override)
+    # get_stats_for_game(game_id, year, game_date, file_dir + 'stats.json', data_override=data_override)
+    # get_matchup_data_for_game(game_id, file_dir + 'matchups.json', data_override=data_override)
 
 
-get_data_for_game('0021701017', '03/14/2018', data_override=True)
+get_data_for_game('0021701046', '03/18/2018', data_override=True)
