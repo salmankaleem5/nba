@@ -1,71 +1,69 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
-      $.getJSON("./data/rotations.json", function (rotation_data) {
+    $.getJSON("./data/rotations.json", function (rotation_data) {
 
         $.getJSON("./data/score.json", function (score_data) {
             plot_rotation_heat_map(rotation_data, score_data);
         });
 
-      });
+    });
 
-      var courtSelection = d3.select("#shot-chart");
-      var court = d3.court().width(1000);
-      courtSelection.call(court);
+    var courtSelection = d3.select("#shot-chart");
+    var court = d3.court().width(1000);
+    courtSelection.call(court);
 
-      players = [];
+    players = [];
 
-      $.getJSON("./data/shots.json", function(json) {
-          data = json;
-          x = {};
-  				$.each(data, function(i, d){
-  					if ($.inArray(this.shooter, players) === -1){
-  						players.push(this.shooter);
-              x[this.shooter] = 1;
-  					}
-            else{
-              x[this.shooter]++;
+    $.getJSON("./data/shots.json", function (json) {
+        data = json;
+        x = {};
+        $.each(data, function (i, d) {
+            if ($.inArray(this.shooter, players) === -1) {
+                players.push(this.shooter);
+                x[this.shooter] = 1;
             }
-  				});
-          players.sort(function(a, b){ return x[b] - x[a]; })
-  				$.each(players, function(i, p){
-  					$('#player-select').append($('<option></option>').val(p).html(p));
-  				});
+            else {
+                x[this.shooter]++;
+            }
+        });
+        players.sort(function (a, b) {
+            return x[b] - x[a];
+        })
+        $.each(players, function (i, p) {
+            $('#player-select').append($('<option></option>').val(p).html(p));
+        });
 
-          $('#player-select').val($('#player-select option:first').val()).change();
-      });
+        $('#player-select').val($('#player-select option:first').val()).change();
+    });
 
-      $('#player-select').change(function(){
+    $('#player-select').change(function () {
         player = $('#player-select option:selected').val();
-        player_data = data.filter(function(d) {
-          return d.player == player;
+        player_data = data.filter(function (d) {
+            return d.player == player;
         });
         var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
         courtSelection.datum(player_data).call(shots);
-      });
+    });
 
-      // $.getJSON("./data/matchups.json", function(json) {
-      //   player_data = json.filter(function(d) {
-      //     return d.OFF_PLAYER_NAME == players[0]
-      //   });
-      //   player_data.sort(function(a, b) { return b['POSS'] - a['POSS']})
-      //   plot_matchups(player_data);
-      // });
+    $.getJSON("./data/matchups.json", function(json) {
+      create_matchups_table();
+    });
 
-      create_stats_table();
+    create_stats_table();
 
-      $('#rotations-toggle').change(function (){
-        if(!this.checked){
-          $('.hour, .legend').hide();
+    $('#rotations-toggle').change(function () {
+        if (!this.checked) {
+            $('.hour, .legend').hide();
         } else {
-          $('.hour, .legend').show();
+            $('.hour, .legend').show();
         }
-      });
+    });
 
-      $('#point-diff-toggle').change(function (){
-        if(!this.checked){
-          $('.point-diff').hide();
+    $('#point-diff-toggle').change(function () {
+        if (!this.checked) {
+            $('.point-diff').hide();
         } else {
-          $('.point-diff').show();
+            $('.point-diff').show();
         }
-      });
+    });
 });

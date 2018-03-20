@@ -303,7 +303,7 @@ def get_rotation_data_for_game(game_id, year='2017-18', file_path='./single_game
                            ]['time'].sum())
 
         players = starters + bench
-        team_game_player_stints_df['pindex'] = 0
+        team_game_player_stints_df['pindex'] = 1
         for player in players:
             cond = team_game_player_stints_df.player == player
             team_game_player_stints_df.pindex[cond] = index

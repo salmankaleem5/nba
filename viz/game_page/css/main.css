@@ -1,136 +1,166 @@
 rect.bordered {
-  stroke: #E6E6E6;
-  stroke-width:2px;
+    stroke-width: 2px;
 }
 
 .score {
-  font-size: 50pt;
-  vertical-align: middle;
+    font-size: 50pt;
+    vertical-align: middle;
 }
-
 
 .table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
-	border: 1px solid #848484;
+    border: 1px solid #848484;
 }
 
-
 text.mono {
-  font-size: 9pt;
-  font-family: Consolas, courier;
-  fill: #aaa;
+    font-size: 9pt;
+    font-family: Consolas, courier;
+    fill: #aaa;
 }
 
 text.axis-workweek {
-  fill: #000;
+    fill: #000;
 }
 
 text.axis-worktime {
-  fill: #000;
+    fill: #000;
 }
 
 #container {
-  text-align: center;
-  background-color: lightgray !important;
-  width: 100%;
-  margin: 0 auto;
+    text-align: center;
+    background-color: lightgray !important;
+    width: 100%;
+    margin: 0 auto;
 }
 
-#stats-table_filter, #stats-table_info {
-  visibility: hidden;
+#stats-table_filter, #stats-table_info, #match-up-table_length, #match-up-table_info, #match-up-table_filter {
+    visibility: hidden;
+}
+
+#match-up-table_paginate {
+    text-align: center;
+    margin: auto;
+}
+
+table {
+    text-align: center;
+    margin: auto;
 }
 
 #surrounder {
-  background-color: black !important;
-  text-align: center;
+    background-color: black !important;
+    text-align: center;
 }
 
 svg {
-  stroke-width: 0.2; }
-    svg text.legend-text {
-      font-size: 0.1em; }
-  svg rect {
+    stroke-width: 0.2;
+}
+
+svg text.legend-text {
+    font-size: 0.1em;
+}
+
+svg rect {
     stroke: black;
     width: 1;
-    fill: none; }
-  svg line {
+    fill: none;
+}
+
+svg line {
     stroke: black;
     fill: none;
-    width: 1; }
+    width: 1;
+}
 
 /********END SHOTCHART COURT STYLES****** */
 /********SHOT STYLES****** */
 svg circle {
-  stroke: black;
-  fill: none; }
-  svg circle.shot.make {
+    stroke: black;
+    fill: none;
+}
+
+svg circle.shot.make {
     fill: red;
     stroke: white;
-    stroke-width: 0.05; }
-  svg circle.shot.miss {
+    stroke-width: 0.05;
+}
+
+svg circle.shot.miss {
     fill: blue;
     stroke: white;
-    stroke-width: 0.05; }
-  svg circle.shot.assist {
+    stroke-width: 0.05;
+}
+
+svg circle.shot.assist {
     fill: yellow !important;
     stroke: white;
-    stroke-width: 0.05; }
+    stroke-width: 0.05;
+}
 
-path {}
-  path.shot {
+path {
+}
+
+path.shot {
     stroke: white;
     fill: none;
-    stroke-width: 0.05; }
+    stroke-width: 0.05;
+}
 
 /********END SHOT STYLES****** */
 /********SHOT TOOLTIPS****** */
 .d3-tip {
-  line-height: 1;
-  font-weight: lighter;
-  padding: 12px;
-  background: #006886;
-  color: #fff;
-  border-radius: 2px;
-  pointer-events: none; }
+    line-height: 1;
+    font-weight: lighter;
+    padding: 12px;
+    background: #006886;
+    color: #fff;
+    border-radius: 2px;
+    pointer-events: none;
+}
 
 /* Creates a small triangle extender for the tooltip */
 .d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 10px;
-  width: 100%;
-  line-height: 1;
-  color: #006886;
-  position: absolute;
-  pointer-events: none; }
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: #006886;
+    position: absolute;
+    pointer-events: none;
+}
 
 /* Northward tooltips */
 .d3-tip.n:after {
-  content: "▼";
-  margin: -1px 0 0 0;
-  top: 100%;
-  left: 0;
-  text-align: center; }
+    content: "▼";
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+    text-align: center;
+}
 
 /* Eastward tooltips */
 .d3-tip.e:after {
-  content: "◀";
-  margin: -4px 0 0 0;
-  top: 50%;
-  left: -8px; }
+    content: "◀";
+    margin: -4px 0 0 0;
+    top: 50%;
+    left: -8px;
+}
 
 /* Southward tooltips */
 .d3-tip.s:after {
-  content: "▲";
-  margin: 0 0 1px 0;
-  top: -8px;
-  left: 0;
-  text-align: center; }
+    content: "▲";
+    margin: 0 0 1px 0;
+    top: -8px;
+    left: 0;
+    text-align: center;
+}
 
 /* Westward tooltips */
 .d3-tip.w:after {
-  content: "▶";
-  margin: -4px 0 0 -1px;
-  top: 50%;
-  left: 100%; }
+    content: "▶";
+    margin: -4px 0 0 -1px;
+    top: 50%;
+    left: 100%;
+}
 
 /********END SHOT TOOLTIPS****** */

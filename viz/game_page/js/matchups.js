@@ -1,42 +1,52 @@
-function plot_matchups(json) {
-  var height = 300,
-      width = 300,
-      radius = Math.min(width, height) / 2;
+function create_matchups_table() {
 
-  var svg = d3.select("#match-ups").append("svg")
-              .attr("width", width)
-              .attr("height", height);
-
-  var g = svg.append("g")
-              .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-  var color = colorbrewer.Set1[9];
-
-  var pie = d3.pie()
-              .sort(null)
-              .value(function(d) { return d.POSS; });
-
-  var path = d3.arc()
-                .outerRadius(radius - 10)
-                .innerRadius(0);
-
-  var label = d3.arc()
-                .outerRadius(radius - 60)
-                .innerRadius(radius - 60);
-
-  var arc = g.selectAll(".arc")
-              .data(pie(json))
-              .enter().append("g")
-                      .attr("class", "arc");
-
-  var i=0;
-
-  arc.append("path")
-      .attr("d", path)
-      .attr("fill", function(d) { return color[i++]; });
-
-  arc.append("text")
-      .attr("transform", function(d) { console.log(label.centroid(d)); return "translate(" + label.centroid(d) + ")"; })
-      .attr("dy", "0.35em")
-      .html(function(d) { return d.data.DEF_PLAYER_NAME.split(' ')[1]; });
+    var table = null;
+    $.getJSON("./data/matchups.json", function (json) {
+        table = $("#match-up-table").DataTable({
+            data: json,
+            order: [[2, "desc"]],
+            paging: true,
+            columns: [
+                {title: 'Offensive Player', data: 'OFF_PLAYER_NAME'},
+                {title: 'Defensive Player', data: 'DEF_PLAYER_NAME'},
+                {title: 'Possessions', data: 'POSS'},
+                {title: 'Player Points', data: 'PLAYER_PTS'},
+                {title: 'Team Points', data: 'TEAM_PTS'},
+                {
+                    title: 'Player 2FG',
+                    data: null,
+                    render: function (data) {
+                        return String(data.FGM - data.FG3M) + '/' + String(data.FGA - data.FG3A);
+                    }
+                },
+                {
+                    title: 'Player 3FG',
+                    data: null,
+                    render: function (data) {
+                        return String(data.FG3M) + '/' + String(data.FG3A);
+                    }
+                },
+                {
+                    title: 'Player efg%',
+                    data: null,
+                    render: function (data) {
+                        var three_pts = 3 * data.FG3M,
+                            two_pts = 2 * (data.FGM - data.FG3M);
+                        if (data.FGA > 0) {
+                            return (Math.round(((three_pts + two_pts) / data.FGA) * 1000) / 20 + '%');
+                        } else {
+                            return '0%';
+                        }
+                    }
+                },
+                {
+                    title: 'Team ORtg',
+                    data: null,
+                    render: function (data) {
+                        return Math.round((data.TEAM_PTS / data.POSS) * 1000) / 10;
+                    }
+                }
+            ]
+        })
+    })
 }
