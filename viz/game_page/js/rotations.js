@@ -1,7 +1,7 @@
 function plot_rotation_heat_map(rotation_data, score_data) {
 
-    var margin = {top: 30, right: 150, bottom: 30, left: 350},
-        width = 1700 - margin.left - margin.right,
+    var margin = {top: 30, right: 150, bottom: 30, left: 250},
+        width = 1500 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
     var svg = d3.select("#chart").append("svg")
@@ -129,7 +129,7 @@ function plot_rotation_heat_map(rotation_data, score_data) {
         .attr("width", function (d) {
             return (d.end_time - d.start_time) * x_scale;
         })
-        .attr("height", rect_height - 4)
+        .attr("height", rect_height - 5)
         .style("fill", 'black');
 
     cards.select("title").text(function (d) {

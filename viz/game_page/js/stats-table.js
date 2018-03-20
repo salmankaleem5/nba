@@ -6,6 +6,7 @@ function create_stats_table() {
             data: json,
             order: [[1, "desc"], [2, "desc"]],
             paging: false,
+            searching: false,
             columns: [
                 {title: 'Name', data: 'player'},
                 {title: 'Team', data: 'TEAM_ABBREVIATION'},

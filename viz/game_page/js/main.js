@@ -29,8 +29,14 @@ $(document).ready(function () {
         players.sort(function (a, b) {
             return x[b] - x[a];
         })
+
+        //$('#player-select').append($('<option></option>').val('all').html('all'));
+        $('#offense-player-select').append($('<option></option>').val('All').html('All'));
+        $('#defense-player-select').append($('<option></option>').val('All').html('All'));
         $.each(players, function (i, p) {
             $('#player-select').append($('<option></option>').val(p).html(p));
+            $('#offense-player-select').append($('<option></option>').val(p).html(p));
+            $('#defense-player-select').append($('<option></option>').val(p).html(p));
         });
 
         $('#player-select').val($('#player-select option:first').val()).change();

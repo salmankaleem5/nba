@@ -6,6 +6,7 @@ function create_matchups_table() {
             data: json,
             order: [[2, "desc"]],
             paging: true,
+            searching: true,
             columns: [
                 {title: 'Offensive Player', data: 'OFF_PLAYER_NAME'},
                 {title: 'Defensive Player', data: 'DEF_PLAYER_NAME'},
@@ -49,4 +50,23 @@ function create_matchups_table() {
             ]
         })
     })
+
+    $.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var o_player = $('#offense-player-select').val();
+        var d_player = $('#defense-player-select').val();
+        var op_data = data[0];
+        var dp_data = data[1];
+
+        if ( ( o_player == op_data || o_player == 'All' ) && (d_player == dp_data || d_player == 'All') )
+        {
+            return true;
+        }
+        return false;
+    })
+
+    $('#offense-player-select, #defense-player-select').change(function () {
+      table.draw();
+    });
+
 }
