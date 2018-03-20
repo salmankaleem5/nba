@@ -111,8 +111,8 @@ class EndPoint:
             param_string += ',{}={}'.format(str(p), str(params[p]))
             # param_string += ',' + str(p) + '=' + str(params[p])
         param_hash = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
-        return data_dir +\
-            self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
+        return data_dir + \
+               self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
 
     def get_data(self, passed_params=default_params, override_file=False):
         check_params(passed_params)
@@ -506,7 +506,7 @@ class PlayByPlay(EndPoint):
 
     def determine_file_path(self, params):
         return data_dir + 'playbyplayv2/' + params['Season'] \
-            + '/' + params['GameID'] + '.csv'
+               + '/' + params['GameID'] + '.csv'
 
     def update_data(self, season='2017-18', season_type='Regular Season'):
         log = TeamAdvancedGameLogs().get_data(
@@ -525,7 +525,70 @@ class PlayByPlay(EndPoint):
             })
 
 
-class Matchups(EndPoint):
+class BoxScoreEndPoint(EndPoint):
+    default_params = {
+        'EndPeriod': '10',
+        'EndRange': '28800',
+        'GameID': '',
+        'RangeType': '0',
+        'Season': '2017-18',
+        'SeasonType': 'Regular Season',
+        'StartPeriod': '1',
+        'StartRange': '0'
+    }
+
+    def set_index(self, index):
+        self.index = index
+
+    def determine_file_path(self, params):
+        box_score_type = self.base_url.split('https://stats.nba.com/stats/boxscore')[0].split('v2')[0]
+        return data_dir + 'boxscore/' + params['GameID'] + '/' + box_score_type + '.csv'
+
+
+class BoxScoreSummary(BoxScoreEndPoint):
+    base_url = 'https://stats.nba.com/stats/boxscoresummaryv2'
+    default_params = {
+        'GameID': ''
+    }
+    index = 1
+
+
+class BoxScoreTraditional(BoxScoreEndPoint):
+    base_url = 'https://stats.nba.com/stats/boxscoretraditionalv2'
+
+
+class BoxScoreAdvanced(BoxScoreEndPoint):
+    base_url = 'https://stats.nba.com/stats/boxscoreadvancedv2'
+
+
+class BoxScoreMisc(BoxScoreEndPoint):
+    base_url = 'https://stats.nba.com/stats/boxscoremiscv2'
+
+
+class BoxScoreScoring(BoxScoreEndPoint):
+    base_url = 'https://stats.nba.com/stats/boxscorescoringv2'
+
+
+class BoxScoreUsage(BoxScoreEndPoint):
+    base_url = 'https://stats.nba.com/stats/boxscoreusagev2'
+
+
+class BoxScoreFourFactors(BoxScoreEndPoint):
+    base_url = 'https://stats.nba.com/stats/boxscorefourfactorsv2'
+
+
+class BoxScoreTracking(BoxScoreEndPoint):
+    base_url = 'https://stats.nba.com/stats/boxscoreplayertrackv2'
+
+
+class BoxScoreHustle(EndPoint):
+    base_url = 'https://stats.nba.com/stats/hustlestatsboxscore'
+    default_params = {
+        'GameID': ''
+    }
+
+
+class BoxScoreMatchups(EndPoint):
     base_url = 'http://stats.nba.com/stats/boxscorematchups'
     default_params = {
         'GameID': ''
@@ -719,7 +782,7 @@ class SynergyPlayerStats(EndPoint):
 
 
 class DraftCombineAnthro(EndPoint):
-    '''
+    """
         Draft Combine Anthropology Data.
         Args:
             SeasonYear (str):
@@ -747,7 +810,7 @@ class DraftCombineAnthro(EndPoint):
                 WINGSPAN_FT_IN
 
 
-    '''
+    """
 
     base_url = 'https://stats.nba.com/stats/draftcombineplayeranthro'
     default_params = {
