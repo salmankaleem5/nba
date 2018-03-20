@@ -1,7 +1,7 @@
 from util.util import merge_shot_pbp_for_game
 
 
-def get_shot_data_for_game(game_id, season='2017-18', file_path='data.json', data_override=False):
+def get_shot_data_for_game(game_id, season='2017-18', data_override=False):
     shots_df = merge_shot_pbp_for_game(season=season, game_id=game_id, override_file=data_override)
 
     shots_df = shots_df[shots_df['SHOT_ATTEMPTED_FLAG'].notnull()]
@@ -29,4 +29,4 @@ def get_shot_data_for_game(game_id, season='2017-18', file_path='data.json', dat
     shots_df['x'] = shots_df['x'] / 10
     shots_df['y'] = shots_df['y'] / 10
 
-    shots_df.to_json(file_path, orient='records')
+    return shots_df

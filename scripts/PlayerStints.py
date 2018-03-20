@@ -1,6 +1,7 @@
 from viz.rotations.data import get_team_df, get_game_lineups_for_team, get_game_player_stints_for_team
 from util.format import convert_time
 from util.nba_stats import TeamAdvancedGameLogs, PlayByPlay, GeneralPlayerStats
+from util.data import data_dir
 import pandas as pd
 
 
@@ -67,7 +68,6 @@ def analyze_stint_data(stints_df, season):
     return data_df
 
 
-#df = get_player_stints_for_season('2017-18')
-df = pd.read_csv('data.csv')
+df = get_player_stints_for_season('2017-18')
 df1 = analyze_stint_data(df, '2017-18')
-df1.to_csv('data2.csv')
+df1.to_csv(data_dir + 'player_stint_data.csv')

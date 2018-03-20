@@ -1,11 +1,11 @@
-from util.nba_stats import Matchups, GeneralPlayerStats
+from util.nba_stats import BoxScoreMatchups, GeneralPlayerStats
 from util.data import data_dir
 from scripts import Position
 import pandas as pd
 
 
 def compare_to_normal_offense():
-    matchup_ep = Matchups()
+    matchup_ep = BoxScoreMatchups()
     general_stats_ep = GeneralPlayerStats()
 
     matchup_df = matchup_ep.aggregate_data(override_file=False)
@@ -33,7 +33,7 @@ def compare_to_normal_offense():
 
 
 def compare_position():
-    matchup_ep = Matchups()
+    matchup_ep = BoxScoreMatchups()
     general_stats_ep = GeneralPlayerStats()
 
     matchup_df = matchup_ep.aggregate_data(override_file=False)

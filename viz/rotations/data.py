@@ -272,7 +272,7 @@ def get_viz_data_for_team_season(team_abbreviation, last_n_games=''):
     rotation_data.to_csv(season_file_path)
 
 
-def get_rotation_data_for_game(game_id, year='2017-18', file_path='./single_game/'):
+def get_rotation_data_for_game(game_id, year='2017-18'):
     pbp_ep = PlayByPlay()
 
     game_id = str(game_id)
@@ -313,8 +313,4 @@ def get_rotation_data_for_game(game_id, year='2017-18', file_path='./single_game
 
         rotation_df = rotation_df.append(team_game_player_stints_df)
 
-    file_check(file_path)
-    rotation_df.to_json(file_path + 'rotations.json', orient='records')
-
-    score_df = get_score_data_for_game(game_id)
-    score_df.to_json(file_path + 'score.json', orient='records')
+    return rotation_df
