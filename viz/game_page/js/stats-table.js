@@ -1,16 +1,26 @@
 function create_stats_table() {
 
     var table = null;
-    $.getJSON("./data/stats.json", function (json) {
+    $.getJSON("./data/box_score.json", function (json) {
         table = $("#stats-table").DataTable({
             data: json,
             order: [[1, "desc"], [2, "desc"]],
             paging: false,
             searching: false,
             columns: [
-                {title: 'Name', data: 'player'},
+                {title: 'Name', data: 'PLAYER_NAME'},
                 {title: 'Team', data: 'TEAM_ABBREVIATION'},
-                {title: 'Min', data: 'MIN'},
+                {
+                  title: 'Min',
+                  data: 'MIN',
+                  render: function (data, type) {
+                    if (type === "display") {
+                      return data;
+                    } else {
+                      return seconds = parseInt(data.split(':')[0]) * 60 + parseInt(data.split(':')[1]);
+                    }
+                  }
+                },
                 {title: "Points", data: 'PTS'},
                 {title: "True Attempts", data: 'TSA', visible: false, name: 'tsa'},
                 {
@@ -28,13 +38,16 @@ function create_stats_table() {
                 {
                     title: 'Free Throws',
                     data: null,
-                    render: function (data) {
+                    render: function (data, type) {
                         var attempts = data['AND_ONE'] + data['2PT_FTA'] + data['3PT_FTA'] + data['TECH_FTA'];
-                        if (attempts > 0) {
-                            return data['FTM'] + '/' + attempts + ' (' + Math.round(data['FTM'] / attempts * 1000) / 10 + '%)';
-                        }
-                        else {
-                            return data['FTM'] + '/' + attempts + ' (0%)';
+                        if (type === 'display') {
+                          if (attempts > 0) {
+                              return data['FTM'] + '/' + attempts + ' (' + Math.round(data['FTM'] / attempts * 1000) / 10 + '%)';
+                          } else {
+                              return data['FTM'] + '/' + attempts + ' (0%)';
+                          }
+                        } else {
+                          return data['FTM'];
                         }
                     },
                     visible: false,
@@ -43,12 +56,16 @@ function create_stats_table() {
                 {
                     title: '2pt Fg',
                     data: null,
-                    render: function (data) {
-                        if (data['2PT_FGA'] > 0) {
-                            return data['2PT_FGM'] + '/' + data['2PT_FGA'] + ' (' + Math.round(data['2PT_FGM'] / data['2PT_FGA'] * 1000) / 10 + '%)';
-                        }
-                        else {
-                            return data['2PT_FGM'] + '/' + data['2PT_FGA'] + ' (0%)';
+                    render: function (data, type) {
+                        if (type === 'display') {
+                          if (data['2PT_FGA'] > 0) {
+                              return data['2PT_FGM'] + '/' + data['2PT_FGA'] + ' (' + Math.round(data['2PT_FGM'] / data['2PT_FGA'] * 1000) / 10 + '%)';
+                          }
+                          else {
+                              return data['2PT_FGM'] + '/' + data['2PT_FGA'] + ' (0%)';
+                          }
+                        } else {
+                          return data['2PT_FGM'];
                         }
                     },
                     visible: false,
@@ -57,19 +74,23 @@ function create_stats_table() {
                 {
                     title: '3pt Fg',
                     data: null,
-                    render: function (data) {
-                        if (data['3PT_FGA'] > 0) {
-                            return data['3PT_FGM'] + '/' + data['3PT_FGM'] + ' (' + Math.round(data['3PT_FGM'] / data['3PT_FGA'] * 1000) / 10 + '%)';
-                        }
-                        else {
-                            return data['3PT_FGM'] + '/' + data['3PT_FGA'] + ' (0%)';
+                    render: function (data, type) {
+                        if (type === 'display') {
+                          if (data['3PT_FGA'] > 0) {
+                              return data['3PT_FGM'] + '/' + data['3PT_FGM'] + ' (' + Math.round(data['3PT_FGM'] / data['3PT_FGA'] * 1000) / 10 + '%)';
+                          }
+                          else {
+                              return data['3PT_FGM'] + '/' + data['3PT_FGA'] + ' (0%)';
+                          }
+                        } else {
+                          return data['3PT_FGM'];
                         }
                     },
                     visible: false,
                     name: '3pt-fgm'
                 },
                 {title: 'Ast', data: 'AST'},
-                {title: 'Passes Made', data: 'PASSES_MADE', visible: false, name: 'passes'},
+                {title: 'Passes Made', data: 'PASS', visible: false, name: 'passes'},
                 {title: 'Potential Ast', data: 'POTENTIAL_AST', visible: false, name: 'potential-ast'},
                 {title: 'Ast Pts', data: 'AST_PTS', visible: false, name: 'ast-pts'},
                 {title: 'Touches', data: 'TCHS'},
@@ -78,12 +99,16 @@ function create_stats_table() {
                 {
                     title: 'OReb / Chances',
                     data: null,
-                    render: function (data) {
-                        var adj_chances = data['OREBC'];
-                        if (adj_chances > 0) {
-                            return data['oreb'] + '/' + (adj_chances) + ' (' + Math.round(data['oreb'] / adj_chances * 1000) / 10 + '%)';
+                    render: function (data, type) {
+                        if (type == 'display') {
+                          var adj_chances = data['ORBC'];
+                          if (adj_chances > 0) {
+                              return data['OREB'] + '/' + (adj_chances) + ' (' + Math.round(data['OREB'] / adj_chances * 1000) / 10 + '%)';
+                          } else {
+                              return '0/0 (0%)';
+                          }
                         } else {
-                            return '0/0 (0%)';
+                          return data['OREB'];
                         }
                     },
                     visible: false,
@@ -92,12 +117,16 @@ function create_stats_table() {
                 {
                     title: 'DReb / Chances',
                     data: null,
-                    render: function (data) {
-                        var adj_chances = data['DREBC'];
-                        if (adj_chances > 0) {
-                            return data['dreb'] + '/' + (adj_chances) + ' (' + Math.round(data['oreb'] / adj_chances * 1000) / 10 + '%)';
+                    render: function (data, type) {
+                        if (type == 'display') {
+                          var adj_chances = data['DRBC'];
+                          if (adj_chances > 0) {
+                              return data['DREB'] + '/' + (adj_chances) + ' (' + Math.round(data['DREB'] / adj_chances * 1000) / 10 + '%)';
+                          } else {
+                              return '0/0 (0%)';
+                          }
                         } else {
-                            return '0/0 (0%)';
+                          return data['DREB'];
                         }
                     },
                     visible: false,
@@ -107,15 +136,23 @@ function create_stats_table() {
                 {title: 'Deflections', data: 'DEFLECTIONS', visible: false, name: 'deflections'},
                 {title: 'Loose Balls Recovered', data: 'LOOSE_BALLS_RECOVERED', visible: false, name: 'loose-ball'},
                 {title: 'Blk', data: 'BLK'},
-                {title: 'Rim Fga Defended', data: 'DFGA', visible: false, name: 'rim-fga'},
                 {
-                    title: 'Rim Fg% Defended',
-                    data: 'DFG_PCT',
-                    render: function (data) {
-                        return data + '%';
-                    },
-                    visible: false,
-                    name: 'rim-fgpct'
+                  title: 'Rim Fga Defended',
+                  data: null,
+                  visible: false,
+                  name: 'rim-fga',
+                  render: function (data, type) {
+                    if (type === 'display') {
+                      if (data['DFGA'] > 0) {
+                        return data['DFGM'] + '/' + data['DFGA'] + '(' + Math.round(data['DFGM'] / data['DFGA'] * 1000) / 10 + '%)';
+                      } else {
+                        return '0/0 (0%)';
+                      }
+                    } else {
+                      return data['DFGA'];
+                    }
+
+                  }
                 },
                 {title: 'Screen Ast', data: 'SCREEN_ASSISTS', visible: false, name: 'screen-ast'}
             ]

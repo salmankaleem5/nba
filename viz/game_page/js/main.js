@@ -1,8 +1,5 @@
 $(document).ready(function () {
 
-    console.log($(window).height());
-    console.log();
-
     $.getJSON("./data/game_summary.json", function (json) {
       $("#home-score").html(json[0]['PTS']);
       $("#away-score").html(json[1]['PTS']);
@@ -81,4 +78,6 @@ $(document).ready(function () {
             $('.point-diff').show();
         }
     });
+
+    $.fn.dataTable.defaults.column.asSorting = ['desc', 'asc'];
 });

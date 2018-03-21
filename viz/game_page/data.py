@@ -104,17 +104,13 @@ def get_tracking_stats_for_date(game_date, year, data_override=False):
 
     try:
         all_cols = []
-        passing_cols = ['POTENTIAL_AST', 'PASSES_MADE']
-        poss_cols = ['FRONT_CT_TOUCHES', 'TIME_OF_POSS', 'ELBOW_TOUCHES', 'POST_TOUCHES', 'PAINT_TOUCHES']
-        reb_cols = ['OREB_CHANCES', 'OREB_CHANCE_DEFER', 'OREB_CHANCE_PCT_ADJ', 'DREB_CHANCES',
-                    'DREB_CHANCE_DEFER', 'DREB_CHANCE_PCT_ADJ', 'REB', 'REB_CHANCES', 'REB_CHANCE_DEFER',
-                    'REB_CHANCE_PCT_ADJ']
-        def_cols = ['BLK', 'STL', 'DEF_RIM_FGM', 'DEF_RIM_FGA', 'DEF_RIM_FG_PCT']
+        passing_cols = ['POTENTIAL_AST']
+        poss_cols = ['TIME_OF_POSS', 'ELBOW_TOUCHES', 'POST_TOUCHES', 'PAINT_TOUCHES']
+        # def_cols = ['BLK', 'STL', 'DEF_RIM_FGM', 'DEF_RIM_FGA', 'DEF_RIM_FG_PCT']
 
         all_cols.extend(passing_cols)
         all_cols.extend(poss_cols)
-        all_cols.extend(reb_cols)
-        all_cols.extend(def_cols)
+        # all_cols.extend(def_cols)
 
         passing_df = tracking_ep.get_data({
             'PtMeasureType': 'Passing',
@@ -130,28 +126,28 @@ def get_tracking_stats_for_date(game_date, year, data_override=False):
             'Season': year
         }, override_file=data_override)[['PLAYER_NAME'] + poss_cols]
 
-        rebounding_df = tracking_ep.get_data({
-            'PtMeasureType': 'Rebounding',
-            'DateFrom': game_date,
-            'DateTo': game_date,
-            'Season': year
-        }, override_file=data_override)[['PLAYER_NAME'] + reb_cols]
-
-        rebounding_df['OREB_CHANCE_PCT_ADJ'] = rebounding_df['OREB_CHANCE_PCT_ADJ'] * 100
-        rebounding_df['DREB_CHANCE_PCT_ADJ'] = rebounding_df['DREB_CHANCE_PCT_ADJ'] * 100
-
-        defense_df = tracking_ep.get_data({
-            'PtMeasureType': 'Defense',
-            'DateFrom': game_date,
-            'DateTo': game_date,
-            'Season': year
-        }, override_file=data_override)[['PLAYER_NAME'] + def_cols]
-
-        defense_df['DEF_RIM_FG_PCT'] = defense_df['DEF_RIM_FG_PCT'] * 100
+        # rebounding_df = tracking_ep.get_data({
+        #     'PtMeasureType': 'Rebounding',
+        #     'DateFrom': game_date,
+        #     'DateTo': game_date,
+        #     'Season': year
+        # }, override_file=data_override)[['PLAYER_NAME'] + reb_cols]
+        #
+        # rebounding_df['OREB_CHANCE_PCT_ADJ'] = rebounding_df['OREB_CHANCE_PCT_ADJ'] * 100
+        # rebounding_df['DREB_CHANCE_PCT_ADJ'] = rebounding_df['DREB_CHANCE_PCT_ADJ'] * 100
+        #
+        # defense_df = tracking_ep.get_data({
+        #     'PtMeasureType': 'Defense',
+        #     'DateFrom': game_date,
+        #     'DateTo': game_date,
+        #     'Season': year
+        # }, override_file=data_override)[['PLAYER_NAME'] + def_cols]
+        #
+        # defense_df['DEF_RIM_FG_PCT'] = defense_df['DEF_RIM_FG_PCT'] * 100
 
         merge_df = pd.merge(passing_df, possession_df, on='PLAYER_NAME', how='outer')
-        merge_df = pd.merge(merge_df, rebounding_df, on='PLAYER_NAME', how='outer')
-        merge_df = pd.merge(merge_df, defense_df, on='PLAYER_NAME', how='outer')
+        # merge_df = pd.merge(merge_df, rebounding_df, on='PLAYER_NAME', how='outer')
+        # merge_df = pd.merge(merge_df, defense_df, on='PLAYER_NAME', how='outer')
 
     except KeyError:
         print('Tracking Stats Not Available Yet')
@@ -194,9 +190,10 @@ def get_matchup_data_for_game(game_id, data_override=False):
     return matchup_df
 
 
-def get_data_for_game(game_id, year='2017-18', data_override=False):
+def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
     game_summary = get_game_summary(game_id, override_file=data_override)
     box_score = get_box_score_player_stats(game_id, override_file=data_override)
+    tracking = get_tracking_stats_for_date(game_date, '2017-18', data_override=data_override)
     scoring = get_stats_from_pbp(game_id, override_file=data_override)
     rotations = get_rotation_data_for_game(game_id, year=year)
     score = get_score_data_for_game(game_id)
@@ -204,6 +201,7 @@ def get_data_for_game(game_id, year='2017-18', data_override=False):
     matchups = get_matchup_data_for_game(game_id, data_override=data_override)
 
     box_score = box_score.merge(scoring, on='PLAYER_NAME')
+    box_score = box_score.merge(tracking, on='PLAYER_NAME')
 
     game_summary.to_json('./data/game_summary.json', orient='records')
     box_score.to_json('./data/box_score.json', orient='records')
@@ -213,4 +211,4 @@ def get_data_for_game(game_id, year='2017-18', data_override=False):
     matchups.to_json('./data/matchups.json', orient='records')
 
 
-get_data_for_game('0021701047', data_override=True)
+get_data_for_game('0021701061', '03/20/18', data_override=True)
