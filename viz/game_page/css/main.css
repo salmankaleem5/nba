@@ -46,6 +46,10 @@ text.axis-worktime {
     margin: auto;
 }
 
+#match-up-table_wrapper {
+  width: 98%;
+}
+
 table {
     text-align: center;
     margin: auto;

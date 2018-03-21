@@ -19,14 +19,14 @@ def get_shot_data_for_game(game_id, season='2017-18', data_override=False):
     })
 
     shots_df = shots_df[['x', 'y', 'action_type', 'shot_distance', 'shot_made_flag', 'assist', 'shooter', 'quarter', 'time']]
-    shots_df['player'] = shots_df['shooter']
+    shots_df.loc[:, 'player'] = shots_df['shooter']
 
-    assists_df = shots_df[shots_df['assist'].notnull()]
-    assists_df['player'] = assists_df['assist']
+    assists_df = shots_df.loc[shots_df['assist'].notnull(), :]
+    assists_df.loc[:, 'player'] = assists_df['assist']
 
     shots_df = shots_df.append(assists_df)
 
-    shots_df['x'] = shots_df['x'] / 10
-    shots_df['y'] = shots_df['y'] / 10
+    shots_df.loc[:, 'x'] = shots_df['x'] / 10
+    shots_df.loc[:, 'y'] = shots_df['y'] / 10
 
     return shots_df

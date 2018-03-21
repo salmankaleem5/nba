@@ -1,7 +1,16 @@
 $(document).ready(function () {
 
-    $.getJSON("./data/rotations.json", function (rotation_data) {
+    console.log($(window).height());
+    console.log();
 
+    $.getJSON("./data/game_summary.json", function (json) {
+      $("#home-score").html(json[0]['PTS']);
+      $("#away-score").html(json[1]['PTS']);
+      $("#home-logo").attr("src", "./img/" + json[0]['TEAM_ABBREVIATION'] + '.svg');
+      $("#away-logo").attr("src", "./img/" + json[1]['TEAM_ABBREVIATION'] + '.svg');
+    });
+
+    $.getJSON("./data/rotations.json", function (rotation_data) {
         $.getJSON("./data/score.json", function (score_data) {
             plot_rotation_heat_map(rotation_data, score_data);
         });
@@ -9,7 +18,7 @@ $(document).ready(function () {
     });
 
     var courtSelection = d3.select("#shot-chart");
-    var court = d3.court().width(1000);
+    var court = d3.court().width(Math.min($(window).width(), $(window).height()) * 1.5);
     courtSelection.call(court);
 
     players = [];

@@ -24,7 +24,7 @@ def get_team_logos():
 
 
 def get_game_summary(game_id, override_file=False):
-    ep = BoxScoreSummary()
+    ep = BoxScoreTraditional()
     ep.set_index(1)
     df = ep.get_data({'GameID': game_id}, override_file=override_file)
     return df

@@ -586,6 +586,7 @@ class BoxScoreHustle(EndPoint):
     default_params = {
         'GameID': ''
     }
+    index = 1
 
 
 class BoxScoreMatchups(EndPoint):

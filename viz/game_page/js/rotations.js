@@ -1,8 +1,10 @@
 function plot_rotation_heat_map(rotation_data, score_data) {
 
-    var margin = {top: 30, right: 150, bottom: 30, left: 250},
-        width = 1500 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+    hor_margin_scale = $(window).width() / 1500
+
+    var margin = {top: 30, right: 50 * hor_margin_scale, bottom: 30, left: 200 * hor_margin_scale},
+        width = $(window).width() - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;0
 
     var svg = d3.select("#chart").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -209,11 +211,8 @@ function plot_rotation_heat_map(rotation_data, score_data) {
             .style("fill", 'none');
     }
 
-    console.log((max_minute - 48) / 5);
-
     if (max_minute > 48) {
         for (i = 0; i < ((max_minute - 48) / 5); i++) {
-            console.log(i);
             svg.append("line")
                 .attr("x1", (2880 + (300 * i)) * x_scale)
                 .attr("x2", (2880 + (300 * i)) * x_scale)
