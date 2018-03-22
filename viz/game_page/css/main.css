@@ -32,7 +32,7 @@ text.axis-worktime {
 
 #container {
     text-align: center;
-    background-color: lightgray !important;
+    background-color: #e2e2e2 !important;
     width: 100%;
     margin: 0 auto;
 }
@@ -44,6 +44,11 @@ text.axis-worktime {
 #match-up-table_paginate {
     text-align: center;
     margin: auto;
+}
+
+.paginate_button {
+  display: inline !important;
+  padding: 0 !important;
 }
 
 #match-up-table_wrapper {
