@@ -1,8 +1,7 @@
 from viz.rotations.data import get_rotation_data_for_game, get_score_data_for_game, is_home
-from viz.shotCharts.data import get_shot_data_for_game
+from viz.shot_chart.util import get_shot_data_for_all_players_game
 from util.util import merge_shot_pbp_for_game
-from util.nba_stats import TrackingStats, HustleStats, GeneralPlayerStats, BoxScoreMatchups, BoxScoreSummary, \
-    BoxScoreTraditional, BoxScoreAdvanced, BoxScoreHustle, BoxScoreTracking
+from util.nba_stats import TrackingStats, HustleStats, GeneralPlayerStats, BoxScoreMatchups, BoxScoreTraditional, BoxScoreAdvanced, BoxScoreHustle, BoxScoreTracking
 import pandas as pd
 import requests
 import shutil
@@ -197,7 +196,7 @@ def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
     scoring = get_stats_from_pbp(game_id, override_file=data_override)
     rotations = get_rotation_data_for_game(game_id, year=year)
     score = get_score_data_for_game(game_id)
-    shots = get_shot_data_for_game(game_id, season=year, data_override=data_override)
+    shots = get_shot_data_for_all_players_game(game_id, season=year, data_override=data_override)
     matchups = get_matchup_data_for_game(game_id, data_override=data_override)
 
     box_score = box_score.merge(scoring, on='PLAYER_NAME')
@@ -211,4 +210,4 @@ def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
     matchups.to_json('./data/matchups.json', orient='records')
 
 
-get_data_for_game('0021701061', '03/20/18', data_override=True)
+get_data_for_game('0021701106', '03/26/18', data_override=True)

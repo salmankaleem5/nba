@@ -1,10 +1,20 @@
-function plot_rotation_heat_map(rotation_data, score_data) {
+function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
 
-    hor_margin_scale = $(window).width() / 1500
+    var team_colors = {
+        'NOP': ['#0C2340', '#C8102E', '#85714D'],
+        'HOU': ['#CE1141', '#FDB927', '#000000'],
+        'CLE': ['#6F2633', '#FFB81C', '#041E42'],
+        'BKN': ['#000000', '#FFFFFF'],
+        'MIN': ['#7AC143', '#002B5C', '#005083', '#C6CFD4', '#FFFFFF'],
+        'MEM': ['#6189B9', '#00285E', '#B8CFE9', '#FDB927', '#FFFFFF']
+    };
+
+    var max_width = 1500;
+    var hor_margin_scale = Math.min($(window).width(), max_width) / 1500;
 
     var margin = {top: 30, right: 50 * hor_margin_scale, bottom: 30, left: 200 * hor_margin_scale},
-        width = $(window).width() - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;0
+        width = Math.min($(window).width(), max_width) - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
     var svg = d3.select("#chart").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -158,19 +168,6 @@ function plot_rotation_heat_map(rotation_data, score_data) {
     var y = d3.scaleLinear()
         .range([-margin.top, yAxisScale - margin.bottom]);
 
-    var line = d3.line()
-        .x(function (d) {
-            return x(d.minute);
-        })
-        .y(function (d) {
-            return y(d.score_margin);
-        })
-        .curve(d3.curveStep);
-
-    x.domain(d3.extent(score_data, function (d) {
-        return +d.minute;
-    }));
-
     y.domain([max_lead, -max_lead]);
 
     svg.append("g")
@@ -181,19 +178,63 @@ function plot_rotation_heat_map(rotation_data, score_data) {
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
         .attr("dy", "0.71em")
-        .attr("text-anchor", "end")
+        .attr("text-anchor", "end");
 
-    svg.append("path")
-        .datum(score_data)
-        .attr("class", "point-diff")
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-opacity", 1)
-        .attr("stroke-linejoin", "bevel")
-        .attr("stroke-linecap", "square")
-        .attr("stroke-width", 3.5)
-        .attr("d", line)
-        .attr("transform", "translate(" + -margin.left + "," + (margin.bottom + margin.top + yAxisShift) + ")");
+    var score_datas = [];
+    var current_data = [];
+    var current_score = 0;
+    $.each(score_data, function() {
+        if (this.score_margin === 0) {
+            current_data.push(this);
+        } else if ((current_score * this.score_margin) <= 0) {
+            score_datas.push(current_data);
+            current_data = [this];
+            current_score = this.score_margin;
+        } else {
+            current_data.push(this);
+            current_score = this.score_margin;
+        }
+    });
+    score_datas.push(current_data);
+
+    var line = d3.area()
+        .x(function (d) {
+            return x(d.minute);
+        })
+        .y0(function (d) {
+            return y(0);
+        })
+        .y1(function (d) {
+            return y(d.score_margin);
+        })
+        .curve(d3.curveStep);
+
+    x.domain(d3.extent(score_data, function (d) {
+        return +d.minute;
+    }));
+
+
+    $.each(score_datas, function () {
+        var line_color = null;
+        if (this[0].score_margin > 0){
+            line_color = team_colors[away_abb][0];
+        } else {
+            line_color = team_colors[home_abb][0];
+        }
+
+        svg.append("path")
+            .datum(this)
+            .attr("class", "point-diff")
+            .attr("fill", line_color)
+            .attr("stroke", line_color)
+            .attr("stroke-opacity", 1)
+            .attr("stroke-linejoin", "bevel")
+            .attr("stroke-linecap", "square")
+            .attr("stroke-width", 3.5)
+            .attr("opacity", 0.6)
+            .attr("d", line)
+            .attr("transform", "translate(" + -margin.left + "," + (margin.bottom + margin.top + yAxisShift) + ")");
+    });
 
     var stroke_width = 2,
         stroke_opacity = 0.25,
@@ -234,4 +275,49 @@ function plot_rotation_heat_map(rotation_data, score_data) {
         .attr("stroke-opacity", stroke_opacity)
         .style("stroke", stroke_color)
         .style("fill", 'none');
+
+    svg.append("rect")
+        .attr("x", 0)
+        .attr("y", (top_team_player_count + bot_team_player_count + 3) * rect_height)
+        .attr("rx", 1)
+        .attr("ry", 1)
+        .attr("class", "hour bordered")
+        .attr("width", 300 * x_scale)
+        .attr("height", rect_height - 5)
+        .style("fill", 'black');
+
+    svg.append("text")
+        .attr("x", 310 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 3.6) * rect_height)
+        .text("Player On Court");
+
+    svg.append("rect")
+        .attr("x", 600 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 2.5) * rect_height)
+        .attr("rx", 1)
+        .attr("ry", 1)
+        .attr("width", 60 * x_scale)
+        .attr("height", rect_height)
+        .attr("opacity", 0.6)
+        .style("fill", team_colors[away_abb][0]);
+
+    svg.append("text")
+        .attr("x", 665 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 3.2) * rect_height)
+        .text(away_abb + " Lead");
+
+    svg.append("rect")
+        .attr("x", 600 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 3.5) * rect_height)
+        .attr("rx", 1)
+        .attr("ry", 1)
+        .attr("width", 60 * x_scale)
+        .attr("height", rect_height)
+        .attr("opacity", 0.6)
+        .style("fill", team_colors[home_abb][0]);
+
+    svg.append("text")
+        .attr("x", 665 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 4.2) * rect_height)
+        .text(home_abb + " Lead");
 }

@@ -1,9 +1,10 @@
 import pandas as pd
 import datetime
 from util.nba_stats import Standings
+from util.bball_ref import get_season_schedule
 
 # Import Data
-schedule = pd.read_csv('./schedule.csv')
+schedule = get_season_schedule('2017-18')
 
 current_date = datetime.date.today()
 schedule['Date'] = schedule['Date'].map(lambda x:
@@ -60,5 +61,3 @@ for team1 in teams:
 
 head_to_head_df = pd.DataFrame(head_to_head_data)[['Team'] + teams]
 magic_number_df = pd.DataFrame(magic_number_data)[['Team'] + teams]
-
-None

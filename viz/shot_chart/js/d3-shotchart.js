@@ -36,7 +36,8 @@
                         .attr("height", 19)
                         .attr("x", 25)
                         .attr("transform", "translate(" + -8 + "," + 0 + ")")
-                        .attr("y", yScale(19));
+                        .attr("y", yScale(19))
+                        .classed("court-line");
                     // Append inner paint lines
                     svg.append("g")
                         .classed("inner-court-paint", true)
@@ -44,14 +45,16 @@
                         .attr("x1", 19)
                         .attr("x2", 19)
                         .attr("y1", yScale(19))
-                        .attr("y2", yScale(0));
+                        .attr("y2", yScale(0))
+                        .classed("court-line");
                     svg.append("g")
                         .classed("inner-court-paint", true)
                         .append("line")
                         .attr("x1", 31)
                         .attr("x2", 31)
                         .attr("y1", yScale(19))
-                        .attr("y2", yScale(0));
+                        .attr("y2", yScale(0))
+                        .classed("court-line");
                     // Append foul circle
                     // Add clipPaths w/ rectangles to make the 2 semi-circles with our desired styles
                     var solidFoulCircle = svg.append("g").classed("foul-circle solid", true);
@@ -62,24 +65,28 @@
                         .attr("height", 6)
                         .attr("x", 23)
                         .attr("y", 27.9) /*foul line is 19 feet, then transform by 6 feet (circle radius) to pin rectangle above foul line..clip paths only render the parts of the circle that are in the rectangle path */
-                        .attr("transform", "translate(" + -6 + "," + -6 + ")");
+                        .attr("transform", "translate(" + -6 + "," + -6 + ")")
+                        .classed("court-line");
                     solidFoulCircle.append("circle")
                         .attr("cx", 25)
                         .attr("cy", yScale(19))
                         .attr("r", 6)
-                        .attr("clip-path", "url(#cut-off-bottom)");
-                    // Add backboard and rim
+                        .attr("clip-path", "url(#cut-off-bottom)")
+                        .classed("court-line");
+                    // Add backboard and ri;
                     svg.append("g").classed("backboard", true)
                         .append("line")
                         .attr("x1", 22)
                         .attr("x2", 28)
                         .attr("y1", yScale(4)) // 47-4
-                        .attr("y2", yScale(4)); // 47-4
+                        .attr("y2", yScale(4)) // 47-4
+                        .classed("court-line");
                     svg.append("g").classed("rim", true)
                         .append("circle")
                         .attr("cx", 25)
                         .attr("cy", yScale(4.75)) // 47-4.75 need to set center point of circle to be 'r' above backboard
-                        .attr("r", .75); //regulation rim is 18 inches
+                        .attr("r", .75) //regulation rim is 18 inches
+                        .classed("court-line");
                     // Add restricted area -- a 4ft radius circle from the center of the rim
                     var restrictedArea = svg.append("g").classed("restricted-area", true);
                     restrictedArea.append("defs").append("clipPath")
@@ -89,12 +96,14 @@
                         .attr("height", 6.5) // height is 1r of the circle it's cutting off
                         .attr("x", 24) // center rectangle
                         .attr("y", 40)
-                        .attr("transform", "translate(" + -4 + "," + -4 + ")");
+                        .attr("transform", "translate(" + -4 + "," + -4 + ")")
+                        .classed("court-line");
                     restrictedArea.append("circle")
                         .attr("cx", 25)
                         .attr("cy", yScale(4.75))
                         .attr("r", 4)
-                        .attr("clip-path", "url(#restricted-cut-off)");
+                        .attr("clip-path", "url(#restricted-cut-off)")
+                        .classed("court-line");
                     // Add 3 point arc
                     var threePointArea = svg.append("g").classed("three-point-area", true);
                     threePointArea.append("defs").append("clipPath")
@@ -104,22 +113,26 @@
                         .attr("height", 23.75)
                         .attr("x", 25)
                         .attr("y", yScale(6)) // put recentagle at centerpoint of circle then translate by the inverse of the circle radius to cut off top half
-                        .attr("transform", "translate(" + -22 + "," + -23.75 + ")");
+                        .attr("transform", "translate(" + -22 + "," + -23.75 + ")")
+                        .classed("court-line");
                     threePointArea.append("circle")
                         .attr("cx", 25)
                         .attr("cy", yScale(4.75))
                         .attr("r", 23.75)
-                        .attr("clip-path", "url(#three-point-cut-off)");
+                        .attr("clip-path", "url(#three-point-cut-off)")
+                        .classed("court-line");
                     threePointArea.append("line")
                         .attr("x1", 3.12)
                         .attr("x2", 3.12)
                         .attr("y1", 32.8)
-                        .attr("y2", yScale(0));
+                        .attr("y2", yScale(0))
+                        .classed("court-line");
                     threePointArea.append("line")
                         .attr("x1", 46.9)
                         .attr("x2", 46.9)
                         .attr("y1", 32.8)
-                        .attr("y2", yScale(0));
+                        .attr("y2", yScale(0))
+                        .classed("court-line");
                     // Append baseline
                     svg.append("g")
                         .classed("court-baseline", true)
@@ -127,13 +140,15 @@
                         .attr("x1", 0)
                         .attr("x2", 50)
                         .attr("y1", yScale(0))
-                        .attr("y2", yScale(0));
+                        .attr("y2", yScale(0))
+                        .classed("court-line");
 
                     svg.append("g").classed("shots", true);
 
                 }
+                ;
             });
-        }
+        };
 
         court.width = function (_) {
             if (!arguments.length) return width;
@@ -143,7 +158,7 @@
         };
 
         return court;
-    }
+    };
 
     var activeDisplay = "scatter";
     var activeTheme = "day";
@@ -156,7 +171,7 @@
         var _nestShotsByLocation = function (data) {
             var nestedData = d3.nest()
                 .key(function (d) {
-                    return [d.x, d.y];
+                    return [Math.round(d.x), Math.round(d.y)];
                 })
                 .rollup(function (v) {
                     return {
@@ -164,12 +179,12 @@
                             return d.shot_made_flag
                         }),
                         "attempts": d3.sum(v, function (d) {
-                            return d.shot_attempted_flag
+                            return 1
                         }),
                         "shootingPercentage": d3.sum(v, function (d) {
                             return d.shot_made_flag
                         }) / d3.sum(v, function (d) {
-                            return d.shot_attempted_flag
+                            return 1
                         })
                     }
                 })
@@ -178,21 +193,22 @@
             nestedData.forEach(function (a) {
                 a.key = "[" + a.key + "]";
             });
-
+            console.log(nestedData);
             return nestedData;
         };
 
         var _getHexBinShootingStats = function (data, index) {
             var attempts = d3.sum(data, function (d) {
-                return d.value.attempts;
-            })
+                return 1;
+            });
             var makes = d3.sum(data, function (d) {
-                return d.value.made;
-            })
+                return d.shot_made_flag;
+            });
             var shootingPercentage = makes / attempts;
             data.shootingPercentage = shootingPercentage;
             data.attempts = attempts;
             data.makes = makes;
+            console.log(data);
             return data;
         };
 
@@ -218,6 +234,8 @@
                     legends = d3.select(this).select("#legends"),
                     nestedData = _nestShotsByLocation(data),
                     hexBinCoords = hexbin(nestedData).map(_getHexBinShootingStats);
+
+                console.log(nestedData);
 
                 var maxAttempts = 0;
                 nestedData.forEach(function (nd) {
@@ -262,6 +280,9 @@
                         .classed("assist", function (d) {
                             return (d.assist === d.player);
                         })
+                        .classed('blocked', function (d) {
+                            return (d.blocker === d.player);
+                        })
                         .attr("cx", function (d) {
                             return d.x + 25;
                         })
@@ -280,14 +301,14 @@
                             }
                         })
                         .transition().duration(1000)
-                        .attr("r", .5);
+                        .attr("r", .4);
 
                 }
                 else if (activeDisplay === "hexbin") {
 
                     var shots = shotsGroup.selectAll(".shot")
                         .data(hexBinCoords, function (d) {
-                            return [d.x, d.y];
+                            return [d.x, d.y, d.player];
                         });
 
                     shots.exit()
@@ -329,10 +350,10 @@
                         .transition().duration(1000)
                         .attr("d", function (d) {
                             if (d.attempts >= hexMinShotThreshold) {
-                                if (d.attempts <= 20) {
+                                if (d.attempts <= 1) {
                                     return hexbin.hexagon(hexRadiusScale(0));
                                 }
-                                else if (10 < d.attempts && d.attempts <= 40) {
+                                else if (1 < d.attempts && d.attempts <= 3) {
                                     return hexbin.hexagon(hexRadiusScale(1));
                                 }
                                 else {

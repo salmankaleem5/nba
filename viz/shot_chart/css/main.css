@@ -32,7 +32,7 @@ text.axis-worktime {
 
 #container {
     text-align: center;
-    background-color: #e2e2e2 !important;
+    background-color: #d1d1d1 !important;
     width: 100%;
     margin: 0 auto;
 }
@@ -85,33 +85,44 @@ svg line {
     width: 1;
 }
 
+.three-point-area circle,
+.foul-circle circle,
+.rim circle,
+.restricted-area circle{
+    stroke: black;
+    fill: none;
+    width: 1;
+}
+
 /********END SHOTCHART COURT STYLES****** */
 /********SHOT STYLES****** */
 svg circle {
-    stroke: black;
     fill: none;
 }
 
 svg circle.shot {
-    opacity: 0.7;
+    opacity: 0.2;
 }
 
 svg circle.shot.make {
     fill: red;
-    stroke: white;
-    stroke-width: 0;
+    stroke-width: 0.05;
 }
 
 svg circle.shot.miss {
     fill: blue;
-    stroke: white;
-    stroke-width: 0;
+    stroke-width: 0.05;
 }
 
 svg circle.shot.assist {
     fill: yellow !important;
-    stroke: white;
-    stroke-width: 0;
+    stroke-width: 0.05;
+}
+
+svg circle.shot.blocked {
+    fill: #C8102E;
+    stroke-width: 0.05;
+    opacity: 0.8;
 }
 
 path {

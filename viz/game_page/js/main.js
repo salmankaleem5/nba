@@ -1,28 +1,38 @@
 $(document).ready(function () {
 
+    var home_abb = null,
+        away_abb = null;
+
     $.getJSON("./data/game_summary.json", function (json) {
       $("#home-score").html(json[0]['PTS']);
       $("#away-score").html(json[1]['PTS']);
       $("#home-logo").attr("src", "./img/" + json[0]['TEAM_ABBREVIATION'] + '.svg');
-      $("#away-logo").attr("src", "./img/" + json[1]['TEAM_ABBREVIATION'] + '.svg');
+      $("#away-logo").attr("src", "./img/" + json[1]['TEAM_ABBREVIATION'] + '.png');
+
+      home_abb = json[0]['TEAM_ABBREVIATION'];
+      away_abb = json[1]['TEAM_ABBREVIATION'];
     });
 
     $.getJSON("./data/rotations.json", function (rotation_data) {
         $.getJSON("./data/score.json", function (score_data) {
-            plot_rotation_heat_map(rotation_data, score_data);
+            plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb);
         });
 
     });
 
     var courtSelection = d3.select("#shot-chart");
-    var court = d3.court().width(Math.min($(window).width(), $(window).height()) * 1.5);
+
+    var max_size = 1000;
+    var court_size = Math.min($(window).width(), $(window).height(), max_size);
+
+    var court = d3.court().width(court_size);
     courtSelection.call(court);
 
-    players = [];
+    var players = [];
 
     $.getJSON("./data/shots.json", function (json) {
-        data = json;
-        x = {};
+        var data = json;
+        var x = {};
         $.each(data, function (i, d) {
             if ($.inArray(this.shooter, players) === -1) {
                 players.push(this.shooter);
@@ -34,7 +44,7 @@ $(document).ready(function () {
         });
         players.sort(function (a, b) {
             return x[b] - x[a];
-        })
+        });
 
         //$('#player-select').append($('<option></option>').val('all').html('all'));
         $('#offense-player-select').append($('<option></option>').val('All').html('All'));
@@ -49,8 +59,8 @@ $(document).ready(function () {
     });
 
     $('#player-select').change(function () {
-        player = $('#player-select option:selected').val();
-        player_data = data.filter(function (d) {
+        var player = $('#player-select option:selected').val();
+        var player_data = data.filter(function (d) {
             return d.player == player;
         });
         var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
