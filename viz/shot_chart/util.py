@@ -94,9 +94,3 @@ def get_blocks_for_player_season(player_name, season, override_file='False'):
     blocks_df.loc[:, 'y'] = blocks_df['y'] / 10
 
     return blocks_df
-
-
-df = get_shots_for_player_season('Anthony Davis', '2017-18')
-df = df.append(get_shots_for_player_season('James Harden', '2017-18'))
-df = df.append(get_shots_for_player_season('LeBron James', '2017-18'))
-df.to_json('./data/shots.json', orient='records')

@@ -6,7 +6,7 @@ $(document).ready(function () {
     $.getJSON("./data/game_summary.json", function (json) {
       $("#home-score").html(json[0]['PTS']);
       $("#away-score").html(json[1]['PTS']);
-      $("#home-logo").attr("src", "./img/" + json[0]['TEAM_ABBREVIATION'] + '.svg');
+      $("#home-logo").attr("src", "./img/" + json[0]['TEAM_ABBREVIATION'] + '.png');
       $("#away-logo").attr("src", "./img/" + json[1]['TEAM_ABBREVIATION'] + '.png');
 
       home_abb = json[0]['TEAM_ABBREVIATION'];
@@ -55,16 +55,16 @@ $(document).ready(function () {
             $('#defense-player-select').append($('<option></option>').val(p).html(p));
         });
 
-        $('#player-select').val($('#player-select option:first').val()).change();
-    });
-
-    $('#player-select').change(function () {
-        var player = $('#player-select option:selected').val();
-        var player_data = data.filter(function (d) {
-            return d.player == player;
+        $('#player-select').change(function () {
+            var player = $('#player-select option:selected').val();
+            var player_data = data.filter(function (d) {
+                return d.player == player;
+            });
+            var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
+            courtSelection.datum(player_data).call(shots);
         });
-        var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
-        courtSelection.datum(player_data).call(shots);
+
+        $('#player-select').val($('#player-select option:first').val()).change();
     });
 
     $.getJSON("./data/matchups.json", function(json) {

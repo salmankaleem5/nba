@@ -2,12 +2,37 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
 
     var team_colors = {
         'NOP': ['#0C2340', '#C8102E', '#85714D'],
-        'HOU': ['#CE1141', '#FDB927', '#000000'],
+        'HOU': ['#CE1141', '#FDB927'],
         'CLE': ['#6F2633', '#FFB81C', '#041E42'],
         'BKN': ['#000000', '#FFFFFF'],
-        'MIN': ['#7AC143', '#002B5C', '#005083', '#C6CFD4', '#FFFFFF'],
-        'MEM': ['#6189B9', '#00285E', '#B8CFE9', '#FDB927', '#FFFFFF']
+        'MIN': ['#002B5C', '#7AC143'],
+        'MEM': ['#6189B9', '#FDB927'],
+        'NYK': ['#F58426', '#006BB6'],
+        'CHA': ['#00788C', '#1D1160', '#888B8D'],
+        'POR': ['#E13A3E', '#000000']
     };
+
+    var home_color = team_colors[home_abb][0],
+        away_color = team_colors[away_abb][0];
+
+    if ((parseInt(home_color.substr(1, 7), 16) / parseInt(away_color.substr(1, 7), 16)) < 2) {
+      loop1:
+        for (var i = 0; i <= team_colors[home_abb].length - 1; i++) {
+          loop2:
+            for (var j = 0; j <= team_colors[away_abb].length - 1; j++) {
+                if ((parseInt(team_colors[home_abb][i].substr(1, 7), 16) / parseInt(team_colors[away_abb][j].substr(1, 7), 16)) > 2) {
+                  home_color = team_colors[home_abb][i];
+                  away_color = team_colors[away_abb][j];
+                  break loop1;
+                }
+            }
+        }
+    }
+
+
+    console.log(away_color);
+    console.log(home_color);
+    console.log(parseInt(home_color.substr(1, 7), 16) / parseInt(away_color.substr(1, 7), 16));
 
     var max_width = 1500;
     var hor_margin_scale = Math.min($(window).width(), max_width) / 1500;
@@ -217,9 +242,9 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
     $.each(score_datas, function () {
         var line_color = null;
         if (this[0].score_margin > 0){
-            line_color = team_colors[away_abb][0];
+            line_color = away_color;
         } else {
-            line_color = team_colors[home_abb][0];
+            line_color = home_color;
         }
 
         svg.append("path")
