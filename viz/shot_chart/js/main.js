@@ -1,15 +1,9 @@
 $(document).ready(function () {
 
-    var players = [];
-    var data = null;
-
-    var courtSelection = d3.select("#shot-chart");
-    var court = d3.court().width(1000);
-    courtSelection.call(court);
 
     $.getJSON("./data/shots.json", function (json) {
-        var data = json;
-        var x = {};
+        let x = {},
+            players = [];
 
         $.each(data, function (i, d) {
             if ($.inArray(this.player, players) === -1) {
@@ -24,19 +18,24 @@ $(document).ready(function () {
             return x[b] - x[a];
         });
 
+        plot_shot_chart();
+
+        let player_select = $('#player-select');
+
         $.each(players, function (i, p) {
-            $('#player-select').append($('<option></option>').val(p).html(p));
+            player_select.append($('<option></option>').val(p).html(p));
         });
 
-        $('#player-select').change(function () {
-            var player = $('#player-select option:selected').val();
-            var player_data = data.filter(function (d) {
-                return d.player == player;
-            });
-            var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("hexbin");
-            courtSelection.datum(player_data).call(shots);
+        player_select.change(function () {
+            let player = $('#player-select option:selected').val(),
+                player_data = data.filter(function (d) {
+                    return d.player === player;
+                });
         });
 
-        $('#player-select').val($('#player-select option:first').val()).change();
+        player_select.val($('#player-select option:first').val()).change();
+
+
+
     });
 });

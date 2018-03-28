@@ -1,7 +1,8 @@
-from viz.rotations.data import get_rotation_data_for_game, get_score_data_for_game, is_home
-from viz.shot_chart.util import get_shot_data_for_all_players_game
+from util.rotations.rotations import get_rotation_data_for_game, get_score_data_for_game, is_home
+from util.shot_chart.shot_chart import get_shot_data_for_all_players_game
 from util.util import merge_shot_pbp_for_game
-from util.nba_stats import TrackingStats, HustleStats, GeneralPlayerStats, BoxScoreMatchups, BoxScoreTraditional, BoxScoreAdvanced, BoxScoreHustle, BoxScoreTracking
+from util.nba_stats import TrackingStats, HustleStats, GeneralPlayerStats, BoxScoreMatchups, BoxScoreTraditional, \
+    BoxScoreAdvanced, BoxScoreHustle, BoxScoreTracking
 import pandas as pd
 import requests
 import shutil
@@ -171,7 +172,6 @@ def get_hustle_stats_for_data(game_date, year, data_override=False):
 
 
 def get_stats_for_game(game_id, year, game_date, file_path, data_override=False):
-
     tracking_df = get_tracking_stats_for_date(game_date, year, data_override=data_override)
     stats_df = stats_df.merge(tracking_df, left_on='player', right_on='PLAYER_NAME', how='left')
     if len(tracking_df) == 1:

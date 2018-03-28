@@ -1,4 +1,4 @@
-from viz.rotations.data import get_team_df, get_game_lineups_for_team, get_game_player_stints_for_team
+from util.rotations.rotations import get_team_df, get_game_lineups_for_team, get_game_player_stints_for_team
 from util.format import convert_time
 from util.nba_stats import TeamAdvancedGameLogs, PlayByPlay, GeneralPlayerStats
 from util.data import data_dir
