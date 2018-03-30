@@ -2,20 +2,6 @@ rect.bordered {
     stroke-width: 2px;
 }
 
-.score {
-    font-size: 50pt;
-    vertical-align: middle;
-}
-
-.table-bordered > tbody > tr > td,
-.table-bordered > tbody > tr > th,
-.table-bordered > tfoot > tr > td,
-.table-bordered > tfoot > tr > th,
-.table-bordered > thead > tr > td,
-.table-bordered > thead > tr > th {
-    border: 1px solid #848484;
-}
-
 text.mono {
     font-size: 9pt;
     font-family: Consolas, courier;
@@ -32,37 +18,9 @@ text.axis-worktime {
 
 #container {
     text-align: center;
-    background-color: #d1d1d1 !important;
+    background-color: #000000 !important;
     width: 100%;
     margin: 0 auto;
-}
-
-#stats-table_filter, #stats-table_info, #match-up-table_length, #match-up-table_info, #match-up-table_filter {
-    visibility: hidden;
-}
-
-#match-up-table_paginate {
-    text-align: center;
-    margin: auto;
-}
-
-.paginate_button {
-  display: inline !important;
-  padding: 0 !important;
-}
-
-#match-up-table_wrapper {
-  width: 98%;
-}
-
-table {
-    text-align: center;
-    margin: auto;
-}
-
-#surrounder {
-    background-color: black !important;
-    text-align: center;
 }
 
 svg {
@@ -74,24 +32,28 @@ svg text.legend-text {
 }
 
 svg rect {
-    stroke: black;
     width: 1;
     fill: none;
-}
-
-svg line {
-    stroke: black;
-    fill: none;
-    width: 1;
 }
 
 .three-point-area circle,
+.three-point-area line,
 .foul-circle circle,
 .rim circle,
-.restricted-area circle{
-    stroke: black;
+.restricted-area circle,
+.inner-court-paint line,
+.backboard line,
+.court-baseline line,
+.court-paint rect
+{
+    stroke: #ffffff !important;
     fill: none;
     width: 1;
+}
+
+.legend text {
+    font-size: 0.7px;
+    color: white;
 }
 
 /********END SHOTCHART COURT STYLES****** */
