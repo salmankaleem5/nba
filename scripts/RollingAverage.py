@@ -1,4 +1,4 @@
-from util.nba_stats import GeneralPlayerStats
+from util.nba_stats import ShotChartDetail
 from util.util import merge_shot_pbp_for_season
 from util.format import get_year_string
 import pandas as pd
@@ -7,24 +7,28 @@ import numpy as np
 import plotly.plotly as py
 import plotly.graph_objs as go
 
-general_df = GeneralPlayerStats().get_data({'Season': '2017-18', 'MeasureType': 'Base'}, override_file=False)
-general_df = general_df.sort_values(by='FG3A', ascending=False)
+player_name = 'E\'Twaun Moore'
+player_id = '203121'
+year_range = range(2012, 2018)
 
-players = general_df.head(25).PLAYER_NAME.tolist()
+shots_ep = ShotChartDetail()
 
 df = pd.DataFrame()
-for y in range(2009, 2018):
+for y in year_range:
     year = get_year_string(y)
     print(year)
-    year_df = merge_shot_pbp_for_season(year)
-    df = df.append(year_df)
+    year_df = shots_ep.get_data({
+        'ContextMeasure': 'FG3A',
+        'PlayerID': player_id,
+        'Season': year
+    }, override_file=True)
+    if len(year_df) > 0:
+        year_df = year_df.sort_values(by=['GAME_ID', 'GAME_EVENT_ID'])
+        df = df.append(year_df)
 
-player_df = df[df.PLAYER1_NAME == 'DeMar DeRozan']
-player_df = player_df[player_df.SHOT_TYPE == '3PT Field Goal']
+df['SHOT_MADE_FLAG'] = df['SHOT_MADE_FLAG'] * 100
 
-player_df['SHOT_MADE_FLAG'] = player_df['SHOT_MADE_FLAG'] * 100
-
-rolling_avg = pd.rolling_mean(player_df['SHOT_MADE_FLAG'], 100).tolist()[99:]
+rolling_avg = pd.rolling_mean(df['SHOT_MADE_FLAG'], 100).tolist()[99:]
 player_data = {
     'Min': min(rolling_avg),
     'Max': max(rolling_avg),
@@ -39,4 +43,4 @@ trace = go.Scatter(
     y=rolling_avg
 )
 
-py.plot([trace], filename='DeMar 3PT Rolling Average')
+py.plot([trace], filename=player_name + ' 3PT Rolling Average')
