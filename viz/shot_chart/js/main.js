@@ -2,23 +2,24 @@ $(document).ready(function () {
 
 
     $.getJSON("./data/shots.json", function (json) {
-        let x = {},
+        console.log(json);
+        let shot_totals = {},
             players = [''];
 
-        $.each(json, function (i, d) {
+        $.each(json, function () {
             if ($.inArray(this.player, players) === -1) {
                 players.push(this.player);
-                x[this.player] = 1;
+                shot_totals[this.player] = this.player.attempts;
             }
             else {
-                x[this.player]++;
+                shot_totals[this.player] += this.player.attempts;
             }
         });
         players.sort(function (a, b) {
-            return x[b] - x[a];
+            return shot_totals[b] - shot_totals[a];
         });
 
-        let player_select = $('#player-select');
+        const player_select = $('#player-select');
 
         $.each(players, function (i, p) {
             player_select.append($('<option></option>').val(p).html(p));
@@ -26,50 +27,18 @@ $(document).ready(function () {
 
         //player_select.selectpicker({});
 
-        var courtSelection = d3.select("#shot-chart");
+        const courtSelection = d3.select("#shot-chart");
 
-        var svg = d3.select("svg");
+        let svg = d3.select("svg");
 
-        let width = 1000,
-            height = .94 * width,
+        const width = 1000,
             yScale = d3.scaleLinear().domain([0, 47]).rangeRound([47, 0]),
-            yScale$1 = d3.scaleLinear().domain([0, 47]).rangeRound([47, 0]);
+            colors = ["#67001f","#b2182b","#d6604d","#f4a582","#fddbc7","#f7f7f7","#d1e5f0","#92c5de","#4393c3","#2166ac","#053061"].reverse(),
+            pctHeatScale = d3.scaleQuantize().domain([0.3, 0.8]).range(colors),
+            effHeatScale = d3.scaleQuantize().domain([0.6, 1.2]).range(colors);
 
         courtSelection.style("max-width", width / 16 + "em");
         courtSelection.style("margin", "auto");
-
-        let all_zones = {};
-
-        $.each(json, function (i, d) {
-            if ((d.zone + '-' + d.area) in all_zones) {
-                all_zones[d.zone + '-' + d.area]['attempts'] += 1;
-                all_zones[d.zone + '-' + d.area]['makes'] += d.shot_made_flag;
-            } else {
-                all_zones[d.zone + '-' + d.area] = {};
-                all_zones[d.zone + '-' + d.area]['attempts'] = 1;
-                all_zones[d.zone + '-' + d.area]['makes'] = d.shot_made_flag;
-                all_zones[d.zone + '-' + d.area]['val'] = d.shot_type === '3PT Field Goal' ? 3 : 2;
-            }
-        });
-
-        let total_points = 0,
-            total_attempts = 0;
-
-        $.each(all_zones, function (i, z) {
-            let pct = z['makes'] / z['attempts'];
-            z['pct'] = pct;
-            z['eff'] = pct * z['val'];
-
-            total_points += z['val'] * z['makes'];
-            total_attempts += z['attempts'];
-        });
-
-        let total_avg_eff = total_points / total_attempts,
-            colors = ["#67001f","#b2182b","#d6604d","#f4a582","#fddbc7","#f7f7f7","#d1e5f0","#92c5de","#4393c3","#2166ac","#053061"].reverse(),
-            totalAvgHeatScale = d3.scaleQuantize().domain([total_avg_eff - 0.2, total_avg_eff + 0.2]).range(colors),
-            byZoneHeatScale = d3.scaleQuantize().domain([-0.2, 0.2]).range(colors);
-
-        console.log(total_avg_eff);
 
         //region court draw
         svg = courtSelection.append("svg")
@@ -186,6 +155,8 @@ $(document).ready(function () {
 
         //endregion
 
+        //region legend
+
         svg.append("g").classed("legend", true);
         let legendGroup = svg.select(".legend");
 
@@ -210,12 +181,11 @@ $(document).ready(function () {
             .attr("y", yScale(-2))
             .text(function (d, i) { return legend_text[i]});
 
+        //endregion
 
         player_select.change(function () {
             let player = $('#player-select option:selected').val(),
-                player_data = json.filter(function (d) {
-                    return d.player === player;
-                });
+                player_data = json[player];
 
             let xs = [],
                 ys = [],
