@@ -77,7 +77,7 @@ function create_stats_table() {
                     render: function (data, type) {
                         if (type === 'display') {
                           if (data['3PT_FGA'] > 0) {
-                              return data['3PT_FGM'] + '/' + data['3PT_FGM'] + ' (' + Math.round(data['3PT_FGM'] / data['3PT_FGA'] * 1000) / 10 + '%)';
+                              return data['3PT_FGM'] + '/' + data['3PT_FGA'] + ' (' + Math.round(data['3PT_FGM'] / data['3PT_FGA'] * 1000) / 10 + '%)';
                           }
                           else {
                               return data['3PT_FGM'] + '/' + data['3PT_FGA'] + ' (0%)';

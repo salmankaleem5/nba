@@ -3,13 +3,16 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
     var team_colors = {
         'NOP': ['#0C2340', '#C8102E', '#85714D'],
         'HOU': ['#CE1141', '#FDB927'],
-        'CLE': ['#6F2633', '#FFB81C', '#041E42'],
+        'CLE': ['#6F2633', '#FFB81C'],
         'BKN': ['#000000', '#FFFFFF'],
         'MIN': ['#002B5C', '#7AC143'],
         'MEM': ['#6189B9', '#FDB927'],
         'NYK': ['#F58426', '#006BB6'],
         'CHA': ['#00788C', '#1D1160', '#888B8D'],
-        'POR': ['#E13A3E', '#000000']
+        'POR': ['#E13A3E', '#000000'],
+        'LAC': ['#ED174C', '#006BB6'],
+        'PHX': ['#E56020', '#1D1160'],
+        'MIA': ['#98012e', '#faa11b']
     };
 
     var home_color = team_colors[home_abb][0],
@@ -242,9 +245,9 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
     $.each(score_datas, function () {
         var line_color = null;
         if (this[0].score_margin > 0){
-            line_color = away_color;
-        } else {
             line_color = home_color;
+        } else {
+            line_color = away_color;
         }
 
         svg.append("path")
@@ -317,8 +320,8 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         .text("Player On Court");
 
     svg.append("rect")
-        .attr("x", 600 * x_scale)
-        .attr("y", (top_team_player_count + bot_team_player_count + 2.5) * rect_height)
+        .attr("x", 650 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 3.5) * rect_height)
         .attr("rx", 1)
         .attr("ry", 1)
         .attr("width", 60 * x_scale)
@@ -327,13 +330,13 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         .style("fill", team_colors[away_abb][0]);
 
     svg.append("text")
-        .attr("x", 665 * x_scale)
-        .attr("y", (top_team_player_count + bot_team_player_count + 3.2) * rect_height)
+        .attr("x", 715 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 4.2) * rect_height)
         .text(away_abb + " Lead");
 
     svg.append("rect")
-        .attr("x", 600 * x_scale)
-        .attr("y", (top_team_player_count + bot_team_player_count + 3.5) * rect_height)
+        .attr("x", 650 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 2.5) * rect_height)
         .attr("rx", 1)
         .attr("ry", 1)
         .attr("width", 60 * x_scale)
@@ -342,7 +345,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         .style("fill", team_colors[home_abb][0]);
 
     svg.append("text")
-        .attr("x", 665 * x_scale)
-        .attr("y", (top_team_player_count + bot_team_player_count + 4.2) * rect_height)
+        .attr("x", 715 * x_scale)
+        .attr("y", (top_team_player_count + bot_team_player_count + 3.2) * rect_height)
         .text(home_abb + " Lead");
 }
