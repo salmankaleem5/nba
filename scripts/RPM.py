@@ -1,45 +1,109 @@
-from bs4 import BeautifulSoup
-import pandas as pd
-import requests
-
-from util.nba_stats import data_dir
+from util.espn import get_rpm
 
 import plotly.plotly as py
 import plotly.graph_objs as go
 
+df = get_rpm()
 
-rpm_url = 'http://www.espn.com/nba/statistics/rpm/_/page/{page}/sort/RPM'
+df = df[df['MPG'] >= 10]
+df = df[df['GP'] >= 50]
 
-headers = []
-data = []
-for p in range(1, 12):
-    r = requests.post(rpm_url.format(page=p))
-    html = r.content
-    soup = BeautifulSoup(html)
-    if p == 1:
-        headers = [th.getText() for th in soup.find_all('tr')[0].find_all('td')]
-    rows = soup.find_all('tr')[1:]
-    data.extend([[td.getText() for td in rows[i].find_all('td')] for i in range(len(rows))])
+positions = df['POS'].unique()
 
-df = pd.DataFrame(data, columns=headers)
-df.RPM = df.RPM.astype(float)
-df.MPG = df.MPG.astype(float)
-df.GP = df.GP.astype(int)
-df = df[df['MPG'] >= 15]
-df = df[df['GP'] >= 10]
+for p in positions:
+    traces = []
+    pos_df = df[df.POS == p]
 
-df.to_csv(data_dir + 'RPM.csv')
+    trace_df = pos_df
+    traces.append(go.Scatter(
+        x=trace_df.DRPM,
+        y=trace_df.ORPM,
+        text=trace_df.NAME,
+        mode='markers',
+        marker=dict(
+            size=14,
+            color='rgb(0, 0, 0)',
+            opacity=0.3
+        )
+    ))
 
-traces = []
-for t in df.TEAM.unique():
-    if t in ['NO', 'OKC', 'DEN', 'POR', 'UTAH', 'MIN']:
-        team_df = df[df.TEAM == t]
-        traces.append(go.Scatter(
-            x=team_df.TEAM,
-            y=team_df.RPM,
-            text=team_df.NAME,
-            mode='markers'
-        ))
+    trace_df = pos_df.sort_values(by='ORPM', ascending=True).head(5)
+    traces.append(go.Scatter(
+        x=trace_df.DRPM,
+        y=trace_df.ORPM,
+        text=trace_df.NAME,
+        mode='markers+text',
+        marker=dict(
+            size=14,
+            color=trace_df.RPM,
+            colorscale=' Bluered',
+            opacity=1
+        ),
+        textposition='top center'
+    ))
 
-traces.sort(key=lambda x: -x.y.mean())
-py.plot(traces, filename='RPM')
+    trace_df = pos_df.sort_values(by='ORPM', ascending=False).head(5)
+    traces.append(go.Scatter(
+        x=trace_df.DRPM,
+        y=trace_df.ORPM,
+        text=trace_df.NAME,
+        mode='markers+text',
+        marker=dict(
+            size=14,
+            color=trace_df.RPM,
+            colorscale=' Bluered',
+            opacity=1
+        ),
+        textposition='top center'
+    ))
+
+    trace_df = pos_df.sort_values(by='DRPM', ascending=True).head(5)
+    traces.append(go.Scatter(
+        x=trace_df.DRPM,
+        y=trace_df.ORPM,
+        text=trace_df.NAME,
+        mode='markers+text',
+        marker=dict(
+            size=14,
+            color=trace_df.RPM,
+            colorscale=' Bluered',
+            opacity=1
+        ),
+        textposition='top center'
+    ))
+
+    trace_df = pos_df.sort_values(by='DRPM', ascending=False).head(5)
+    traces.append(go.Scatter(
+        x=trace_df.DRPM,
+        y=trace_df.ORPM,
+        text=trace_df.NAME,
+        mode='markers+text',
+        marker=dict(
+            size=14,
+            color=trace_df.RPM,
+            colorscale=' Bluered',
+            opacity=1
+        ),
+        textposition='top center'
+    ))
+
+    layout = dict(
+        title=p + ' RPM',
+        showlegend=False,
+        xaxis=dict(
+            title='DRPM',
+            showgrid=False,
+            zerolinecolor='rgb(209, 209, 209)'
+        ),
+        yaxis=dict(
+            title='ORPM',
+            showgrid=False,
+            zerolinecolor='rgb(209, 209, 209)'
+        )
+    )
+
+    fig = dict(
+        data=traces,
+        layout=layout
+    )
+    py.plot(fig, filename=p + ' RPM')
