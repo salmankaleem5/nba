@@ -5,7 +5,7 @@ $(document).ready(function() {
   $.getJSON("./data/shots.json", function(json) {
     console.log(json);
     let shot_totals = {},
-      players = Object.keys(json['players']);
+      players = Object.keys(json['players']).sort();
 
     const player_select = $('#player-select');
 
@@ -20,11 +20,12 @@ $(document).ready(function() {
 
     let svg = d3.select("svg");
 
-    const width = 1000,
+    const width = 800,
       yScale = d3.scaleLinear().domain([0, 47]).rangeRound([47, 0]),
       colors = ["#67001f", "#b2182b", "#d6604d", "#f4a582", "#fddbc7", "#f7f7f7", "#d1e5f0", "#92c5de", "#4393c3", "#2166ac", "#053061"].reverse(),
       pctHeatScale = d3.scaleQuantize().domain([-0.1, 0.1]).range(colors),
-      efgHeatScale = d3.scaleQuantize().domain([-0.15, 0.15]).range(colors);
+      efgHeatScale = d3.scaleQuantize().domain([-0.15, 0.15]).range(colors),
+      efgTextHeatScale = d3.scaleQuantize().domain([0, 100]).range(colors);
 
     courtSelection.style("max-width", width / 16 + "em");
     courtSelection.style("margin", "auto");
@@ -229,6 +230,11 @@ $(document).ready(function() {
     player_select.change(function() {
       let player = $('#player-select option:selected').val();
       player_data = json['players'][player];
+
+      $("#player-name").html(player + ":");
+      $("#ppg").html(player_data['stats']['ppg'] + " Points Per Game - ");
+      $("#efg").html(player_data['stats']['efg'] + " Efg%")
+      $("#efg").css("color", efgTextHeatScale(player_data['stats']['efg_pct']));
 
       let shotsGroup = svg.select(".shots");
 

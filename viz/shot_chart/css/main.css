@@ -23,6 +23,12 @@ text.axis-worktime {
     margin: 0 auto;
 }
 
+.player-info span {
+  color: white;
+  font-size: 2.5vw;
+  font-weight: bold;
+}
+
 svg {
     stroke-width: 0.2;
 }
