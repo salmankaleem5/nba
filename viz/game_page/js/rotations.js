@@ -1,12 +1,10 @@
-function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
-
-    var team_colors = {
+var team_colors = {
         'NOP': ['#0C2340', '#C8102E', '#85714D'],
         'HOU': ['#CE1141', '#FDB927'],
         'CLE': ['#6F2633', '#FFB81C'],
         'BKN': ['#000000', '#FFFFFF'],
         'MIN': ['#002B5C', '#7AC143'],
-        'MEM': ['#6189B9', '#FDB927'],
+        'MEM': ['#7D9BC1', '#FFC72C'],
         'NYK': ['#F58426', '#006BB6'],
         'CHA': ['#00788C', '#1D1160', '#888B8D'],
         'POR': ['#E13A3E', '#000000'],
@@ -15,27 +13,28 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         'MIA': ['#98012e', '#faa11b']
     };
 
-    var home_color = team_colors[home_abb][0],
-        away_color = team_colors[away_abb][0];
+function get_color_contrast(hex1, hex2) {
+    let rgb1 = [parseInt(hex1.substr(1,3), 16), parseInt(hex1.substr(3,5), 16), parseInt(hex1.substr(5,7), 16)],
+        rgb2 = [parseInt(hex2.substr(1,3), 16), parseInt(hex2.substr(3,5), 16), parseInt(hex2.substr(5,7), 16)];
 
-    if ((parseInt(home_color.substr(1, 7), 16) / parseInt(away_color.substr(1, 7), 16)) < 2) {
-      loop1:
-        for (var i = 0; i <= team_colors[home_abb].length - 1; i++) {
-          loop2:
-            for (var j = 0; j <= team_colors[away_abb].length - 1; j++) {
-                if ((parseInt(team_colors[home_abb][i].substr(1, 7), 16) / parseInt(team_colors[away_abb][j].substr(1, 7), 16)) > 2) {
-                  home_color = team_colors[home_abb][i];
-                  away_color = team_colors[away_abb][j];
-                  break loop1;
-                }
+    return (Math.abs(rgb1[0] - rgb2[0]) + Math.abs(rgb1[1] - rgb2[1]) + Math.abs(rgb1[2] - rgb2[2]));
+}
+
+function get_colors(home_abb, away_abb) {
+  for (let ix=0; ix < team_colors[home_abb].length; ix++) {
+    for (let jx=0; jx < team_colors[away_abb].length; jx++) {
+          if (get_color_contrast(team_colors[home_abb][ix], team_colors[away_abb][jx]) > 40000) {
+              return [team_colors[home_abb][ix], team_colors[away_abb][jx]];
             }
-        }
-    }
+        };
+    };
+}
 
+function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
 
-    console.log(away_color);
-    console.log(home_color);
-    console.log(parseInt(home_color.substr(1, 7), 16) / parseInt(away_color.substr(1, 7), 16));
+    let colors = get_colors(home_abb, away_abb);
+    let home_color = colors[0],
+        away_color = colors[1];
 
     var max_width = 1500;
     var hor_margin_scale = Math.min($(window).width(), max_width) / 1500;
@@ -327,7 +326,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         .attr("width", 60 * x_scale)
         .attr("height", rect_height)
         .attr("opacity", 0.6)
-        .style("fill", team_colors[away_abb][0]);
+        .style("fill", away_color);
 
     svg.append("text")
         .attr("x", 715 * x_scale)
@@ -342,7 +341,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         .attr("width", 60 * x_scale)
         .attr("height", rect_height)
         .attr("opacity", 0.6)
-        .style("fill", team_colors[home_abb][0]);
+        .style("fill", home_color);
 
     svg.append("text")
         .attr("x", 715 * x_scale)
