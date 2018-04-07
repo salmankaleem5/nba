@@ -1,6 +1,4 @@
-from util.nba_stats import GeneralPlayerStats, TrackingStats
-from util.format import get_year_string
-from util.reddit import print_reddit_table
+from util.data_scrappers.nba_stats import GeneralPlayerStats, TrackingStats
 import pandas as pd
 
 data_override = False
@@ -25,7 +23,7 @@ def get_true_usage_for_year(year):
     merge_df = pd.merge(base_df, advanced_df, on=merge_cols)
     merge_df = pd.merge(merge_df, passing_df, on=merge_cols)
 
-    #merge_df = merge_df[merge_df.MIN >= 100].fillna(0)
+    merge_df = merge_df[merge_df.MIN >= 100].fillna(0)
     merge_df = merge_df.sort_values(by='MIN', ascending=False).head(100)
 
     merge_df['POSS'] = merge_df.MIN * (merge_df.PACE / 48)
@@ -46,13 +44,3 @@ def get_true_usage_for_year(year):
 
     return merge_df[
         ['PLAYER_NAME', 'YEAR', 'SCORING_USAGE', 'PLAYMAKING_USAGE', 'TOV_USAGE', 'TOTAL_USAGE']]
-
-
-df = pd.DataFrame()
-for y in range(2013, 2018):
-    year_str = get_year_string(y)
-    df = df.append(get_true_usage_for_year(year_str))
-
-df = df.sort_values(by='TOTAL_USAGE', ascending=False)
-
-print_reddit_table(df.head(20), df.columns)

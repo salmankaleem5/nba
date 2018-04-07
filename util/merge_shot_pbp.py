@@ -1,7 +1,7 @@
 import pandas as pd
 
 from util.data import data_dir, file_check
-from util.nba_stats import PlayByPlay, ShotChartDetail, TeamAdvancedGameLogs
+from util.data_scrappers.nba_stats import PlayByPlay, ShotChartDetail, TeamAdvancedGameLogs
 
 
 def merge_shot_pbp_for_season(season, season_type='Regular Season', override_file=False):

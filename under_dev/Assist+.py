@@ -1,7 +1,6 @@
-from util.nba_stats import GeneralPlayerStats, TrackingStats
-from util.util import merge_shot_pbp_for_season
-from util.format import get_year_string
-from util.reddit import print_reddit_table
+from util.data_scrappers.nba_stats import GeneralPlayerStats, TrackingStats
+from util.merge_shot_pbp import merge_shot_pbp_for_season
+from util.format import get_year_string, print_reddit_table
 import pandas as pd
 
 general_player_ep = GeneralPlayerStats()

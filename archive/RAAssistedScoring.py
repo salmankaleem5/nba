@@ -1,5 +1,5 @@
-from util.nba_stats import GeneralPlayerStats
-from util.util import merge_shot_pbp_for_season
+from util.data_scrappers.nba_stats import GeneralPlayerStats
+from util.merge_shot_pbp import merge_shot_pbp_for_season
 import pandas as pd
 
 import plotly.plotly as py

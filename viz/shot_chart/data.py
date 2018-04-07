@@ -1,5 +1,5 @@
-from util.shot_chart.shot_chart import nest_data_for_all_players_season
-from util.nba_stats import GeneralPlayerStats
+from util.shot_chart import nest_data_for_all_players_season
+from util.data_scrappers.nba_stats import GeneralPlayerStats
 from util.format import get_year_string
 import requests
 import shutil

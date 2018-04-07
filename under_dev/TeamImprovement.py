@@ -1,5 +1,5 @@
-from util.nba_stats import GeneralTeamStats
-from util.reddit import print_reddit_table
+from util.data_scrappers.nba_stats import GeneralTeamStats
+from util.format import print_reddit_table
 import pandas as pd
 
 import plotly.plotly as py

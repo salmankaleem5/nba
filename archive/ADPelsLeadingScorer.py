@@ -1,4 +1,4 @@
-from util.nba_stats import PlayerAdvancedGameLogs
+from util.data_scrappers.nba_stats import PlayerAdvancedGameLogs
 from util.format import get_year_string
 import pandas as pd
 

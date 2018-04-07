@@ -1,4 +1,4 @@
-from util.nba_stats import PlayByPlay, TeamAdvancedGameLogs
+from util.data_scrappers.nba_stats import PlayByPlay, TeamAdvancedGameLogs
 from util.data import file_check
 import sys
 import pandas as pd

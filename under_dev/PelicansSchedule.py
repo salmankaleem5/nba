@@ -1,7 +1,7 @@
 import pandas as pd
 import datetime
-from util.nba_stats import Standings
-from util.bball_ref import get_season_schedule
+from util.data_scrappers.nba_stats import Standings
+from util.data_scrappers.bball_ref import get_season_schedule
 
 # Import Data
 schedule = get_season_schedule('2017-18')

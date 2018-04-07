@@ -1,4 +1,4 @@
-from util.nba_stats import TeamAdvancedGameLogs
+from util.data_scrappers.nba_stats import TeamAdvancedGameLogs
 from util.format import get_year_string
 import plotly.plotly as py
 import plotly.graph_objs as go

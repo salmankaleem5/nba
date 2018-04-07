@@ -1,4 +1,4 @@
-from util.util import merge_shot_pbp_for_season, merge_shot_pbp_for_game
+from util.merge_shot_pbp import merge_shot_pbp_for_season, merge_shot_pbp_for_game
 import json
 
 

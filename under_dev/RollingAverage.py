@@ -1,5 +1,5 @@
-from util.nba_stats import GeneralPlayerStats
-from util.util import merge_shot_pbp_for_season
+from util.data_scrappers.nba_stats import GeneralPlayerStats
+from util.merge_shot_pbp import merge_shot_pbp_for_season
 from util.format import get_year_string
 import pandas as pd
 import numpy as np

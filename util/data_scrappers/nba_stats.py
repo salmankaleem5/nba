@@ -724,6 +724,24 @@ class OnOffSummary(EndPoint):
             print(file_path)
             return pd.read_csv(file_path)
 
+    def get_data_for_all_teams(self, season):
+        teams = GeneralTeamStats().get_data({'Season': season}).TEAM_ID.tolist()
+
+        on_off_df = pd.DataFrame()
+        for t in teams:
+            on_off_df = on_off_df.append(
+                self.get_data({'TeamID': t, 'Season': season}, override_file=False))
+
+        on_off_df = on_off_df[on_off_df.MIN_ON >= 1000]
+
+        on_off_df['OFF_DIFF'] = on_off_df['OFF_RATING_ON'] - on_off_df['OFF_RATING_OFF']
+        on_off_df['DEF_DIFF'] = on_off_df['DEF_RATING_OFF'] - on_off_df['DEF_RATING_ON']
+        on_off_df['NET_DIFF'] = on_off_df['OFF_DIFF'] + on_off_df['DEF_DIFF']
+
+        on_off_df['YEAR'] = season
+        return on_off_df
+
+
 
 class Standings(EndPoint):
     base_url = 'http://stats.nba.com/stats/leaguestandingsv3'

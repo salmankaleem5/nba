@@ -1,4 +1,5 @@
 import datetime
+import sys
 
 
 def get_year_string(year):
@@ -48,3 +49,23 @@ def get_display_name(name_col, year_col):
     year_part = year_col.apply(lambda x: '\'' + x.split('-')[1])
     name_part = name_col.apply(lambda x: get_name_part(x))
     return name_part + ' ' + year_part
+
+
+def print_reddit_table(df, columns):
+    for ix, col in enumerate(columns):
+        try:
+            df[col] = df[col].round(2)
+        except TypeError:
+            None
+        sys.stdout.write(str(col) + (' | ' if ix is not len(columns) - 1 else ''))
+    print('')
+    for ix, col in enumerate(columns):
+        sys.stdout.write(':--' + (' | ' if ix is not len(columns) - 1 else ''))
+    print('')
+    for ix, row in df.iterrows():
+        for jx, col in enumerate(columns):
+            try:
+                sys.stdout.write(str(row[col]) + (' | ' if jx is not len(columns) - 1 else ''))
+            except UnicodeEncodeError:
+                sys.stdout.write(' ' + (' | ' if jx is not len(columns) - 1 else ''))
+        print('')

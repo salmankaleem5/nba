@@ -1,4 +1,4 @@
-from util.nba_stats import GeneralPlayerStats
+from util.data_scrappers.nba_stats import GeneralPlayerStats
 import pandas as pd
 import numpy as np
 
@@ -29,9 +29,3 @@ def determine_from_listed_position():
 
     merge_df['POSITION'] = np.select(conditions, choices, default='None')
     return merge_df
-
-
-def determine_from_tracking_data():
-
-
-determine_from_listed_position()

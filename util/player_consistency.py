@@ -1,6 +1,5 @@
-from util.nba_stats import PlayerAdvancedGameLogs, GeneralPlayerStats
+from util.data_scrappers.nba_stats import PlayerAdvancedGameLogs, GeneralPlayerStats
 from util.format import get_year_string
-from util.reddit import print_reddit_table
 import pandas as pd
 import plotly.plotly as py
 import plotly.graph_objs as go
