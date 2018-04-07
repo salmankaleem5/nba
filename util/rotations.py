@@ -1,5 +1,4 @@
 from util.data_scrappers.nba_stats import PlayByPlay, TeamAdvancedGameLogs
-from util.data import file_check
 import sys
 import pandas as pd
 
@@ -90,31 +89,33 @@ def get_game_lineups_for_team(team_df):
 
         try:
             initial_lineup = get_initial_lineup(period_df)
+
+            lineups.append(initial_lineup)
+
+            current_players = initial_lineup['players']
+
+            subs_df = period_df[period_df.EVENTMSGTYPE == 8][['PLAYER1_NAME', 'PLAYER2_NAME', 'TIME']].drop_duplicates()
+            for jx, s in subs_df.iterrows():
+                p_out = s.PLAYER1_NAME
+                p_in = s.PLAYER2_NAME
+
+                if p_out not in current_players:
+                    raise ValueError('SUB OUT IS NOT IN CURRENT PLAYERS')
+
+                current_players = list(filter(lambda x: x != p_out, current_players))
+                current_players.append(p_in)
+
+                if s.TIME == 3600:
+                    None
+
+                lineups.append({
+                    'players': current_players,
+                    'start_time': s.TIME
+                })
+
         except ValueError:
             print(ValueError)
             continue
-        lineups.append(initial_lineup)
-
-        current_players = initial_lineup['players']
-
-        subs_df = period_df[period_df.EVENTMSGTYPE == 8][['PLAYER1_NAME', 'PLAYER2_NAME', 'TIME']]
-        for jx, s in subs_df.iterrows():
-            p_out = s.PLAYER1_NAME
-            p_in = s.PLAYER2_NAME
-
-            if p_out not in current_players:
-                raise ValueError('SUB OUT IS NOT IN CURRENT PLAYERS')
-
-            current_players = list(filter(lambda x: x != p_out, current_players))
-            current_players.append(p_in)
-
-            if s.TIME == 3600:
-                None
-
-            lineups.append({
-                'players': current_players,
-                'start_time': s.TIME
-            })
 
     for i in range(0, len(lineups)):
         if i < len(lineups) - 1:
@@ -268,8 +269,7 @@ def get_viz_data_for_team_season(team_abbreviation, last_n_games=''):
         rotation_data.pindex[cond] = index
         index += 1
 
-    file_check(season_file_path)
-    rotation_data.to_csv(season_file_path)
+    return rotation_data
 
 
 def get_rotation_data_for_game(game_id, year='2017-18'):
