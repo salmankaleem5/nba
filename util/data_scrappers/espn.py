@@ -2,6 +2,7 @@ from util.data import data_dir, file_check
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+import datetime
 
 
 def get_rpm():
@@ -21,7 +22,11 @@ def get_rpm():
             data.extend([[td.getText() for td in rows[i].find_all('td')] for i in range(len(rows))])
 
         df = pd.DataFrame(data, columns=headers)
+        df['POS'] = df.NAME.apply(lambda x: x.split(',')[1])
         df.NAME = df.NAME.apply(lambda x: x.split(',')[0])
+        df.RPM = df.RPM.astype(float)
+        df.MPG = df.MPG.astype(float)
+        df.GP = df.GP.astype(int)
         df.to_csv(file_path)
         return df
     else:

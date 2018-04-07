@@ -752,24 +752,25 @@ class Standings(EndPoint):
 
 class SynergyPlayerStats(EndPoint):
     base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/'
-    default_params = {'category': 'PRRollman',
+    default_params = {'category': 'Spotup',
                       'limit': '500',
                       'names': 'offensive',
-                      'q': '2511761',
-                      'season': '2016',
+                      'q': '2538084',
+                      'season': '2017',
                       'seasonType': 'Reg'}
 
-    synergy_request_headers = {
-        'Host': 'dev.stats.nba.com',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)' +
-                      ' Gecko/20100101 Firefox/55.0',
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Language': 'en-US,en;q=0.5',
+    synergy_request_headers = request_headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'http://stats.nba.com',
-        'Origin': 'http://stats.nba.com',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Connection': 'keep-alive',
+        #'Cookie': 's_cc=true; s_fid=0C14240EE454CE98-1406F45DADF8283D; s_sq=%5B%5BB%5D%5D; s_vi=[CS]v1|2D626C7F05030B69-4000118620008578[CE]',
         'DNT': '1',
-        'Connection': 'keep-alive'
+        'Host': 'stats-prod.nba.com',
+        'Origin': 'https://stats.nba.com',
+        'Referer': 'https://stats.nba.com/players/spot-up/?sort=Percentile&dir=-1',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0'
     }
 
     def get_data(self, passed_params=default_params, override_file=False):
@@ -778,10 +779,9 @@ class SynergyPlayerStats(EndPoint):
         file_path = self.determine_file_path(params)
 
         if (not file_check(file_path)) or override_file:
-            print(construct_full_url(self.base_url, params))
-            r = requests.post(
-                self.base_url,
-                data=params,
+            full_url = construct_full_url(self.base_url, params)
+            r = requests.get(
+                full_url,
                 headers=self.synergy_request_headers
             )
 
@@ -789,10 +789,8 @@ class SynergyPlayerStats(EndPoint):
                 raise ConnectionError(
                     '{}:{}'.format(r.status_code, r.reason)
                 )
-
-            df = json_to_pandas(r.json(), self.index)
+            df = pd.DataFrame(r.json()['results'])
             df.to_csv(file_path)
-
             return df
 
         else:

@@ -1,5 +1,6 @@
 from util.merge_shot_pbp import merge_shot_pbp_for_season, merge_shot_pbp_for_game
-import json
+from util.data_scrappers.nba_stats import GeneralPlayerStats
+import pandas as pd
 
 
 def get_shot_data_for_all_players_game(game_id, season='2017-18', data_override=False):
@@ -99,8 +100,16 @@ def get_shots_for_all_players_season(season, override_file=False):
     return shots_df
 
 
-def nest_data_for_all_players_season(season, override_file=False):
+def nest_data_for_all_players_season(season, fga_filter=500, override_file=False):
     shots_df = get_shots_for_all_players_season(season, override_file=override_file)
+    general_stats = GeneralPlayerStats().get_data({'Season': season, 'PerMode': 'Totals'}, override_file=override_file)
+    general_stats = general_stats[general_stats['FGA'] >= 500]
+    general_stats['ppg'] = round((general_stats['PTS'] / general_stats['GP']) * 100) / 100
+    general_stats['efg'] = round((((general_stats['FGM'] - general_stats['FG3M']) * 2) + (general_stats['FG3M'] * 3)) / (
+                general_stats['FGA'] * 2) * 10000) / 100
+    general_stats['efg_pct'] = round((general_stats['efg'].rank() / len(general_stats)) * 10000) / 100
+    general_stats = general_stats[['PLAYER_NAME', 'ppg', 'efg', 'efg_pct']].set_index('PLAYER_NAME').T.to_dict()
+
     players = shots_df['shooter'].unique().tolist()
 
     shots_df['x'] = shots_df['x'].apply(lambda x: round(x))
@@ -138,30 +147,34 @@ def nest_data_for_all_players_season(season, override_file=False):
     for x in x_range:
         zone_map[x] = {}
         for y in y_range:
-            zone_map[x][y] = shots_df[(shots_df[x] == x) & (shots_df[y] == y)].iloc[0].zone_area
+            try:
+                zone_map[x][y] = shots_df[(shots_df['x'] == x) & (shots_df['y'] == y)][
+                    'zone_area'].value_counts().index[0]
+            except IndexError:
+                continue
 
-    shot_data = {}
+    shot_data = {'zone_map': zone_map, 'players': {}}
     for player in players:
         player_df = shots_df[shots_df['shooter'] == player]
-        if len(player_df) > 1000:
+        if len(player_df) > 500:
             print(player + ': ' + str(len(player_df)))
             player_xy_data = []
-            uniques = player_df.groupby(['x', 'y'])
-            None
-            for x in player_df[x].unique():
-                for y in y_range:
-                    coord_df = player_df[
-                        (player_df['x'] == x) &
-                        (player_df['y'] == y)
-                        ]
-                    if len(coord_df > 0):
-                        coord_data = {
-                            'x': x,
-                            'y': y,
-                            'attempts': len(coord_df),
-                            'zone': coord_df.iloc[0].zone_area
-                        }
-                        player_xy_data.append(coord_data)
+            unique_coords = pd.unique(player_df[['x', 'y']].values)
+            for uc in unique_coords:
+                x = uc[0]
+                y = uc[1]
+
+                coord_df = player_df[
+                    (player_df['x'] == x) &
+                    (player_df['y'] == y)
+                    ]
+                if len(coord_df > 0):
+                    coord_data = {
+                        'x': int(x),
+                        'y': int(y),
+                        'attempts': len(coord_df)
+                    }
+                    player_xy_data.append(coord_data)
 
             player_zone_data = {}
             for za in zone_areas:
@@ -172,10 +185,11 @@ def nest_data_for_all_players_season(season, override_file=False):
                     za_makes = len(za_df[za_df.shot_made_flag == 1])
                     player_zone_data[za] = {
                         'pct': za_makes / za_attempts,
-                        'efg': (za_makes / za_attempts) * za_val / 2
+                        'efg': (za_makes / za_attempts) * za_val / 2,
+                        'attempts': za_attempts
                     }
                     player_zone_data[za]['zone_rel_pct'] = player_zone_data[za]['pct'] - league_averages[za]['pct']
-                    player_zone_data[za]['overall_rel_pct'] = player_zone_data[za]['efg'] - league_averages['overall'][
+                    player_zone_data[za]['overall_rel_efg'] = player_zone_data[za]['efg'] - league_averages['overall'][
                         'efg']
                 else:
                     player_zone_data[za] = {
@@ -185,9 +199,10 @@ def nest_data_for_all_players_season(season, override_file=False):
                         'overall_rel_pct': 0
                     }
 
-            shot_data[player] = {
+            shot_data['players'][player] = {
                 'xy': player_xy_data,
-                'zones': player_zone_data
+                'zones': player_zone_data,
+                'stats': general_stats[player]
             }
     return shot_data
 
