@@ -35,6 +35,6 @@ def get_player_pictures(season):
         del response
 
 
-data = nest_data_for_all_players_season('2017-18')
+data = nest_data_for_all_players_season('2017-18', fga_filter=1000)
 with open('./data/shots.json', 'w') as fp:
     json.dump(data, fp)
