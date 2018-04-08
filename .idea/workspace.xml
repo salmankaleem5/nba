@@ -2,23 +2,56 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9578fcd4-9403-4631-b9a5-05328979a216" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/util/data_scrappers/__init__.py" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/nba.iml" afterPath="$PROJECT_DIR$/.idea/nba.iml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/PlayByPlay/__init__.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/PlayByPlay/tansform.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/playbyplay/transform.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/util/reddit.py" afterPath="$PROJECT_DIR$/util/reddit.py" />
+      <change beforePath="$PROJECT_DIR$/oneTimeScripts/ADPelsLeadingScorer.py" afterPath="$PROJECT_DIR$/archive/ADPelsLeadingScorer.py" />
+      <change beforePath="$PROJECT_DIR$/oneTimeScripts/RAAssistedScoring.py" afterPath="$PROJECT_DIR$/archive/RAAssistedScoring.py" />
+      <change beforePath="$PROJECT_DIR$/oneTimeScripts/__init__.py" afterPath="$PROJECT_DIR$/under_dev/__init__.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/3&amp;D.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/scripts/Assist+.py" afterPath="$PROJECT_DIR$/under_dev/Assist+.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/Consistency.py" afterPath="$PROJECT_DIR$/util/player_consistency.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/Drives.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/scripts/Matchups.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/scripts/OnOffDiff.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/scripts/PelicansDefense.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/scripts/PelicansRebounding.py" afterPath="$PROJECT_DIR$/archive/PelicansRebounding.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/PelicansSchedule.py" afterPath="$PROJECT_DIR$/under_dev/PelicansSchedule.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/PlayerStints.py" afterPath="$PROJECT_DIR$/under_dev/PlayerStints.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/Position.py" afterPath="$PROJECT_DIR$/under_dev/Position.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/PythagoreanExpectation.py" afterPath="$PROJECT_DIR$/under_dev/PythagoreanExpectation.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/RPM.py" afterPath="$PROJECT_DIR$/under_dev/RPM.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/RollingAverage.py" afterPath="$PROJECT_DIR$/under_dev/RollingAverage.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/Team3PointersByGame.py" afterPath="$PROJECT_DIR$/archive/Team3PointersByGame.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/TeamImprovement.py" afterPath="$PROJECT_DIR$/under_dev/TeamImprovement.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/TrueUsage.py" afterPath="$PROJECT_DIR$/util/true_usage.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/Turnovers.py" afterPath="$PROJECT_DIR$/under_dev/Turnovers.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/__init__.py" afterPath="$PROJECT_DIR$/viz/on_off_diff.py" />
+      <change beforePath="$PROJECT_DIR$/scripts/test.py" afterPath="$PROJECT_DIR$/under_dev/test.py" />
+      <change beforePath="$PROJECT_DIR$/util/bball_ref.py" afterPath="$PROJECT_DIR$/util/data_scrappers/bball_ref.py" />
+      <change beforePath="$PROJECT_DIR$/util/espn.py" afterPath="$PROJECT_DIR$/util/data_scrappers/espn.py" />
+      <change beforePath="$PROJECT_DIR$/util/format.py" afterPath="$PROJECT_DIR$/util/format.py" />
+      <change beforePath="$PROJECT_DIR$/util/nba_stats.py" afterPath="$PROJECT_DIR$/util/data_scrappers/nba_stats.py" />
+      <change beforePath="$PROJECT_DIR$/util/reddit.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/util/rotations/__init__.py" afterPath="$PROJECT_DIR$/viz/on_off_diff.py" />
+      <change beforePath="$PROJECT_DIR$/util/rotations/rotations.py" afterPath="$PROJECT_DIR$/util/rotations.py" />
+      <change beforePath="$PROJECT_DIR$/util/shot_chart/__init__.py" afterPath="$PROJECT_DIR$/viz/player_consistency.py" />
+      <change beforePath="$PROJECT_DIR$/util/shot_chart/shot_chart.py" afterPath="$PROJECT_DIR$/util/shot_chart.py" />
+      <change beforePath="$PROJECT_DIR$/util/util.py" afterPath="$PROJECT_DIR$/util/merge_shot_pbp.py" />
+      <change beforePath="$PROJECT_DIR$/viz/game_page/.idea/workspace.xml" afterPath="$PROJECT_DIR$/viz/game_page/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/viz/game_page/data.py" afterPath="$PROJECT_DIR$/viz/game_page/data.py" />
-      <change beforePath="$PROJECT_DIR$/viz/game_page/data/data.csv" afterPath="$PROJECT_DIR$/viz/game_page/data/data.csv" />
       <change beforePath="$PROJECT_DIR$/viz/game_page/data/matchups.json" afterPath="$PROJECT_DIR$/viz/game_page/data/matchups.json" />
-      <change beforePath="$PROJECT_DIR$/viz/game_page/data/score.csv" afterPath="$PROJECT_DIR$/viz/game_page/data/score.csv" />
       <change beforePath="$PROJECT_DIR$/viz/game_page/data/shots.json" afterPath="$PROJECT_DIR$/viz/game_page/data/shots.json" />
-      <change beforePath="$PROJECT_DIR$/viz/game_page/data/stats.json" afterPath="$PROJECT_DIR$/viz/game_page/data/stats.json" />
       <change beforePath="$PROJECT_DIR$/viz/game_page/index.html" afterPath="$PROJECT_DIR$/viz/game_page/index.html" />
-      <change beforePath="$PROJECT_DIR$/viz/game_page/js/main.js" afterPath="$PROJECT_DIR$/viz/game_page/js/main.js" />
-      <change beforePath="$PROJECT_DIR$/viz/game_page/js/rotations.js" afterPath="$PROJECT_DIR$/viz/game_page/js/rotations.js" />
-      <change beforePath="$PROJECT_DIR$/viz/rotations/data.py" afterPath="$PROJECT_DIR$/viz/rotations/data.py" />
-      <change beforePath="$PROJECT_DIR$/viz/rotations/multi_game/data.csv" afterPath="$PROJECT_DIR$/viz/rotations/multi_game/data.csv" />
-      <change beforePath="$PROJECT_DIR$/viz/rotations/multi_game/index.html" afterPath="$PROJECT_DIR$/viz/rotations/multi_game/index.html" />
+      <change beforePath="$PROJECT_DIR$/viz/game_page/multi_game/data.csv" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/viz/rotations/single_game/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/viz/rotations/single_game/colorbrewer.min.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/viz/rotations/single_game/data.csv" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/viz/rotations/single_game/index.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/viz/rotations/single_game/score.csv" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/viz/shot_chart/.idea/workspace.xml" afterPath="$PROJECT_DIR$/viz/shot_chart/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/viz/shot_chart/data.py" afterPath="$PROJECT_DIR$/viz/shot_chart/data.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,71 +65,53 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="data.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/viz/game_page/data.py">
+      <file leaf-file-name="format.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/util/format.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="196" column="0" lean-forward="true" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
+            <state relative-caret-position="375">
+              <caret line="26" column="18" lean-forward="true" selection-start-line="26" selection-start-column="18" selection-end-line="26" selection-end-column="18" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/viz/rotations/data.py">
+      <file leaf-file-name="Turnovers.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/under_dev/Turnovers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
-              <caret line="317" column="1" lean-forward="false" selection-start-line="317" selection-start-column="1" selection-end-line="317" selection-end-column="1" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#94#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RPM.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/under_dev/RPM.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="24" column="29" lean-forward="false" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OnOffDiff.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/OnOffDiff.py">
+      <file leaf-file-name="RollingAverage.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/under_dev/RollingAverage.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
-              <caret line="34" column="22" lean-forward="false" selection-start-line="34" selection-start-column="22" selection-end-line="34" selection-end-column="22" />
+            <state relative-caret-position="165">
+              <caret line="18" column="40" lean-forward="false" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reddit.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/util/reddit.py">
+      <file leaf-file-name="RAAssistedScoring.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/archive/RAAssistedScoring.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PythagoreanExpectation.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/PythagoreanExpectation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="19" column="43" lean-forward="false" selection-start-line="19" selection-start-column="43" selection-end-line="19" selection-end-column="43" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/viz/shotCharts/data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/util/util.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="645">
-              <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -154,7 +169,6 @@
         <option value="$PROJECT_DIR$/scripts/PythagoreanExpectation.py" />
         <option value="$PROJECT_DIR$/util/end_points.py" />
         <option value="$PROJECT_DIR$/util/espn.py" />
-        <option value="$PROJECT_DIR$/util/format.py" />
         <option value="$PROJECT_DIR$/scripts/RollingAverage.py" />
         <option value="$PROJECT_DIR$/oneTimeScripts/RAAssistedScoring.py" />
         <option value="$PROJECT_DIR$/scripts/Rotations.py" />
@@ -164,22 +178,32 @@
         <option value="$PROJECT_DIR$/util/data.py" />
         <option value="$PROJECT_DIR$/scripts/Mathups.py" />
         <option value="$PROJECT_DIR$/scripts/test.py" />
-        <option value="$PROJECT_DIR$/viz/shotCharts/data.py" />
-        <option value="$PROJECT_DIR$/util/nba_stats.py" />
         <option value="$PROJECT_DIR$/scripts/Matchups.py" />
         <option value="$PROJECT_DIR$/scripts/Position.py" />
+        <option value="$PROJECT_DIR$/viz/rotations/data.py" />
+        <option value="$PROJECT_DIR$/viz/shotCharts/data.py" />
+        <option value="$PROJECT_DIR$/util/format.py" />
+        <option value="$PROJECT_DIR$/viz/shot_chart/index.html" />
+        <option value="$PROJECT_DIR$/viz/shot_chart/js/shotchart.js" />
+        <option value="$PROJECT_DIR$/viz/shot_chart/js/main.js" />
         <option value="$PROJECT_DIR$/util/util.py" />
+        <option value="$PROJECT_DIR$/viz/game_page/index.html" />
+        <option value="$PROJECT_DIR$/viz/game_page/data.py" />
+        <option value="$PROJECT_DIR$/viz/shot_chart/data.py" />
+        <option value="$PROJECT_DIR$/util/shot_chart/shot_chart.py" />
+        <option value="$PROJECT_DIR$/util/nba_stats.py" />
+        <option value="$PROJECT_DIR$/viz/player_consistency.py" />
         <option value="$PROJECT_DIR$/scripts/OnOffDiff.py" />
         <option value="$PROJECT_DIR$/util/reddit.py" />
-        <option value="$PROJECT_DIR$/viz/rotations/data.py" />
-        <option value="$PROJECT_DIR$/viz/game_page/data.py" />
+        <option value="$PROJECT_DIR$/viz/on_off_diff.py" />
+        <option value="$PROJECT_DIR$/util/true_usage.py" />
+        <option value="$PROJECT_DIR$/under_dev/Position.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="30" />
-    <option name="width" value="1910" />
-    <option name="height" value="995" />
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="width" value="1280" />
+    <option name="height" value="800" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -209,17 +233,28 @@
             <path>
               <item name="nba" type="b2602c69:ProjectViewProjectNode" />
               <item name="nba" type="462c0819:PsiDirectoryNode" />
-              <item name="oneTimeScripts" type="462c0819:PsiDirectoryNode" />
+              <item name="archive" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="nba" type="b2602c69:ProjectViewProjectNode" />
               <item name="nba" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
+              <item name="under_dev" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="nba" type="b2602c69:ProjectViewProjectNode" />
               <item name="nba" type="462c0819:PsiDirectoryNode" />
               <item name="util" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="nba" type="b2602c69:ProjectViewProjectNode" />
+              <item name="nba" type="462c0819:PsiDirectoryNode" />
+              <item name="util" type="462c0819:PsiDirectoryNode" />
+              <item name="data_scrappers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="nba" type="b2602c69:ProjectViewProjectNode" />
+              <item name="nba" type="462c0819:PsiDirectoryNode" />
+              <item name="viz" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -235,10 +270,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/scripts" />
-      <recent name="$PROJECT_DIR$/scripts/Assist+" />
-      <recent name="$PROJECT_DIR$/Assist+" />
-      <recent name="$PROJECT_DIR$/oneTimeScripts" />
+      <recent name="$PROJECT_DIR$/archive" />
+      <recent name="$PROJECT_DIR$/util/data_scrappers" />
+      <recent name="$PROJECT_DIR$/util" />
+      <recent name="$PROJECT_DIR$/under_dev" />
+      <recent name="$PROJECT_DIR$/util/rotations" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -253,25 +289,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.data">
-    <configuration name="Matchups" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="nba" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/Matchups.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
+  <component name="RunManager" selected="Python.data (2)">
     <configuration name="OnOffDiff" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -308,19 +326,19 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="data (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="data (2)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/viz/rotations" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/viz/shot_chart" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="nba" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/viz/rotations/data.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/viz/shot_chart/data.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -339,6 +357,24 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="nba" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/viz/game_page/data.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="shot_chart" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/util/shot_chart" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="nba" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/util/shot_chart.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -480,18 +516,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.data" />
-      <item index="1" class="java.lang.String" itemvalue="Python.Matchups" />
-      <item index="2" class="java.lang.String" itemvalue="Python.data (1)" />
-      <item index="3" class="java.lang.String" itemvalue="Python.OnOffDiff" />
-      <item index="4" class="java.lang.String" itemvalue="Python.PythagoreanExpectation" />
+      <item index="1" class="java.lang.String" itemvalue="Python.OnOffDiff" />
+      <item index="2" class="java.lang.String" itemvalue="Python.PythagoreanExpectation" />
+      <item index="3" class="java.lang.String" itemvalue="Python.data (2)" />
+      <item index="4" class="java.lang.String" itemvalue="Python.shot_chart" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.data" />
-        <item index="1" class="java.lang.String" itemvalue="Python.PythagoreanExpectation" />
-        <item index="2" class="java.lang.String" itemvalue="Python.OnOffDiff" />
-        <item index="3" class="java.lang.String" itemvalue="Python.data (1)" />
-        <item index="4" class="java.lang.String" itemvalue="Python.Matchups" />
+        <item index="0" class="java.lang.String" itemvalue="Python.data (2)" />
+        <item index="1" class="java.lang.String" itemvalue="Python.shot_chart" />
+        <item index="2" class="java.lang.String" itemvalue="Python.data" />
+        <item index="3" class="java.lang.String" itemvalue="Python.OnOffDiff" />
+        <item index="4" class="java.lang.String" itemvalue="Python.PythagoreanExpectation" />
       </list>
     </recent_temporary>
   </component>
@@ -512,19 +548,18 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="30" width="1920" height="995" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.196875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24609375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32533333" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32581738" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39733332" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39797068" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -560,13 +595,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/scripts/Matchups.py</url>
-          <line>67</line>
-          <option name="timeStamp" value="134" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -577,169 +605,61 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="143" />
+      <option name="time" value="186" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>shots_df[shots_df['player'] == 'Jrue Holiday']</expression-string>
+        <expression-string>shots_df[shots_df['zone_area'] == 'Mid-Range Left Side(L)'].iloc[0].shot_type</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>assists_df[assists_df['player'] == 'Jrue Holiday']</expression-string>
+        <expression-string>shots_df[shots_df['zone_area'] == 'Mid-Range Left Side(L)'].iloc[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>['test']+stat_cols</expression-string>
+        <expression-string>shots_df[shots_df['zone_area'] == 'Mid-Range Left Side(L)']</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>['PLAYER_NAME'].extend(stat_cols)</expression-string>
+        <expression-string>shots_df[shots_df['zone_area'] == 'Mid Range Left Side(L)']</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>['PLAYER_NAME'].append(stat_cols)</expression-string>
+        <expression-string>override_file or not file_check(file_path)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>list(season_df.select_dtypes(include=['int64']).columns)[1:]</expression-string>
+        <expression-string>formatted_name == 'LeBron James'</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>list(season_df.select_dtypes(include=['int64']).columns)</expression-string>
+        <expression-string>formatted_name in special_names</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>list(matchup_df.select_dtypes(include=['int64']).columns)</expression-string>
+        <expression-string>name == 'LeBron James'</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>t.isnull()</expression-string>
+        <expression-string>'LeBron James' in special_names</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/util/reddit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="4" lean-forward="false" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/height_dist.py" />
-    <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3585">
-          <caret line="244" column="0" lean-forward="false" selection-start-line="244" selection-start-column="0" selection-end-line="244" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/reddit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="4" lean-forward="false" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/height_dist.py" />
-    <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="8" column="42" lean-forward="false" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/reddit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="4" lean-forward="false" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/height_dist.py" />
-    <entry file="file://$PROJECT_DIR$/scripts/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/reddit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="4" lean-forward="false" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/reddit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="4" lean-forward="false" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="47" lean-forward="false" selection-start-line="0" selection-start-column="47" selection-end-line="0" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
+    <entry file="file://$PROJECT_DIR$/util/data_scrappers/nba_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -760,24 +680,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/OffensiveRebounding.py" />
     <entry file="file://$PROJECT_DIR$/scripts/ts_pct_accuracy.py" />
-    <entry file="file://$PROJECT_DIR$/scripts/TeamImprovement.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/AssistValue.py" />
     <entry file="file://$PROJECT_DIR$/scripts/DefensiveRatings.py" />
-    <entry file="file://$PROJECT_DIR$/scripts/RollingAverage.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="18" column="40" lean-forward="false" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/oneTimeScripts/RAAssistedScoring.py" />
-    <entry file="file://$PROJECT_DIR$/scripts/Consistency.py">
+    <entry file="file://$PROJECT_DIR$/util/player_consistency.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-38">
           <caret line="57" column="53" lean-forward="false" selection-start-line="57" selection-start-column="53" selection-end-line="57" selection-end-column="53" />
@@ -785,77 +690,126 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/Rotations.py" />
-    <entry file="file://$PROJECT_DIR$/util/espn.py" />
-    <entry file="file://$PROJECT_DIR$/util/format.py" />
-    <entry file="file://$PROJECT_DIR$/scripts/RPM.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="24" column="29" lean-forward="false" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Assist+.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3060">
-          <caret line="206" column="20" lean-forward="false" selection-start-line="206" selection-start-column="20" selection-end-line="206" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="36" lean-forward="false" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/test.py">
+    <entry file="file://$PROJECT_DIR$/util/data_scrappers/espn.py" />
+    <entry file="file://$PROJECT_DIR$/under_dev/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="4" lean-forward="false" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/util/nba_stats.py">
+    <entry file="file://$PROJECT_DIR$/viz/rotations/multi_game/data.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="737">
-          <caret line="544" column="41" lean-forward="false" selection-start-line="544" selection-start-column="41" selection-end-line="544" selection-end-column="41" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/rotations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4545">
+          <caret line="308" column="56" lean-forward="false" selection-start-line="308" selection-start-column="56" selection-end-line="308" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../VirtualEnv/nba/lib/python3.6/site-packages/pandas/core/indexing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="516" column="0" lean-forward="false" selection-start-line="516" selection-start-column="0" selection-end-line="516" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viz/shotCharts/data.py" />
+    <entry file="file://$PROJECT_DIR$/viz/shot_chart/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="538">
+          <caret line="36" column="25" lean-forward="true" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viz/shot_chart/js/shotchart.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="18" lean-forward="false" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viz/shot_chart/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="18" lean-forward="true" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viz/shot_chart/data/shots.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1369">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viz/shot_chart/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="34" column="20" lean-forward="false" selection-start-line="34" selection-start-column="20" selection-end-line="34" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#60#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/shot_chart.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="139" column="25" lean-forward="false" selection-start-line="139" selection-start-column="25" selection-end-line="140" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#82#0" expanded="false" />
+            <element signature="e#7153#8036#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viz/game_page/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="481">
+          <caret line="202" column="59" lean-forward="false" selection-start-line="202" selection-start-column="59" selection-end-line="202" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viz/game_page/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="673">
+          <caret line="50" column="12" lean-forward="false" selection-start-line="50" selection-start-column="12" selection-end-line="50" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/Assist+.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3030">
+          <caret line="206" column="20" lean-forward="false" selection-start-line="206" selection-start-column="20" selection-end-line="206" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/Drives.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/Matchups.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="747">
+        <state relative-caret-position="695">
           <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#55#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Position.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="33" column="35" lean-forward="false" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
-          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/viz/shotCharts/data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/viz/rotations/multi_game/data.csv">
+    <entry file="file://$PROJECT_DIR$/viz/player_consistency.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -865,40 +819,176 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/OnOffDiff.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="34" column="22" lean-forward="false" selection-start-line="34" selection-start-column="22" selection-end-line="34" selection-end-column="22" />
+        <state relative-caret-position="360">
+          <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/data_scrappers/nba_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1440">
+          <caret line="733" column="0" lean-forward="true" selection-start-line="733" selection-start-column="0" selection-end-line="733" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/util/reddit.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+        <state relative-caret-position="45">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/PythagoreanExpectation.py">
+    <entry file="file://$PROJECT_DIR$/under_dev/PelicansDefense.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
+        <state relative-caret-position="-1502">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viz/on_off_diff.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-887">
+          <caret line="5" column="28" lean-forward="false" selection-start-line="5" selection-start-column="28" selection-end-line="5" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#19#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/PelicansSchedule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/archive/PelicansRebounding.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#70#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/archive/Team3PointersByGame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#62#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/TeamImprovement.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/true_usage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="26" column="3" lean-forward="true" selection-start-line="26" selection-start-column="3" selection-end-line="26" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#75#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/PlayerStints.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#98#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/Position.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="27" column="38" lean-forward="true" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/PythagoreanExpectation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
           <caret line="19" column="43" lean-forward="false" selection-start-line="19" selection-start-column="43" selection-end-line="19" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#58#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/viz/rotations/data.py">
+    <entry file="file://$PROJECT_DIR$/util/merge_shot_pbp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="317" column="1" lean-forward="false" selection-start-line="317" selection-start-column="1" selection-end-line="317" selection-end-column="1" />
+        <state relative-caret-position="-47">
+          <caret line="10" column="44" lean-forward="false" selection-start-line="10" selection-start-column="44" selection-end-line="10" selection-end-column="44" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/viz/game_page/data.py">
+    <entry file="file://$PROJECT_DIR$/util/format.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="196" column="0" lean-forward="true" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
+        <state relative-caret-position="375">
+          <caret line="26" column="18" lean-forward="true" selection-start-line="26" selection-start-column="18" selection-end-line="26" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/Turnovers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#94#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/RPM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="24" column="29" lean-forward="false" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/under_dev/RollingAverage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="18" column="40" lean-forward="false" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/archive/RAAssistedScoring.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
