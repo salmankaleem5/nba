@@ -10,7 +10,8 @@ var team_colors = {
         'POR': ['#E13A3E', '#000000'],
         'LAC': ['#ED174C', '#006BB6'],
         'PHX': ['#E56020', '#1D1160'],
-        'MIA': ['#98012e', '#faa11b']
+        'MIA': ['#98012e', '#faa11b'],
+        'PHI': ['#003DA5', '#D50032']
     };
 
 function get_color_contrast(hex1, hex2) {
