@@ -195,7 +195,7 @@ def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
     tracking = get_tracking_stats_for_date(game_date, '2017-18', data_override=data_override)
     scoring = get_stats_from_pbp(game_id, override_file=data_override)
     rotations = get_rotation_data_for_game(game_id, year=year)
-    score = get_score_data_for_game(game_id)
+    score = get_score_data_for_game(game_id, year)
     shots = get_shot_data_for_all_players_game(game_id, season=year, data_override=data_override)
     matchups = get_matchup_data_for_game(game_id, data_override=data_override)
 

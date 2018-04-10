@@ -4,9 +4,6 @@ import pandas as pd
 
 from util.format import convert_time
 
-season = '2017-18'
-season_file_path = './multi_game/data.csv'
-
 
 # From the pbp_df and a team abbreviation, determines if the team is home or visitor
 # Returns true if team is home
@@ -197,7 +194,7 @@ def transform_stints_for_viz(player_stints_df, include_ot=True):
     return pd.DataFrame(data)
 
 
-def get_score_data_for_game(game):
+def get_score_data_for_game(game, season):
     pbp_ep = PlayByPlay()
 
     pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game}, override_file=False)
