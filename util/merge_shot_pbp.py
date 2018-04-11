@@ -31,22 +31,18 @@ def merge_shot_pbp_for_season(season, season_type='Regular Season', override_fil
         return pd.read_csv(file_path)
 
 
-def merge_shot_pbp_for_game(season, game_id, season_type='Regular Season', override_file=False):
+def merge_shot_pbp_for_game(pbp_df, game_id, season, season_type='Regular Season', merge_type='inner',
+                            override_file=False):
     file_path = data_dir + 'merged_shot_pbp/' + season + '/' + game_id + '.csv'
 
     if override_file or not file_check(file_path):
-        play_by_play_endpoint = PlayByPlay()
         shot_endpoint = ShotChartDetail()
-
-        pbp_df = play_by_play_endpoint.get_data({'GameID': game_id, 'Season': season, 'SeasonType': season_type})
-
-        pbp_df['GAME_ID'] = '00' + pbp_df['GAME_ID'].astype(str)
 
         shots_df = shot_endpoint.get_data({'Season': season, 'SeasonType': season_type, 'GameID': game_id},
                                           override_file=override_file)
 
-        merge_df = pd.merge(pbp_df, shots_df, left_on=['EVENTNUM', 'GAME_ID', 'PERIOD'],
-                            right_on=['GAME_EVENT_ID', 'GAME_ID', 'PERIOD'], how='left')
+        merge_df = pd.merge(pbp_df, shots_df, left_on=['EVENTNUM', 'PERIOD'],
+                            right_on=['GAME_EVENT_ID', 'PERIOD'], how=merge_type)
 
         merge_df.to_csv(file_path)
         return merge_df

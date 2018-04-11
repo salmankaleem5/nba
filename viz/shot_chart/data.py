@@ -1,15 +1,10 @@
-from util.shot_chart import nest_data_for_all_players_season
+from util.shot_chart import nest_data_for_all_players_season, get_shots_for_player_season, nest_data_for_teams_season
 from util.data_scrappers.nba_stats import GeneralPlayerStats
 from util.format import get_year_string
 import requests
 import shutil
 import json
 import pandas as pd
-
-
-def get_all_players_season(season):
-    df = get_shots_for_all_players_season(season)
-    df.to_json('./data/shots.json', orient='records')
 
 
 def get_all_season_player(player_name, year_range):
@@ -35,6 +30,7 @@ def get_player_pictures(season):
         del response
 
 
-data = nest_data_for_all_players_season('2017-18', fga_filter=1000)
+# data = nest_data_for_all_players_season('2017-18', fga_filter=1400, override_file=False)
+data = nest_data_for_teams_season('2017-18')
 with open('./data/shots.json', 'w') as fp:
     json.dump(data, fp)
