@@ -724,13 +724,13 @@ class OnOffSummary(EndPoint):
             print(file_path)
             return pd.read_csv(file_path)
 
-    def get_data_for_all_teams(self, season):
+    def get_data_for_all_teams(self, season, override_file=False):
         teams = GeneralTeamStats().get_data({'Season': season}).TEAM_ID.tolist()
 
         on_off_df = pd.DataFrame()
         for t in teams:
             on_off_df = on_off_df.append(
-                self.get_data({'TeamID': t, 'Season': season}, override_file=False))
+                self.get_data({'TeamID': t, 'Season': season}, override_file=override_file))
 
         on_off_df = on_off_df[on_off_df.MIN_ON >= 1000]
 

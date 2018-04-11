@@ -2,6 +2,9 @@ import pandas as pd
 from util.format import get_year_string, get_display_name, print_reddit_table
 from util.data_scrappers.nba_stats import OnOffSummary
 
+import plotly.plotly as py
+import plotly.graph_objs as go
+
 
 def plot_best_worst_on_offs():
     on_off_ep = OnOffSummary()
@@ -9,7 +12,7 @@ def plot_best_worst_on_offs():
     df = pd.DataFrame()
     for year in range(2007, 2018):
         year_string = get_year_string(year)
-        df = df.append(on_off_ep.get_data_for_all_teams(year_string))
+        df = df.append(on_off_ep.get_data_for_all_teams(year_string, override_file=False))
 
     df = df.sort_values(by='NET_DIFF', ascending=False)
     df['DISPLAY'] = get_display_name(df['VS_PLAYER_NAME'], df['YEAR'])
