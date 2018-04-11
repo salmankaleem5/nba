@@ -2,7 +2,7 @@ from util.rotations import get_rotation_data_for_game, get_score_data_for_game, 
 from util.shot_chart import get_shot_data_for_all_players_game
 from util.merge_shot_pbp import merge_shot_pbp_for_game
 from util.data_scrappers.nba_stats import TrackingStats, HustleStats, GeneralPlayerStats, BoxScoreMatchups, BoxScoreTraditional, \
-    BoxScoreAdvanced, BoxScoreHustle, BoxScoreTracking
+    BoxScoreAdvanced, BoxScoreHustle, BoxScoreTracking, PlayByPlay
 import pandas as pd
 import requests
 import shutil
@@ -46,8 +46,8 @@ def get_box_score_player_stats(game_id, override_file=False):
     return merge_df
 
 
-def get_stats_from_pbp(game_id, override_file):
-    pbp_df = merge_shot_pbp_for_game('2017-18', game_id, override_file=override_file)
+def get_stats_from_pbp(pbp_df, game_id, season, override_file):
+    pbp_df = merge_shot_pbp_for_game(pbp_df, game_id, season, override_file=override_file)
     players = pbp_df['PLAYER1_NAME'].unique()[1:]
 
     player_data = []
@@ -171,36 +171,25 @@ def get_hustle_stats_for_data(game_date, year, data_override=False):
     return hustle_df
 
 
-def get_stats_for_game(game_id, year, game_date, file_path, data_override=False):
-    tracking_df = get_tracking_stats_for_date(game_date, year, data_override=data_override)
-    stats_df = stats_df.merge(tracking_df, left_on='player', right_on='PLAYER_NAME', how='left')
-    if len(tracking_df) == 1:
-        stats_df = stats_df.fillna(-1)
-    stats_df = stats_df.merge(get_hustle_stats_for_data(game_date, year, data_override=data_override), left_on='player',
-                              right_on='PLAYER_NAME',
-                              how='left')
-    stats_df = stats_df.fillna(0)
-    stats_df = stats_df[stats_df['TEAM_ABBREVIATION'] != 0]
-    stats_df.to_json(file_path, orient='records')
-
-
 def get_matchup_data_for_game(game_id, data_override=False):
     matchup_df = BoxScoreMatchups().get_data({'GameID': game_id}, override_file=data_override)
     return matchup_df
 
 
 def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
+    pbp_df = PlayByPlay().get_data({'Season': year, 'GameID': game_id})
+
     game_summary = get_game_summary(game_id, override_file=data_override)
     box_score = get_box_score_player_stats(game_id, override_file=data_override)
     tracking = get_tracking_stats_for_date(game_date, '2017-18', data_override=data_override)
-    scoring = get_stats_from_pbp(game_id, override_file=data_override)
-    rotations = get_rotation_data_for_game(game_id, year=year)
-    score = get_score_data_for_game(game_id, year)
-    shots = get_shot_data_for_all_players_game(game_id, season=year, data_override=data_override)
+    scoring = get_stats_from_pbp(pbp_df, game_id, year, override_file=data_override)
+    rotations = get_rotation_data_for_game(pbp_df)
+    score = get_score_data_for_game(pbp_df)
+    shots = get_shot_data_for_all_players_game(pbp_df, game_id, year, data_override=data_override)
     matchups = get_matchup_data_for_game(game_id, data_override=data_override)
 
-    box_score = box_score.merge(scoring, on='PLAYER_NAME')
-    box_score = box_score.merge(tracking, on='PLAYER_NAME')
+    box_score = box_score.merge(scoring, on='PLAYER_NAME', how='outer')
+    box_score = box_score.merge(tracking, on='PLAYER_NAME', how='outer').fillna(0)
 
     game_summary.to_json('./data/game_summary.json', orient='records')
     box_score.to_json('./data/box_score.json', orient='records')
@@ -210,4 +199,4 @@ def get_data_for_game(game_id, game_date, year='2017-18', data_override=False):
     matchups.to_json('./data/matchups.json', orient='records')
 
 
-get_data_for_game('0021701141', '03/31/18', data_override=True)
+get_data_for_game('0021701212', '04/09/18', data_override=True)
