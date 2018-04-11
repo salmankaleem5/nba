@@ -37,13 +37,14 @@ text.axis-worktime {
     margin: 0 auto;
 }
 
-#stats-table_filter, #stats-table_info, #match-up-table_length, #match-up-table_info, #match-up-table_filter {
+#stats-table_filter, .dataTables_info, #match-up-table_length, #match-up-table_info, #match-up-table_filter {
     visibility: hidden;
 }
 
 #match-up-table_paginate {
     text-align: center;
     margin: auto;
+    float: left;
 }
 
 .paginate_button {

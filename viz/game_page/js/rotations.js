@@ -1,5 +1,5 @@
 var team_colors = {
-        'NOP': ['#C8102E', '#0C2340', '#85714D'],
+        'NOP': ['#0C2340', '#C8102E', '#85714D'],
         'HOU': ['#CE1141', '#FDB927'],
         'CLE': ['#6F2633', '#FFB81C'],
         'BKN': ['#000000', '#FFFFFF'],
@@ -38,14 +38,14 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
     let home_color = team_colors[home_abb][0],
         away_color = team_colors[away_abb][0];
 
-    var max_width = 1500;
-    var hor_margin_scale = Math.min($(window).width(), max_width) / 1500;
+    const max_width = 1500,
+        hor_margin_scale = Math.min($(window).width(), max_width) / 1500;
 
-    var margin = {top: 30, right: 50 * hor_margin_scale, bottom: 30, left: 200 * hor_margin_scale},
+    const margin = {top: 30, right: 50 * hor_margin_scale, bottom: 30, left: 200 * hor_margin_scale},
         width = Math.min($(window).width(), max_width) - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
-    var svg = d3.select("#chart").append("svg")
+    const svg = d3.select("#chart").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -60,7 +60,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
             return 1;
     });
 
-    var players = [],
+    let players = [],
         previous_pindex = 0,
         max_minute = 0,
         top_team_player_count = 0,
@@ -87,7 +87,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
 
     max_minute = max_minute / 60;
 
-    var rect_height = Math.floor(height / (max_pindex + 2)),
+    const rect_height = Math.floor(height / (max_pindex + 2)),
         bot_team_player_count = (players.length - 1) - top_team_player_count,
         x_scale = (width - margin.right) / (max_minute * 60);
 
@@ -105,7 +105,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         .attr("transform", "translate(-6," + rect_height / 1.5 + ")")
         .attr("class", "dayLabel axis axis-workweek");
 
-    var minutes = ["Q1", "", "", "", "", "", "", "", "", "", "", "", "Q2", "", "", "", "", "", "", "", "", "", "", "",
+    let minutes = ["Q1", "", "", "", "", "", "", "", "", "", "", "", "Q2", "", "", "", "", "", "", "", "", "", "", "",
         "Q3", "", "", "", "", "", "", "", "", "", "", "", "Q4", "", "", "", "", "", "", "", "", "", ""];
     if (max_minute >= 48) {
         var extra_minutes = max_minute - 48;
@@ -150,7 +150,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         .attr("class", "timeLabel mono axis axis-worktime");
 
 
-    var cards = svg.selectAll(".hour")
+    let cards = svg.selectAll(".hour")
         .data(rotation_data, function (d) {
             return d.pindex + ':' + d.minute;
         });
@@ -179,7 +179,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
 
     cards.exit().remove();
 
-    var max_lead = 0;
+    let max_lead = 0;
 
     $.each(score_data, function (i, d) {
         if (Math.abs(this.score_margin) > max_lead) {
@@ -187,14 +187,14 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         }
     });
 
-    var yAxisShiftBool = bot_team_player_count < top_team_player_count,
+    const yAxisShiftBool = bot_team_player_count < top_team_player_count,
         yAxisScale = (((Math.min(top_team_player_count, bot_team_player_count) * 2) + 1) * rect_height),
         yAxisShift = yAxisShiftBool ? ((Math.abs(top_team_player_count - bot_team_player_count)) * rect_height) - margin.top: -margin.bottom;
 
-    var x = d3.scaleLinear()
+    const x = d3.scaleLinear()
         .rangeRound([margin.left, width + margin.left - margin.right]);
 
-    var y = d3.scaleLinear()
+    const y = d3.scaleLinear()
         .range([-margin.top, yAxisScale - margin.bottom]);
 
     y.domain([Math.max(max_lead, 20), Math.min(-max_lead, -20)]);
@@ -209,9 +209,10 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         .attr("dy", "0.71em")
         .attr("text-anchor", "end");
 
-    var score_datas = [];
-    var current_data = [];
-    var current_score = 0;
+    let score_datas = [],
+        current_data = [],
+        current_score = 0;
+
     $.each(score_data, function() {
         if (this.score_margin === 0) {
             current_data.push(this);
@@ -226,7 +227,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
     });
     score_datas.push(current_data);
 
-    var line = d3.area()
+    let line = d3.area()
         .x(function (d) {
             return x(d.minute);
         })
@@ -244,7 +245,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
 
 
     $.each(score_datas, function () {
-        var line_color = null;
+        let line_color = null;
         if (this[0].score_margin > 0){
             line_color = away_color;
         } else {
@@ -265,7 +266,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
             .attr("transform", "translate(" + -margin.left + "," + (margin.bottom + margin.top + yAxisShift) + ")");
     });
 
-    var stroke_width = 2,
+    const stroke_width = 2,
         stroke_opacity = 0.25,
         stroke_color = 'black';
 

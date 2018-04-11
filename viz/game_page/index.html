@@ -32,83 +32,110 @@
 
 <body>
 <div id='container'>
-  <div style="padding-top: 15px;"></div>
+    <div style="padding-top: 15px;"></div>
     <div id='score-board'>
-      <span id='home-score' class='score'></span>
-      <img id='home-logo' height="160px" width="160px"/>
+        <span id='home-score' class='score'></span>
+        <img id='home-logo' height="160px" width="160px"/>
 
-      <img id='away-logo' height="160px" width="160px"/>
-      <span id='away-score' class='score'></span>
+        <img id='away-logo' height="160px" width="160px"/>
+        <span id='away-score' class='score'></span>
     </div>
 
     <div id="chart"></div>
 
     <label class="checkbox-inline">
-      <input id='rotations-toggle' checked data-toggle="toggle" type="checkbox"> Rotations
+        <input id='rotations-toggle' checked data-toggle="toggle" type="checkbox"> Rotations
     </label>
     <label class="checkbox-inline">
-      <input id='point-diff-toggle' checked data-toggle="toggle" type="checkbox"> Point Differential
+        <input id='point-diff-toggle' checked data-toggle="toggle" type="checkbox"> Point Differential
     </label>
 
     <h1> Shots </h1>
-    <div>
-        <select id='player-select' class='form-control form-control-lg'
-                style='width: 20%; text-align: center; display: inline;'></br>
-        </select>
-    </div>
-    <div>
-        <svg height=20>
-            <g class='shots'>
-                <circle class="shot assist" cx="20" cy="10" r="7"></circle>
-                <text x=30 y=15>Assist</text>
-            </g>
-            <g class='shots'>
-                <circle class="shot make" cx="100" cy="10" r="7"></circle>
-                <text x=110 y=15>Shot Make</text>
-            </g>
-            <g class='shots'>
-                <circle class="shot miss" cx="200" cy="10" r="7"></circle>
-                <text x=210 y=15>Shot Miss</text>
-            </g>
-        </svg>
+    <div class='col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6'>
+        <div>
+            <select id='player-select1' class='form-control form-control-lg'
+                    style='width: 20%; text-align: center; display: inline;'></br>
+            </select>
+        </div>
+        <div>
+            <svg height=20>
+                <g class='shots'>
+                    <circle class="shot assist" cx="20" cy="10" r="7"></circle>
+                    <text x=30 y=15>Assist</text>
+                </g>
+                <g class='shots'>
+                    <circle class="shot make" cx="100" cy="10" r="7"></circle>
+                    <text x=110 y=15>Shot Make</text>
+                </g>
+                <g class='shots'>
+                    <circle class="shot miss" cx="200" cy="10" r="7"></circle>
+                    <text x=210 y=15>Shot Miss</text>
+                </g>
+            </svg>
+        </div>
+        <div id="shot-chart1"></div>
     </div>
 
-    <div id="shot-chart"></div>
+    <div class='col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6'>
+        <div>
+            <select id='player-select2' class='form-control form-control-lg'
+                    style='width: 20%; text-align: center; display: inline;'></br>
+            </select>
+        </div>
+        <div>
+            <svg height=20>
+                <g class='shots'>
+                    <circle class="shot assist" cx="20" cy="10" r="7"></circle>
+                    <text x=30 y=15>Assist</text>
+                </g>
+                <g class='shots'>
+                    <circle class="shot make" cx="100" cy="10" r="7"></circle>
+                    <text x=110 y=15>Shot Make</text>
+                </g>
+                <g class='shots'>
+                    <circle class="shot miss" cx="200" cy="10" r="7"></circle>
+                    <text x=210 y=15>Shot Miss</text>
+                </g>
+            </svg>
+        </div>
+        <div id="shot-chart2"></div>
+    </div>
+
 
     <div id="match-ups" style="width: 100%">
         <h1> Match-ups </h1>
         <div class='row form-group' style="width: 75%; margin: auto;">
-        <div class='col-xs-0 col-sm-0 col-md-0 col-lg-2'></div>
-        <div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>
-          <label for='offense-player-select'>Offensive Player</label>
-        </br>
-            <select id='offense-player-select' class='form-control form-control-lg'>
-            </select>
+            <div class='col-xs-0 col-sm-0 col-md-0 col-lg-2'></div>
+            <div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>
+                <label for='offense-player-select'>Offensive Player</label>
+                </br>
+                <select id='offense-player-select' class='form-control form-control-lg'>
+                </select>
+            </div>
+            <div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>
+                <label for='defense-player-select'>Defensive Player</label></br>
+                <select id='defense-player-select' class='form-control form-control-lg'>
+                </select>
+            </div>
+            <div class='col-xs-0 col-sm-0 col-md-0 col-lg-2'></div>
         </div>
-        <div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>
-          <label for='defense-player-select'>Defensive Player</label></br>
-            <select id='defense-player-select' class='form-control form-control-lg'>
-            </select>
-        </div>
-        <div class='col-xs-0 col-sm-0 col-md-0 col-lg-2'></div>
-      </div>
     </div>
 
-        <table id="match-up-table" class="display hover" width="50%" cellspacing="0">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
+    <table id="match-up-table" class="display hover" width="50%" cellspacing="0">
+        <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+    </table>
 
     <h1> Stats </h1>
     <div style='padding-top: 20px;'>
@@ -116,7 +143,51 @@
     </div>
 
     <div>
-        <table id='stats-table' class='display hover' width='100%' cellspacing='0'>
+        <table id='stats-table1' class='display hover' width='100%' cellspacing='0'>
+            <thead>
+            <tr>
+                <th id='player-header' colspan=3>Player</th>
+                <th id='scoring-header' colspan=6>Scoring</th>
+                <th id='passing-header' colspan=4>Passing</th>
+                <th id='possession-header' colspan=1>Possession</th>
+                <th id='rebounding-header' colspan=4>Rebounding</th>
+                <th id='perimeter-d-header' colspan=3>Perimeter D</th>
+                <th id='intererio-d-header' colspan=2>Interior D</th>
+                <th id='misc-header' colspan=1>Misc</th>
+            </tr>
+
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+        </table>
+
+    </div>
+
+    <div>
+        <table id='stats-table2' class='display hover' width='100%' cellspacing='0'>
             <thead>
             <tr>
                 <th id='player-header' colspan=3>Player</th>

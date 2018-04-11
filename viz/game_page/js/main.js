@@ -1,16 +1,16 @@
 $(document).ready(function () {
 
-    var home_abb = null,
+    let home_abb = null,
         away_abb = null;
 
     $.getJSON("./data/game_summary.json", function (json) {
-      $("#home-score").html(json[0]['PTS']);
-      $("#away-score").html(json[1]['PTS']);
-      $("#home-logo").attr("src", "./img/" + json[0]['TEAM_ABBREVIATION'] + '.png');
-      $("#away-logo").attr("src", "./img/" + json[1]['TEAM_ABBREVIATION'] + '.png');
+        $("#home-score").html(json[0]['PTS']);
+        $("#away-score").html(json[1]['PTS']);
+        $("#home-logo").attr("src", "./img/" + json[0]['TEAM_ABBREVIATION'] + '.png');
+        $("#away-logo").attr("src", "./img/" + json[1]['TEAM_ABBREVIATION'] + '.png');
 
-      home_abb = json[0]['TEAM_ABBREVIATION'];
-      away_abb = json[1]['TEAM_ABBREVIATION'];
+        home_abb = json[0]['TEAM_ABBREVIATION'];
+        away_abb = json[1]['TEAM_ABBREVIATION'];
     });
 
     $.getJSON("./data/rotations.json", function (rotation_data) {
@@ -20,58 +20,98 @@ $(document).ready(function () {
 
     });
 
-    var courtSelection = d3.select("#shot-chart");
+    const max_size = 1000,
+        court_size = Math.min($(window).width(), $(window).height(), max_size);
 
-    var max_size = 1000;
-    var court_size = Math.min($(window).width(), $(window).height(), max_size);
+    const courtSelection1 = d3.select("#shot-chart1"),
+        courtSelection2 = d3.select("#shot-chart2"),
+        court = d3.court().width(court_size);
 
-    var court = d3.court().width(court_size);
-    courtSelection.call(court);
+    courtSelection1.call(court);
+    courtSelection2.call(court);
 
-    var players = [];
-
-    $.getJSON("./data/shots.json", function (json) {
-        var data = json;
-        var x = {};
-        $.each(data, function (i, d) {
-            if ($.inArray(this.shooter, players) === -1) {
-                players.push(this.shooter);
+    $.getJSON("./data/shots.json", function (data) {
+        let teams = {};
+        let x = {};
+        $.each(data, function () {
+            if ($.inArray(this.shooting_team, Object.keys(teams)) === -1) {
+                teams[this.shooting_team] = {'players': []};
+            }
+            if ($.inArray(this.shooter, teams[this.shooting_team]['players']) === -1) {
+                teams[this.shooting_team]['players'].push(this.shooter);
                 x[this.shooter] = 1;
             }
             else {
                 x[this.shooter]++;
             }
         });
-        players.sort(function (a, b) {
+
+        for (let team in teams) teams[team]['players'].sort(function (a, b) {
             return x[b] - x[a];
+        })
+
+        const player_select1 = $('#player-select1'),
+            player_select2 = $('#player-select2');
+
+        player_select1.append($('<option></option>').val(Object.keys(teams)[0]).html(Object.keys(teams)[0]));
+        $.each(teams[Object.keys(teams)[0]]['players'], function (i, p) {
+            player_select1.append($('<option></option>').val(p).html(p));
         });
 
-        //$('#player-select').append($('<option></option>').val('all').html('all'));
-        $('#offense-player-select').append($('<option></option>').val('All').html('All'));
-        $('#defense-player-select').append($('<option></option>').val('All').html('All'));
-        $.each(players, function (i, p) {
-            $('#player-select').append($('<option></option>').val(p).html(p));
-            $('#offense-player-select').append($('<option></option>').val(p).html(p));
-            $('#defense-player-select').append($('<option></option>').val(p).html(p));
+        player_select2.append($('<option></option>').val(Object.keys(teams)[1]).html(Object.keys(teams)[1]));
+        $.each(teams[Object.keys(teams)[1]]['players'], function (i, p) {
+            player_select2.append($('<option></option>').val(p).html(p));
         });
 
-        $('#player-select').change(function () {
-            var player = $('#player-select option:selected').val();
-            var player_data = data.filter(function (d) {
-                return d.player == player;
+        player_select1.change(function () {
+            let player = $('#player-select1 option:selected').val();
+            let player_data = data.filter(function (d) {
+                if (player.length > 3) {
+                    return d.player === player;
+                } else {
+                    return (d.shooting_team === player) & (d.player !== d.assist);
+                }
             });
-            var shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
-            courtSelection.datum(player_data).call(shots);
+            let shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
+            courtSelection1.datum(player_data).call(shots);
         });
 
-        $('#player-select').val($('#player-select option:first').val()).change();
+        player_select2.change(function () {
+            let player = $('#player-select2 option:selected').val();
+            let player_data = data.filter(function (d) {
+                if (player.length > 3) {
+                    return d.player === player;
+                } else {
+                    return (d.shooting_team === player) & (d.player !== d.assist);
+                }
+            });
+            let shots = d3.shots().shotRenderThreshold(1).displayToolTips(true).displayType("scatter");
+            courtSelection2.datum(player_data).call(shots);
+        });
+
+        player_select1.val($('#player-select1 option:first').val()).change();
+        player_select2.val($('#player-select2 option:first').val()).change();
+
+        let offensive_player_select = $('#offense-player-select');
+        let defensive_player_select = $('#defense-player-select');
+
+
+        offensive_player_select.append($('<option></option>').val('All').html('All'));
+        defensive_player_select.append($('<option></option>').val('All').html('All'));
+        for (let team in teams) {
+            $.each(teams[team]['players'], function (i, p) {
+                offensive_player_select.append($('<option></option>').val(p).html(p));
+                defensive_player_select.append($('<option></option>').val(p).html(p));
+            });
+        }
+
+        create_stats_table($("#stats-table1"), Object.keys(teams)[0]);
+        create_stats_table($("#stats-table2"), Object.keys(teams)[1]);
     });
 
-    $.getJSON("./data/matchups.json", function(json) {
-      create_matchups_table();
+    $.getJSON("./data/matchups.json", function (json) {
+        create_matchups_table();
     });
-
-    create_stats_table();
 
     $('#rotations-toggle').change(function () {
         if (!this.checked) {
