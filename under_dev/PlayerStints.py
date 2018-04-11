@@ -1,4 +1,4 @@
-from util.rotations import get_team_df, get_game_lineups_for_team, get_game_player_stints_for_team
+from util.rotations import get_team_df, get_team_game_lineups, get_team_game_player_stints
 from util.format import convert_time
 from util.data_scrappers.nba_stats import TeamAdvancedGameLogs, PlayByPlay, GeneralPlayerStats
 from util.data import data_dir
@@ -29,11 +29,11 @@ def get_player_stints_for_season(season):
         for team in teams:
             team_df = get_team_df(pbp_df, team)
             try:
-                team_lineups = get_game_lineups_for_team(team_df)
+                team_lineups = get_team_game_lineups(team_df)
             except ValueError:
                 print(ValueError)
                 continue
-            team_game_player_stints_df = get_game_player_stints_for_team(team_lineups)
+            team_game_player_stints_df = get_team_game_player_stints(team_lineups)
             stints_df = stints_df.append(team_game_player_stints_df)
 
     return stints_df
