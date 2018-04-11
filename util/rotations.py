@@ -7,39 +7,38 @@ from util.format import convert_time
 
 # From the pbp_df and a team abbreviation, determines if the team is home or visitor
 # Returns true if team is home
-def is_home(df, t):
-    df = df[df['PLAYER1_TEAM_ABBREVIATION'] == t]
-    home_df = df[df['VISITORDESCRIPTION'].isnull()]
-    vis_df = df[df['HOMEDESCRIPTION'].isnull()]
+def is_home(pbp_df, team_abb):
+    pbp_df = pbp_df[pbp_df['PLAYER1_TEAM_ABBREVIATION'] == team_abb]
+    home_df = pbp_df[pbp_df['VISITORDESCRIPTION'].isnull()]
+    vis_df = pbp_df[pbp_df['HOMEDESCRIPTION'].isnull()]
     return len(home_df) > len(vis_df)
 
 
 # From pbp_df and a team abbreviation, returns a df of all subs for that team
-def get_team_df(df, t):
-    team_is_home = is_home(df, t)
-    df = df[df['PLAYER1_TEAM_ABBREVIATION'].notnull()]
+def get_team_df(pbp_df, team_abb):
+    team_is_home = is_home(pbp_df, team_abb)
+    pbp_df = pbp_df[pbp_df['PLAYER1_TEAM_ABBREVIATION'].notnull()]
     if team_is_home:
-        return df[df['VISITORDESCRIPTION'].isnull()]
+        return pbp_df[pbp_df['VISITORDESCRIPTION'].isnull()]
     else:
-        return df[df['HOMEDESCRIPTION'].isnull()]
+        return pbp_df[pbp_df['HOMEDESCRIPTION'].isnull()]
 
 
 # Get initial lineups for a Period.
 # First look for players who are subbed out before they are subbed in
 # If less than 5 players meet initial criteria looks for players who were listed in pbp but never subbed in or out
 # If still less than 5 players, throw value error and throw out the period
-def get_initial_lineup(df):
-    subs_df = df[df.EVENTMSGTYPE == 8]
+def get_initial_lineup(period_df):
+    subs_df = period_df[period_df.EVENTMSGTYPE == 8]
+
+    period = (period_df.iloc[0]['PERIOD'] - 1)
+    end_time = subs_df.iloc[0]['TIME']
+    start_time = period * 720 if period < 4 else 2880 + ((period - 4) * 300)
+
     initial_players = []
     subbed_in = []
-    end = 0
 
-    period = (df.iloc[0]['PERIOD'] - 1)
-    start_time = period * 720 if period < 4 else 2880 + ((period - 4) * 300)
     for ix, sub in subs_df.iterrows():
-        if end == 0:
-            end = sub.TIME
-
         player_in = sub.PLAYER2_NAME
         player_out = sub.PLAYER1_NAME
 
@@ -51,37 +50,35 @@ def get_initial_lineup(df):
         if len(initial_players) == 5:
             return {
                 'players': initial_players,
-                'start_time':  start_time,
-                'end_time': end
+                'start_time': start_time,
+                'end_time': end_time
             }
 
-    others = df.PLAYER1_NAME.unique()
+    others = period_df.PLAYER1_NAME.unique()
     others = [str(i) for i in others]
     others = list(filter(lambda x: x != 'nan', others))
     others = list(filter(lambda x: x not in subbed_in, others))
     others = list(filter(lambda x: x not in initial_players, others))
 
-    for p in others:
-        if p not in initial_players:
-            initial_players.append(p)
-            if len(initial_players) == 5:
-                return {
-                    'players': initial_players,
-                    'start_time': start_time,
-                    'end_time': end
-                }
+    if len(initial_players) + len(others) != 5:
+        raise ValueError("Found " + str(len(initial_players) + len(others)) + "players instead of 5")
 
-    raise ValueError('Not enough players')
+    initial_players.extend(others)
+    return {
+        'players': initial_players,
+        'start_time': start_time,
+        'end_time': end_time
+    }
 
 
-def get_game_lineups_for_team(team_df):
+def get_team_game_lineups(team_df):
     lineups = []
 
-    period_max = team_df['PERIOD'].max()
-    if period_max < 4:
-        raise ValueError('PERIOD MAX IS LOWER THAN 4')
+    last_period = team_df['PERIOD'].max()
+    if last_period < 4:
+        raise ValueError('Numbers of Quarters is less than 4')
 
-    for p in range(1, (period_max + 1)):
+    for p in range(1, (last_period + 1)):
         period_df = team_df[team_df['PERIOD'] == p]
 
         try:
@@ -97,13 +94,10 @@ def get_game_lineups_for_team(team_df):
                 p_in = s.PLAYER2_NAME
 
                 if p_out not in current_players:
-                    raise ValueError('SUB OUT IS NOT IN CURRENT PLAYERS')
+                    raise ValueError('Player Subbing out is not in current lineup')
 
                 current_players = list(filter(lambda x: x != p_out, current_players))
                 current_players.append(p_in)
-
-                if s.TIME == 3600:
-                    None
 
                 lineups.append({
                     'players': current_players,
@@ -118,14 +112,14 @@ def get_game_lineups_for_team(team_df):
         if i < len(lineups) - 1:
             lineups[i]['end_time'] = lineups[i + 1]['start_time']
         else:
-            lineups[i]['end_time'] = 2880 if period_max == 4 else 2880 + ((period_max - 4) * 300)
+            lineups[i]['end_time'] = 2880 if last_period == 4 else 2880 + ((last_period - 4) * 300)
 
     lineups = list(filter(lambda x: x['start_time'] != x['end_time'], lineups))
 
     return lineups
 
 
-def get_game_player_stints_for_team(team_lineups):
+def get_team_game_player_stints(team_lineups):
     players = []
     for line_up in team_lineups:
         for player in line_up['players']:
@@ -141,7 +135,8 @@ def get_game_player_stints_for_team(team_lineups):
         previous_end_time = player_lineups[0]['end_time']
 
         for line_up in player_lineups[1:]:
-            if line_up['start_time'] == previous_end_time:
+            if (line_up['start_time'] == previous_end_time) and (
+                    (line_up['end_time'] != 1440) or (line_up['start_time'] != 1400)):
                 previous_end_time = line_up['end_time']
             else:
                 player_stints.append({
@@ -194,10 +189,7 @@ def transform_stints_for_viz(player_stints_df, include_ot=True):
     return pd.DataFrame(data)
 
 
-def get_score_data_for_game(game, season):
-    pbp_ep = PlayByPlay()
-
-    pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game}, override_file=False)
+def get_score_data_for_game(pbp_df):
     pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD']) / 60
 
     pbp_df = pbp_df[pbp_df['SCOREMARGIN'].notnull()]
@@ -215,14 +207,11 @@ def get_score_data_for_game(game, season):
     return pbp_df
 
 
-def get_viz_data_for_team_season(team_abbreviation, last_n_games=''):
-    log = TeamAdvancedGameLogs().get_data({'Season': season, 'LastNGames': last_n_games}, override_file=True)
-    log = log[log['TEAM_ABBREVIATION'] == team_abbreviation]
-
+def get_viz_data_for_team_game_set(team_abb, games, season):
     pbp_ep = PlayByPlay()
 
-    season_player_stints_df = pd.DataFrame()
-    games = log.GAME_ID.tolist()
+    player_stints_df = pd.DataFrame()
+
     for game in games:
         game = str(game)
         if len(game) < 10:
@@ -231,29 +220,29 @@ def get_viz_data_for_team_season(team_abbreviation, last_n_games=''):
         pbp_df = pbp_ep.get_data({'Season': season, 'GameID': game})
         pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
 
-        team_df = get_team_df(pbp_df, team_abbreviation)
-        team_lineups = get_game_lineups_for_team(team_df)
-        game_stints_df = get_game_player_stints_for_team(team_lineups)
-        season_player_stints_df = season_player_stints_df.append(game_stints_df)
+        team_df = get_team_df(pbp_df, team_abb)
+        team_lineups = get_team_game_lineups(team_df)
+        game_stints_df = get_team_game_player_stints(team_lineups)
+        player_stints_df = player_stints_df.append(game_stints_df)
 
-    rotation_data = transform_stints_for_viz(season_player_stints_df, include_ot=False)
+    rotation_data = transform_stints_for_viz(player_stints_df, include_ot=False)
 
-    starters = season_player_stints_df[season_player_stints_df['start_time'] == 0]['player'].unique()
+    starters = player_stints_df[player_stints_df['start_time'] == 0]['player'].unique()
     starters = sorted(starters,
-                      key=lambda x: -len(season_player_stints_df[
-                          (season_player_stints_df['player'] == x) & (season_player_stints_df['start_time'] == 0)
-                          ])
+                      key=lambda x: -len(player_stints_df[
+                                             (player_stints_df['player'] == x) & (player_stints_df['start_time'] == 0)
+                                             ])
                       )
     starters = starters[:5]
     starters = sorted(starters,
-                      key=lambda x: -season_player_stints_df[
-                          season_player_stints_df['player'] == x
+                      key=lambda x: -player_stints_df[
+                          player_stints_df['player'] == x
                           ]['time'].sum())
 
-    bench = season_player_stints_df[~season_player_stints_df['player'].isin(starters)]['player'].unique()
+    bench = player_stints_df[~player_stints_df['player'].isin(starters)]['player'].unique()
     bench = sorted(bench,
-                   key=lambda x: -season_player_stints_df[
-                       season_player_stints_df['player'] == x
+                   key=lambda x: -player_stints_df[
+                       player_stints_df['player'] == x
                        ]['time'].sum())
 
     players = starters + bench
@@ -261,22 +250,22 @@ def get_viz_data_for_team_season(team_abbreviation, last_n_games=''):
     index = 1
     rotation_data['pindex'] = 0
     for player in players:
-        sys.stdout.write("\"" + player + "\",")
         cond = rotation_data.player == player
         rotation_data.pindex[cond] = index
         index += 1
 
-    return rotation_data
+    return rotation_data.to_dict(orient='records')
 
 
-def get_rotation_data_for_game(game_id, year='2017-18'):
-    pbp_ep = PlayByPlay()
+def get_viz_data_for_team_season(team_abbreviation, season, last_n_games=''):
+    log = TeamAdvancedGameLogs().get_data({'Season': season, 'LastNGames': last_n_games}, override_file=True)
+    log = log[log['TEAM_ABBREVIATION'] == team_abbreviation]
 
-    game_id = str(game_id)
-    if len(game_id) < 10:
-        game_id = '00' + str(game_id)
+    games = log.GAME_ID.tolist()
+    return get_viz_data_for_team_game_set(team_abbreviation, games, season)
 
-    pbp_df = pbp_ep.get_data({'Season': year, 'GameID': game_id})
+
+def get_rotation_data_for_game(pbp_df):
     pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
 
     teams = pbp_df['PLAYER1_TEAM_ABBREVIATION'].unique()[1:]
@@ -284,8 +273,8 @@ def get_rotation_data_for_game(game_id, year='2017-18'):
     index = 1
     for t in teams:
         team_df = get_team_df(pbp_df, t)
-        team_lineups = get_game_lineups_for_team(team_df)
-        team_game_player_stints_df = get_game_player_stints_for_team(team_lineups)
+        team_lineups = get_team_game_lineups(team_df)
+        team_game_player_stints_df = get_team_game_player_stints(team_lineups)
 
         starters = team_game_player_stints_df[team_game_player_stints_df['start_time'] == 0]['player'].unique()
         starters = sorted(starters,
@@ -311,3 +300,55 @@ def get_rotation_data_for_game(game_id, year='2017-18'):
         rotation_df = rotation_df.append(team_game_player_stints_df)
 
     return rotation_df
+
+
+def get_most_common_starters_for_team_season(team_abb, season):
+    game_log = TeamAdvancedGameLogs().get_data({'Season': season}, override_file=True)
+    game_log = game_log[game_log['TEAM_ABBREVIATION'] == team_abb]
+
+    pbp_ep = PlayByPlay()
+    starters = dict()
+    for ix, game in game_log.iterrows():
+        game_pbp = pbp_ep.get_data({'Season': season, 'GameID': game.GAME_ID})
+        game_pbp['TIME'] = convert_time(game_pbp['PCTIMESTRING'], game_pbp['PERIOD'])
+
+        team_pbp = get_team_df(game_pbp, team_abb)
+
+        game_starters = get_initial_lineup(team_pbp[team_pbp['PERIOD'] == 1])
+
+        game_starters = tuple(sorted(game_starters['players']))
+
+        if game_starters in starters:
+            starters[game_starters] += 1
+        else:
+            starters[game_starters] = 1
+
+    sorted_starters = sorted(starters, key=lambda x: -starters[x])
+    for ss in sorted_starters:
+        print(str(ss) + ' : ' + str(starters[ss]))
+
+    return starters
+
+
+def get_game_ids_for_team_with_starters(starters, team_abb, season):
+    starters = tuple(sorted(starters))
+
+    game_log = TeamAdvancedGameLogs().get_data({'Season': season}, override_file=True)
+    game_log = game_log[game_log['TEAM_ABBREVIATION'] == team_abb]
+
+    pbp_ep = PlayByPlay()
+    games = []
+    for ix, game in game_log.iterrows():
+        game_pbp = pbp_ep.get_data({'Season': season, 'GameID': game.GAME_ID})
+        game_pbp['TIME'] = convert_time(game_pbp['PCTIMESTRING'], game_pbp['PERIOD'])
+
+        team_pbp = get_team_df(game_pbp, team_abb)
+
+        game_starters = get_initial_lineup(team_pbp[team_pbp['PERIOD'] == 1])
+
+        game_starters = tuple(sorted(game_starters['players']))
+
+        if game_starters == starters:
+            games.append(game.GAME_ID)
+
+    return games
