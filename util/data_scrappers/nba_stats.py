@@ -45,7 +45,7 @@ param_list = {
         'ElbowTouch', 'PostTouch', 'PaintTouch']},
     'category': {'type': 'Enum',
                  'choices': ['Transition', 'Isolation', 'PRBallHandler', 'PRRollman', 'Postup', 'Spotup', 'Handoff',
-                             'Cut', 'OffScreen', 'OffRebound', 'Misc']}
+                             'Cut', 'OffScreen', 'OffRebound']}
 }
 
 
