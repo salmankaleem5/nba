@@ -80,11 +80,12 @@ def get_blocks_for_player_season(player_name, season, override_file='False'):
 def get_shots_for_all_players_season(season, override_file=False):
     shots_df = merge_shot_pbp_for_season(season=season, override_file=override_file)
 
+    shots_df['team'] = shots_df['PLAYER1_TEAM_CITY'] + ' ' + shots_df['PLAYER1_TEAM_NICKNAME']
     shots_df = rename_columns_for_front_end(shots_df)
 
     shots_df = shots_df[
         ['x', 'y', 'action_type', 'shot_distance', 'shot_made_flag', 'shot_type', 'zone', 'area', 'assist', 'shooter',
-         'blocker', 'quarter', 'time', 'shooting_team']]
+         'blocker', 'quarter', 'time', 'team']]
 
     shots_df.loc[:, 'x'] = shots_df['x'] / 10
     shots_df.loc[:, 'y'] = shots_df['y'] / 10
@@ -237,11 +238,11 @@ def nest_data_for_teams_season(season, override_file=False):
     general_stats = GeneralTeamStats().get_data({'Season': season, 'PerMode': 'Totals'}, override_file=override_file)
     general_stats = calculate_overall_stats(general_stats)
 
-    teams = shots_df['shooting_team'].unique().tolist()
+    teams = shots_df['team'].unique().tolist()
 
-    general_stats = general_stats[['TEAM_ABBREVIATION', 'ppg', 'efg', 'efg_pct']]
+    general_stats = general_stats[['TEAM_NAME', 'ppg', 'efg', 'efg_pct']]
 
-    general_stats = general_stats.set_index('TEAM_ABBREVIATION').T.to_dict()
+    general_stats = general_stats.set_index('TEAM_NAME').T.to_dict()
 
     shots_df['x'] = shots_df['x'].apply(lambda lx: round(lx))
     shots_df['y'] = shots_df['y'].apply(lambda ly: round(ly))
@@ -257,7 +258,7 @@ def nest_data_for_teams_season(season, override_file=False):
         team_df = shots_df[shots_df['shooter'] == team]
         print(team + ': ' + str(len(team_df)))
 
-        shot_data['players'][team] = nest_shot_data_by_xy_for_entity(team_df, league_averages, zone_areas)
-        shot_data['players'][team]['stats'] = general_stats[team]
+        shot_data['teams'][team] = nest_shot_data_by_xy_for_entity(team_df, league_averages, zone_areas)
+        shot_data['teams'][team]['stats'] = general_stats[team]
 
     return shot_data

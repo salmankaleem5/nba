@@ -42,7 +42,10 @@ param_list = {
     'PtMeasureType': {'type': 'Enum', 'choices': [
         'Drives', 'Defense', 'CatchShoot', 'Passing', 'Possessions',
         'PullUpShot', 'Rebounding', 'Efficiency', 'SpeedDistance',
-        'ElbowTouch', 'PostTouch', 'PaintTouch']}
+        'ElbowTouch', 'PostTouch', 'PaintTouch']},
+    'category': {'type': 'Enum',
+                 'choices': ['Transition', 'Isolation', 'PRBallHandler', 'PRRollman', 'Postup', 'Spotup', 'Handoff',
+                             'Cut', 'OffScreen', 'OffRebound', 'Misc']}
 }
 
 
@@ -742,7 +745,6 @@ class OnOffSummary(EndPoint):
         return on_off_df
 
 
-
 class Standings(EndPoint):
     base_url = 'http://stats.nba.com/stats/leaguestandingsv3'
     default_params = {'LeagueID': '00',
@@ -764,7 +766,7 @@ class SynergyPlayerStats(EndPoint):
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'en-US,en;q=0.5',
         'Connection': 'keep-alive',
-        #'Cookie': 's_cc=true; s_fid=0C14240EE454CE98-1406F45DADF8283D; s_sq=%5B%5BB%5D%5D; s_vi=[CS]v1|2D626C7F05030B69-4000118620008578[CE]',
+        # 'Cookie': 's_cc=true; s_fid=0C14240EE454CE98-1406F45DADF8283D; s_sq=%5B%5BB%5D%5D; s_vi=[CS]v1|2D626C7F05030B69-4000118620008578[CE]',
         'DNT': '1',
         'Host': 'stats-prod.nba.com',
         'Origin': 'https://stats.nba.com',
@@ -780,6 +782,7 @@ class SynergyPlayerStats(EndPoint):
 
         if (not file_check(file_path)) or override_file:
             full_url = construct_full_url(self.base_url, params)
+            print(full_url)
             r = requests.get(
                 full_url,
                 headers=self.synergy_request_headers
@@ -796,6 +799,35 @@ class SynergyPlayerStats(EndPoint):
         else:
             print(file_path)
             return pd.read_csv(file_path)
+
+    def get_data_for_all_play_types(self, season, override_file=False):
+        all_df = pd.DataFrame(columns=['PlayerFirstName', 'PlayerLastName', 'TeamNameAbbreviation'])
+        for pt in param_list['category']['choices']:
+            params = self.default_params
+            params['season'] = season
+            params['category'] = pt
+
+            pt_df = self.get_data(params, override_file)
+            pt_df = pt_df[
+                ['PlayerFirstName', 'PlayerLastName', 'TeamNameAbbreviation', 'Poss', 'Points', 'PPP', 'Time']]
+            pt_df = pt_df.rename(columns={
+                'Poss': '{}Poss'.format(pt),
+                'Points': '{}Points'.format(pt),
+                'PPP': '{}PPP'.format(pt),
+                'Time': '{}Freq'.format(pt),
+            })
+            all_df = all_df.merge(pt_df, on=['PlayerFirstName', 'PlayerLastName', 'TeamNameAbbreviation'],
+                                  how='outer')
+
+        all_df = all_df.fillna(0)
+        all_df['TotalPoss'] = 0
+        all_df['TotalPoints'] = 0
+        for pt in param_list['category']['choices']:
+            all_df['TotalPoss'] += all_df['{}Poss'.format(pt)]
+            all_df['TotalPoints'] += all_df['{}Points'.format(pt)]
+        all_df['TotalPPP'] = all_df['TotalPoints'] / all_df['TotalPoss']
+
+        return all_df.sort_values(by='TotalPoss', ascending=False)
 
 
 class DraftCombineAnthro(EndPoint):
