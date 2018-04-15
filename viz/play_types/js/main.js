@@ -7,15 +7,37 @@ $(document).ready(function () {
 
             let player_list = [];
 
+            const margin = {top: 0, right: 0, bottom: 0, left: 0},
+                width = $(window).width() - margin.left - margin.right - 20,
+                height = $(window).height() - margin.top - margin.bottom - 20;
+
+            let svg = d3.select("#chart").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            console.log(width);
+            console.log(height);
+
+            svg.append("text")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("transform", "translate(10," + ((height / 2) + 50) + ") rotate(-90)")
+                .text("Points Per Possession");
+
+            svg.append("text")
+                .attr("x", (width / 2) - 50)
+                .attr("y", height - 3)
+                .text("Possessions Per Game");
+
             $.each(play_types, function (ix, pt) {
                 let pt_data = data[pt];
 
-                let new_players = pt_data.map(a => a.Player).filter(function (d) {return $.inArray(d, player_list) === -1;});
+                let new_players = pt_data.map(a => a.Player).filter(function (d) {
+                    return $.inArray(d, player_list) === -1;
+                });
                 player_list.push.apply(player_list, new_players);
 
-                const margin = {top: 0, right: 0, bottom: 0, left: 0},
-                    width = ($(window).width() / 5.5) - margin.left - margin.right,
-                    height = ($(window).height() / 2.5) - margin.top - margin.bottom;
+                let startPos = {"x": (ix % 5) * (width / 5) + 20, "y": ix < 5 ? 10 : height / 2};
 
                 const maxPPP = d3.max(pt_data, function (d) {
                         return d.PPP;
@@ -27,31 +49,26 @@ $(document).ready(function () {
                         return d.PossG;
                     });
 
-                let svg = d3.select("#chart").append("svg")
-                    .attr("width", width)
-                    .attr("height", height)
-                    .attr("transform", "translate(0,0)")
-                    .style("padding", "10px");
-
                 svg.append("text")
-                    .attr("x", width / 2)
-                    .attr("y", 15)
+                    .attr("x", startPos.x + (width / 10))
+                    .attr("y", startPos.y + 30)
                     .attr("text-anchor", "middle")
                     .text(pt);
 
-                const x = d3.scaleLinear().rangeRound([20, width - 27]);
-                const y = d3.scaleLinear().rangeRound([5, height - 40]);
+                const x = d3.scaleLinear().rangeRound([10, (width / 5) - 70]);
+                const y = d3.scaleLinear().rangeRound([50, (height / 2) - 70]);
 
                 x.domain([0, maxTime]);
                 y.domain([maxPPP, minPPP]);
 
                 svg.append("g")
                     .call(d3.axisRight(y).ticks(4).tickSize(0))
+                    .attr("transform", "translate(" + startPos.x + "," + startPos.y + ")")
                     .append("text");
 
                 svg.append("g")
                     .call(d3.axisBottom(x).ticks(4).tickSize(0))
-                    .attr("transform", "translate(0," + (height - 35) + ")")
+                    .attr("transform", "translate(" + startPos.x + "," + (startPos.y + height / 2 - 30) + ")")
                     .append("text");
 
 
@@ -62,10 +79,10 @@ $(document).ready(function () {
                     .append("circle")
                     .classed("player", true)
                     .attr("cx", function (d) {
-                        return x(d.PossG);
+                        return startPos.x + x(d.PossG);
                     })
                     .attr("cy", function (d) {
-                        return y(d.PPP);
+                        return startPos.y + y(d.PPP);
                     })
                     .attr("r", 3.5)
                     .attr("opacity", 0.3)
@@ -110,9 +127,9 @@ $(document).ready(function () {
 
         })
 
-    .error(function (error, msg) {
-        console.log(error);
-        console.log(msg);
-    });
+        .error(function (error, msg) {
+            console.log(error);
+            console.log(msg);
+        });
 
 });
