@@ -269,6 +269,8 @@ def get_rotation_data_for_game(pbp_df):
     pbp_df['TIME'] = convert_time(pbp_df['PCTIMESTRING'], pbp_df['PERIOD'])
 
     teams = pbp_df['PLAYER1_TEAM_ABBREVIATION'].unique()[1:]
+    if not is_home(pbp_df, teams[0]):
+        teams = reversed(teams)
     rotation_df = pd.DataFrame()
     index = 1
     for t in teams:
