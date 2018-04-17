@@ -1,0 +1,12 @@
+body {
+    background-color: #cecece;
+}
+
+.domain {
+    opacity: 0;
+}
+
+#chart text {
+    font-family: Arial;
+    font-size: 12px;
+}
