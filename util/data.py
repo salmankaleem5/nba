@@ -1,5 +1,6 @@
 import os
 import platform
+import json
 
 
 wd = os.getcwd()
@@ -25,3 +26,9 @@ def file_check(file_path):
         os.makedirs(current_path)
 
     return os.path.isfile(file_path)
+
+
+def write_dict_to_json_file(data_dict, file_path):
+    file_check(file_path)
+    with open(file_path, 'w') as fp:
+        json.dump(data_dict, fp)
