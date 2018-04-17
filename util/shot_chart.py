@@ -21,8 +21,8 @@ def rename_columns_for_front_end(shots_df):
     })
 
 
-def get_shot_data_for_all_players_game(pbp_df, game_id, season, data_override=False):
-    shots_df = merge_shot_pbp_for_game(pbp_df, game_id, season, override_file=data_override)
+def get_shot_data_for_all_players_game(pbp_df, game_id, season, season_type, data_override=False):
+    shots_df = merge_shot_pbp_for_game(pbp_df, game_id, season, season_type, override_file=data_override)
 
     shots_df = rename_columns_for_front_end(shots_df)
 
