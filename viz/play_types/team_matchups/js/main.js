@@ -64,12 +64,6 @@ $(document).ready(function () {
             $.each(play_types, function (ix, pt) {
                 let pt_data = data[pt];
 
-                // let new_teams = pt_data.map(a => a.Team).filter(function (d) {
-                //     return $.inArray(d, team_list) === -1;
-                // });
-                //
-                // team_list.push.apply(team_list, new_teams);
-
                 if (ix === 0) {
                     team_list = pt_data.filter(function (d) {
                         return d.Side === "offensive"

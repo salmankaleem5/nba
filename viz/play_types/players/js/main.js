@@ -1,4 +1,43 @@
+function is_in_selected_players(d, selected_players) {
+    $.each(selected_players, function (ix, p) {
+        if ((d.Player === p.name) && (d.Year === p.year)) {
+            return true
+        }
+    });
+    return false;
+}
+
+
+function change_player(selected_players) {
+    d3.selectAll(".player")
+        .transition().duration(1000)
+        .attr("r", function (d) {
+            if (is_in_selected_players(d, selected_players)) {
+                return 5;
+            } else {
+                return 3.5;
+            }
+        })
+        .attr("opacity", function (d) {
+            if (is_in_selected_players(d, selected_players)) {
+                return 1;
+            } else {
+                return 0.3;
+            }
+        })
+        .style("fill", function (d) {
+            if (is_in_selected_players(d, selected_players)) {
+                return "blue";
+            } else {
+                return "grey";
+            }
+        })
+}
+
+
 $(document).ready(function () {
+
+    let selected_players = [];
 
     $.getJSON('./data/data.json')
         .success(function (data) {
@@ -14,9 +53,6 @@ $(document).ready(function () {
             let svg = d3.select("#chart").append("svg")
                 .attr("width", width)
                 .attr("height", height);
-
-            console.log(width);
-            console.log(height);
 
             svg.append("text")
                 .attr("x", 0)
@@ -35,7 +71,12 @@ $(document).ready(function () {
                 let new_players = pt_data.map(a => a.Player).filter(function (d) {
                     return $.inArray(d, player_list) === -1;
                 });
-                player_list.push.apply(player_list, new_players);
+
+                $.each(new_players, function(jx, p) {
+                    if ($.inArray(p, player_list) === -1) {
+                        player_list.push(p)
+                    }
+                });
 
                 let startPos = {"x": (ix % 5) * (width / 5) + 20, "y": ix < 5 ? 10 : height / 2};
 
@@ -74,7 +115,7 @@ $(document).ready(function () {
 
                 svg.selectAll(".player")
                     .data(pt_data, function (d) {
-                        return [d.Player, d.PossG, d.PPP];
+                        return [d.Player, d.PossG, d.PPP, d.Year];
                     }).enter()
                     .append("circle")
                     .classed("player", true)
@@ -91,39 +132,23 @@ $(document).ready(function () {
 
             player_list.sort();
 
-            let player_select = $("#player-select");
+            let player_select = $("#player-select"),
+                year_select = $("#year-select"),
+                add_player = $("#player-add");
 
             player_select.append(($('<option></option>').val('').html('')));
             $.each(player_list, function (i, d) {
                 player_select.append(($('<option></option>').val(d).html(d)));
             });
 
-            player_select.change(function () {
-                let player = this.value;
-                d3.selectAll(".player")
-                    .transition().duration(1000)
-                    .attr("r", function (d) {
-                        if (d.Player === player) {
-                            return 5;
-                        } else {
-                            return 3.5;
-                        }
-                    })
-                    .attr("opacity", function (d) {
-                        if (d.Player === player) {
-                            return 1;
-                        } else {
-                            return 0.3;
-                        }
-                    })
-                    .style("fill", function (d) {
-                        if (d.Player === player) {
-                            return "blue";
-                        } else {
-                            return "grey";
-                        }
-                    });
-            });
+            add_player.click(function () {
+                let player = {
+                    'name': player_select.val(),
+                    'year': year_select.val()
+                };
+                selected_players.push(player);
+                change_player(selected_players);
+            })
 
         })
 
