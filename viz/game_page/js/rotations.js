@@ -1,35 +1,46 @@
 var team_colors = {
-        'NOP': ['#0C2340', '#C8102E', '#85714D'],
-        'HOU': ['#CE1141', '#FDB927'],
-        'CLE': ['#6F2633', '#FFB81C'],
-        'BKN': ['#000000', '#FFFFFF'],
-        'MIN': ['#002B5C', '#7AC143'],
-        'MEM': ['#7D9BC1', '#FFC72C'],
-        'NYK': ['#F58426', '#006BB6'],
-        'CHA': ['#00788C', '#1D1160', '#888B8D'],
-        'POR': ['#E13A3E', '#000000'],
-        'LAC': ['#ED174C', '#006BB6'],
-        'PHX': ['#E56020', '#1D1160'],
-        'MIA': ['#98012e', '#faa11b'],
-        'PHI': ['#003DA5', '#D50032'],
-        'GSW': ['#003DA5', '#FFC72C']
-    };
+    'NOP': ['#0C2340', '#C8102E', '#85714D'],
+    'HOU': ['#CE1141', '#FDB927'],
+    'CLE': ['#6F2633', '#FFB81C'],
+    'BKN': ['#000000', '#FFFFFF'],
+    'MIN': ['#002B5C', '#7AC143'],
+    'MEM': ['#7D9BC1', '#FFC72C'],
+    'NYK': ['#F58426', '#006BB6'],
+    'CHA': ['#00788C', '#1D1160', '#888B8D'],
+    'POR': ['#E13A3E', '#000000'],
+    'LAC': ['#ED174C', '#006BB6'],
+    'PHX': ['#E56020', '#1D1160'],
+    'MIA': ['#98012e', '#faa11b'],
+    'PHI': ['#003DA5', '#D50032'],
+    'GSW': ['#003DA5', '#FFC72C'],
+    'SAS': ['#000000'],
+    'WAS': ['#0C2340', '#c8102E'],
+    'TOR': ['#BA0C2F', '#000000'],
+    'DET': ["#D50032"],
+    'MIL': ['#EEE1C6', '#00471B'],
+    'BOS': ['#007A33', '#007A33'],
+    'IND': ['#041E42', '#FFCD00'],
+    'OKC': ['#0072CE', '#F9423A'],
+    'UTA': ['#0C2340', '#2C5234']
+};
 
 function get_color_contrast(hex1, hex2) {
-    let rgb1 = [parseInt(hex1.substr(1,3), 16), parseInt(hex1.substr(3,5), 16), parseInt(hex1.substr(5,7), 16)],
-        rgb2 = [parseInt(hex2.substr(1,3), 16), parseInt(hex2.substr(3,5), 16), parseInt(hex2.substr(5,7), 16)];
+    let rgb1 = [parseInt(hex1.substr(1, 3), 16), parseInt(hex1.substr(3, 5), 16), parseInt(hex1.substr(5, 7), 16)],
+        rgb2 = [parseInt(hex2.substr(1, 3), 16), parseInt(hex2.substr(3, 5), 16), parseInt(hex2.substr(5, 7), 16)];
 
     return (Math.abs(rgb1[0] - rgb2[0]) + Math.abs(rgb1[1] - rgb2[1]) + Math.abs(rgb1[2] - rgb2[2]));
 }
 
 function get_colors(home_abb, away_abb) {
-  for (let ix=0; ix < team_colors[home_abb].length; ix++) {
-    for (let jx=0; jx < team_colors[away_abb].length; jx++) {
-          if (get_color_contrast(team_colors[home_abb][ix], team_colors[away_abb][jx]) > 40000) {
-              return [team_colors[home_abb][ix], team_colors[away_abb][jx]];
+    for (let ix = 0; ix < team_colors[home_abb].length; ix++) {
+        for (let jx = 0; jx < team_colors[away_abb].length; jx++) {
+            if (get_color_contrast(team_colors[home_abb][ix], team_colors[away_abb][jx]) > 40000) {
+                return [team_colors[home_abb][ix], team_colors[away_abb][jx]];
             }
-        };
-    };
+        }
+        ;
+    }
+    ;
 }
 
 function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
@@ -189,7 +200,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
 
     const yAxisShiftBool = bot_team_player_count < top_team_player_count,
         yAxisScale = (((Math.min(top_team_player_count, bot_team_player_count) * 2) + 1) * rect_height),
-        yAxisShift = yAxisShiftBool ? ((Math.abs(top_team_player_count - bot_team_player_count)) * rect_height) - margin.top: -margin.bottom;
+        yAxisShift = yAxisShiftBool ? ((Math.abs(top_team_player_count - bot_team_player_count)) * rect_height) - margin.top : -margin.bottom;
 
     const x = d3.scaleLinear()
         .rangeRound([margin.left, width + margin.left - margin.right]);
@@ -213,7 +224,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
         current_data = [],
         current_score = 0;
 
-    $.each(score_data, function() {
+    $.each(score_data, function () {
         if (this.score_margin === 0) {
             current_data.push(this);
         } else if ((current_score * this.score_margin) <= 0) {
@@ -246,7 +257,7 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
 
     $.each(score_datas, function () {
         let line_color = null;
-        if (this[0].score_margin > 0){
+        if (this[0].score_margin > 0) {
             line_color = away_color;
         } else {
             line_color = home_color;
@@ -299,8 +310,8 @@ function plot_rotation_heat_map(rotation_data, score_data, home_abb, away_abb) {
     svg.append("line")
         .attr("x1", 0)
         .attr("x2", width - margin.right)
-        .attr("y1", (top_team_player_count + 0.5) * rect_height )
-        .attr("y2", (top_team_player_count + 0.5) * rect_height )
+        .attr("y1", (top_team_player_count + 0.5) * rect_height)
+        .attr("y2", (top_team_player_count + 0.5) * rect_height)
         .style("stroke-width", stroke_width)
         .attr("stroke-opacity", stroke_opacity)
         .style("stroke", stroke_color)
