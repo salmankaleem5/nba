@@ -752,8 +752,7 @@ class Standings(EndPoint):
                       'SeasonType': 'Regular Season'}
 
 
-class SynergyPlayerStats(EndPoint):
-    base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/'
+class SynergyEndpoint(EndPoint):
     default_params = {'category': 'Spotup',
                       'limit': '500',
                       'names': 'offensive',
@@ -828,6 +827,14 @@ class SynergyPlayerStats(EndPoint):
         all_df['TotalPPP'] = all_df['TotalPoints'] / all_df['TotalPoss']
 
         return all_df.sort_values(by='TotalPoss', ascending=False)
+
+
+class SynergyPlayerStats(SynergyEndpoint):
+    base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/player/'
+
+
+class SynergyTeamStats(SynergyEndpoint):
+    base_url = 'https://stats-prod.nba.com/wp-json/statscms/v1/synergy/team/'
 
 
 class DraftCombineAnthro(EndPoint):
