@@ -112,10 +112,8 @@ class EndPoint:
         param_string = ''
         for p in sorted(params):
             param_string += ',{}={}'.format(str(p), str(params[p]))
-            # param_string += ',' + str(p) + '=' + str(params[p])
         param_hash = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
-        return data_dir + \
-               self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
+        return data_dir + self.base_url.split('/')[-1] + '/' + param_hash + '.csv'
 
     def get_data(self, passed_params=default_params, override_file=False):
         check_params(passed_params)
@@ -773,6 +771,10 @@ class SynergyEndpoint(EndPoint):
         'Upgrade-Insecure-Requests': '1',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0'
     }
+
+    def determine_file_path(self, params):
+        return data_dir + 'play_type/' + self.base_url.split('/')[-2] + '/' + params['season'] + '/' + params[
+            'category'] + '/' + params['names'] + '.csv'
 
     def get_data(self, passed_params=default_params, override_file=False):
         check_params(passed_params)
