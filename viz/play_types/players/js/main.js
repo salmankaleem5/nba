@@ -1,41 +1,52 @@
-function is_in_selected_players(d, selected_players) {
-    $.each(selected_players, function (ix, p) {
-        if ((d.Player === p.name) && (d.Year === p.year)) {
-            return true
-        }
-    });
-    return false;
-}
-
-
-function change_player(selected_players) {
-    d3.selectAll(".player")
-        .transition().duration(1000)
-        .attr("r", function (d) {
-            if (is_in_selected_players(d, selected_players)) {
-                return 5;
-            } else {
-                return 3.5;
-            }
-        })
-        .attr("opacity", function (d) {
-            if (is_in_selected_players(d, selected_players)) {
-                return 1;
-            } else {
-                return 0.3;
-            }
-        })
-        .style("fill", function (d) {
-            if (is_in_selected_players(d, selected_players)) {
-                return "blue";
-            } else {
-                return "grey";
-            }
-        })
-}
-
-
 $(document).ready(function () {
+
+    let colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999"];
+
+    let player_select = $("#player-select"),
+        year_select = $("#year-select"),
+        add_player = $("#player-add"),
+        reset_players = $("#player-reset"),
+        player_names = $("#player-names");
+
+    function is_in_selected_players(d, selected_players) {
+        let return_val = -1;
+        $.each(selected_players, function (ix, p) {
+            if ((d.Player === p.Player) && d.Year === p.Year) {
+                return_val = ix;
+                return false;
+            }
+        });
+        return return_val;
+    }
+
+
+    function change_player(selected_players) {
+        d3.selectAll(".player")
+            .transition().duration(1000)
+            .attr("r", function (d) {
+                if (is_in_selected_players(d, selected_players) !== -1) {
+                    return 5;
+                } else {
+                    return 3.5;
+                }
+            })
+            .attr("opacity", function (d) {
+                if (is_in_selected_players(d, selected_players) !== -1) {
+                    return 1;
+                } else {
+                    return 0.3;
+                }
+            })
+            .style("fill", function (d) {
+                let ix = is_in_selected_players(d, selected_players);
+                if (is_in_selected_players(d, selected_players) !== -1) {
+                    return colors[ix];
+                } else {
+                    return "grey";
+                }
+            });
+    }
+
 
     let selected_players = [];
 
@@ -72,7 +83,7 @@ $(document).ready(function () {
                     return $.inArray(d, player_list) === -1;
                 });
 
-                $.each(new_players, function(jx, p) {
+                $.each(new_players, function (jx, p) {
                     if ($.inArray(p, player_list) === -1) {
                         player_list.push(p)
                     }
@@ -132,10 +143,6 @@ $(document).ready(function () {
 
             player_list.sort();
 
-            let player_select = $("#player-select"),
-                year_select = $("#year-select"),
-                add_player = $("#player-add");
-
             player_select.append(($('<option></option>').val('').html('')));
             $.each(player_list, function (i, d) {
                 player_select.append(($('<option></option>').val(d).html(d)));
@@ -143,12 +150,22 @@ $(document).ready(function () {
 
             add_player.click(function () {
                 let player = {
-                    'name': player_select.val(),
-                    'year': year_select.val()
+                    'Player': player_select.val(),
+                    'Year': year_select.val()
                 };
-                selected_players.push(player);
+                if (!(player.name === "" || player.year === "" || is_in_selected_players(player, selected_players) !== -1)) {
+                    selected_players.push(player);
+                    player_names
+                        .append(($('<span>' + player.Player + ': ' + player.Year + '</span>').css("color", colors[selected_players.length - 1])));
+                    change_player(selected_players);
+                }
+            });
+
+            reset_players.click(function () {
+                selected_players = [];
                 change_player(selected_players);
-            })
+                player_names.empty();
+            });
 
         })
 
